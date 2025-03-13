@@ -380,19 +380,20 @@ app.post("/api/create-contact", async (req, res) => {
       },
       body: JSON.stringify(data),
     });
-    const result = await response.json();
-    accessTokenCache.set(req?.query?.cache ?? "create-contact-hubspot", result);
     if(response.status !== 201){
       throw response
     }
+    const result = await response.json();
+    accessTokenCache.set("create-contact-hubspot", result);
     const id_hs = result?.id
 
     if(id_hs){
       const aveChat = new AveChat(TOKEN_AVECHAT);
-      aveChat.postIdHs({
+      const resultAveChat = await aveChat.postIdHs({
         user_id:req.body.id,
         id_hs
       })
+      accessTokenCache.set("create-contact-ave-chat", resultAveChat);
     }
 
     return res.json({
@@ -401,6 +402,7 @@ app.post("/api/create-contact", async (req, res) => {
       hubspot: result,
     });
   } catch (error) {
+    accessTokenCache.set("create-contact-error", error);
     return res.status(500).json({
       success: false,
       message: "❌ Error al crear el contacto.",
