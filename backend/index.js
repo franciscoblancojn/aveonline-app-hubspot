@@ -28,6 +28,7 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const API_KEY = process.env.API_KEY;
 const ASSOCIATION_TYPE_ID = process.env.ASSOCIATION_TYPE_ID;
+const HOST = process.env.HOST;
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
@@ -37,7 +38,7 @@ if (process.env.SCOPE) {
 }
 
 // On successful install, users will be redirected to /oauth-callback
-const REDIRECT_URI = `http://localhost:${PORT}/oauth-callback`;
+const REDIRECT_URI = `${HOST}/oauth-callback`;
 
 //===========================================================================//
 
@@ -362,5 +363,5 @@ app.post("/api/create-contact", async (req, res) => {
 });
 
 app.listen(PORT, () =>
-  console.log(`=== Starting your app on http://localhost:${PORT} ===`)
+  console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
 );
