@@ -4,6 +4,8 @@ const request = require("request-promise-native");
 const NodeCache = require("node-cache");
 const session = require("express-session");
 const app = express();
+const {AveChat} = require("./avechat");
+const NodeCache = require("node-cache");
 
 const PORT = 3000;
 
@@ -29,6 +31,7 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const API_KEY = process.env.API_KEY;
 const ASSOCIATION_TYPE_ID = process.env.ASSOCIATION_TYPE_ID;
 const HOST = process.env.HOST;
+const TOKEN_AVECHAT = process.env.TOKEN_AVECHAT;
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
@@ -308,6 +311,14 @@ app.post("/api/create-note", async (req, res) => {
   }
 });
 
+app.get("/api/log", async (req, res) => {
+  const cachedData = cache.get(req?.query?.cache ?? "cache");
+  return res.json({ cachedData });
+});
+app.post("/api/log", async (req, res) => {
+  cache.set(req?.query?.cache ?? "cache",req.body);
+  return res.json({ ok:1 });
+});
 app.post("/api/create-contact", async (req, res) => {
   const accessToken = API_KEY;
   const url = "https://api.hubapi.com/crm/v3/objects/contacts";
