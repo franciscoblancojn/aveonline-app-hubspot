@@ -310,11 +310,11 @@ app.post("/api/create-note", async (req, res) => {
 });
 
 app.get("/api/log", async (req, res) => {
-  const cachedData = cache.get(req?.query?.cache ?? "cache");
+  const cachedData = NodeCache.get(req?.query?.cache ?? "cache");
   return res.json({ cachedData });
 });
 app.post("/api/log", async (req, res) => {
-  cache.set(req?.query?.cache ?? "cache",req.body);
+  NodeCache.set(req?.query?.cache ?? "cache",req.body);
   return res.json({ ok:1 });
 });
 app.post("/api/create-contact", async (req, res) => {
