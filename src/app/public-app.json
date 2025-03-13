@@ -4,10 +4,10 @@
   "description": "",
   "allowedUrls": [
     "https://chat.aveonline.co",
-    "https://api.example.com"
+    "https://aveonline-app-hubspot.vercel.app"
   ],
   "auth": {
-    "redirectUrls": ["http://localhost:3000/oauth-callback"],
+    "redirectUrls": ["https://aveonline-app-hubspot.vercel.app/oauth-callback"],
     "requiredScopes": ["crm.objects.contacts.read", "crm.objects.contacts.write"],
     "optionalScopes": [],
     "conditionallyRequiredScopes": []
