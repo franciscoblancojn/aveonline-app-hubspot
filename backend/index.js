@@ -314,43 +314,60 @@ app.get("/api/log", async (req, res) => {
     const cachedData = accessTokenCache.get(req?.query?.cache ?? "cache");
     return res.json({ cachedData });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "❌ Error en la solicitud.",
-        error: error.message,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error en la solicitud.",
+      error: error.message,
+    });
   }
 });
 app.post("/api/log", async (req, res) => {
   try {
-    accessTokenCache.set(req?.query?.cache ?? "cache",req.body);
-    return res.json({ ok:1 });
+    accessTokenCache.set(req?.query?.cache ?? "cache", req.body);
+    return res.json({ ok: 1 });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "❌ Error en la solicitud.",
-        error: error.message,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error en la solicitud.",
+      error: error.message,
+    });
   }
 });
 app.post("/api/create-contact", async (req, res) => {
+  // "id": "573103557200",
+  // "account_id": "1052476",
+  // "page_id": "1052476",
+  // "external_id": "",
+  // "first_name": "Francisco",
+  // "last_name": "",
+  // "full_name": "Francisco",
+  // "channel": "5",
+  // "email": "",
+  // "phone": "+573103557200",
+  // "profile_pic": "",
+  // "locale": "es_CO",
+  // "gender": "2",
+  // "timezone": "-5",
+  // "last_sent": "0",
+  // "last_delivered": "1741903671520",
+  // "last_seen": "1741903672000",
+  // "last_interaction": "1741903672000",
+  // "subscribed_date": "2025-03-13 22:07:52",
+  // "subscribed": "1"
+
   const accessToken = API_KEY;
   const url = "https://api.hubapi.com/crm/v3/objects/contacts";
 
   // Body example
-  // {
-  //   "email": "Tes2t@example.com",
-  //   "firstname": "Tes2t",
-  //   "lastname": "Test2",
-  //   "phone": "+123456789",
-  //   "company": "Test2"
-  // }
+  const properties = {
+    email: req.body.email,
+    firstname: req.body.first_name,
+    lastname: req.body.last_name,
+    phone: req.body.phone,
+    company: "AveChat",
+  };
   const data = {
-    properties: req.body,
+    properties,
   };
 
   try {
@@ -364,7 +381,7 @@ app.post("/api/create-contact", async (req, res) => {
     });
 
     const result = await response.json();
-
+    accessTokenCache.set(req?.query?.cache ?? "create-contact", result);
     if (response.status === 201) {
       return res.json({
         success: true,
@@ -372,22 +389,18 @@ app.post("/api/create-contact", async (req, res) => {
         data: result,
       });
     } else {
-      return res
-        .status(response.status)
-        .json({
-          success: false,
-          message: "❌ Error al crear el contacto.",
-          error: result,
-        });
+      return res.status(response.status).json({
+        success: false,
+        message: "❌ Error al crear el contacto.",
+        error: result,
+      });
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "❌ Error en la solicitud.",
-        error: error.message,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error en la solicitud.",
+      error: error.message,
+    });
   }
 });
 
