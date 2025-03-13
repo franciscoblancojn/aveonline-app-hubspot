@@ -248,6 +248,11 @@ app.post("/api/create-note", async (req, res) => {
 
   const url = "https://api.hubapi.com/crm/v3/objects/notes";
 
+  // Body example
+  // {
+  //  "contactId":"105323010669",
+  //  "message":"Hola"
+  // }
   const data = {
     associations: [
       {
@@ -306,6 +311,14 @@ app.post("/api/create-contact", async (req, res) => {
   const accessToken = API_KEY;
   const url = "https://api.hubapi.com/crm/v3/objects/contacts";
 
+  // Body example
+  // {
+  //   "email": "Tes2t@example.com",
+  //   "firstname": "Tes2t",
+  //   "lastname": "Test2",
+  //   "phone": "+123456789",
+  //   "company": "Test2"
+  // }
   const data = {
     properties: req.body,
   };
