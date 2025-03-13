@@ -311,7 +311,7 @@ app.post("/api/create-note", async (req, res) => {
 
 app.get("/api/log", async (req, res) => {
   try {
-    const cachedData = NodeCache.get(req?.query?.cache ?? "cache");
+    const cachedData = accessTokenCache.get(req?.query?.cache ?? "cache");
     return res.json({ cachedData });
   } catch (error) {
     return res
@@ -325,7 +325,7 @@ app.get("/api/log", async (req, res) => {
 });
 app.post("/api/log", async (req, res) => {
   try {
-    NodeCache.set(req?.query?.cache ?? "cache",req.body);
+    accessTokenCache.set(req?.query?.cache ?? "cache",req.body);
     return res.json({ ok:1 });
   } catch (error) {
     return res
