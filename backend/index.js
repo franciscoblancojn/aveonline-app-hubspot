@@ -49,7 +49,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
- 
+app.use(express.json())
 //================================//
 //   Running the OAuth 2.0 Flow   //
 //================================//
@@ -246,6 +246,8 @@ app.post("/api/create-note", async (req, res) => {
       hs_timestamp: Date.now(), // Tiempo en milisegundos
     },
   };
+  
+  
 
   try {
     const response = await fetch(url, {
