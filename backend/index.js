@@ -4,7 +4,6 @@ const request = require("request-promise-native");
 const NodeCache = require("node-cache");
 const session = require("express-session");
 const app = express();
-const NodeCache = require("node-cache");
 
 const PORT = 3000;
 
