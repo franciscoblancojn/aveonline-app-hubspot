@@ -3,6 +3,7 @@ const express = require("express");
 const request = require("request-promise-native");
 const NodeCache = require("node-cache");
 const session = require("express-session");
+const {AveChat} = require("./avechat.js");
 const app = express();
 
 const PORT = 3000;
@@ -379,26 +380,30 @@ app.post("/api/create-contact", async (req, res) => {
       },
       body: JSON.stringify(data),
     });
-
     const result = await response.json();
-    accessTokenCache.set(req?.query?.cache ?? "create-contact", result);
-    if (response.status === 201) {
-      return res.json({
-        success: true,
-        message: "✅ Contacto creado correctamente.",
-        data: result,
-      });
-    } else {
-      return res.status(response.status).json({
-        success: false,
-        message: "❌ Error al crear el contacto.",
-        error: result,
-      });
+    accessTokenCache.set(req?.query?.cache ?? "create-contact-hubspot", result);
+    if(response.status !== 201){
+      throw response
     }
+    const id_hs = result?.id
+
+    if(id_hs){
+      const aveChat = new AveChat(TOKEN_AVECHAT);
+      aveChat.postIdHs({
+        user_id:req.body.id,
+        id_hs
+      })
+    }
+
+    return res.json({
+      success: true,
+      message: "✅ Contacto creado correctamente.",
+      hubspot: result,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "❌ Error en la solicitud.",
+      message: "❌ Error al crear el contacto.",
       error: error.message,
     });
   }
