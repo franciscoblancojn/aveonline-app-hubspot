@@ -3,7 +3,7 @@ const express = require("express");
 const request = require("request-promise-native");
 const NodeCache = require("node-cache");
 const session = require("express-session");
-const {AveChat} = require("./avechat.js");
+const { AveChat } = require("./avechat.js");
 const app = express();
 
 const PORT = 3000;
@@ -380,19 +380,19 @@ app.post("/api/create-contact", async (req, res) => {
       },
       body: JSON.stringify(data),
     });
-    if(response.status !== 201){
-      throw response
+    if (response.status !== 201) {
+      throw response;
     }
     const result = await response.json();
     accessTokenCache.set("create-contact-hubspot", result);
-    const id_hs = result?.id
+    const id_hs = result?.id;
 
-    if(id_hs){
+    if (id_hs) {
       const aveChat = new AveChat(TOKEN_AVECHAT);
       const resultAveChat = await aveChat.postIdHs({
-        user_id:req.body.id,
-        id_hs
-      })
+        user_id: req.body.id,
+        id_hs,
+      });
       accessTokenCache.set("create-contact-ave-chat", resultAveChat);
     }
 
