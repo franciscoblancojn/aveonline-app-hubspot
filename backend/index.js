@@ -325,7 +325,7 @@ app.get("/api/log", async (req, res) => {
 app.post("/api/log", async (req, res) => {
   try {
     accessTokenCache.set(req?.query?.cache ?? "cache", req.body);
-    return res.json({ ok: 1 });
+    return res.json({ ok: 1 ,data:req.body});
   } catch (error) {
     return res.status(500).json({
       success: false,
