@@ -310,12 +310,32 @@ app.post("/api/create-note", async (req, res) => {
 });
 
 app.get("/api/log", async (req, res) => {
-  const cachedData = NodeCache.get(req?.query?.cache ?? "cache");
-  return res.json({ cachedData });
+  try {
+    const cachedData = NodeCache.get(req?.query?.cache ?? "cache");
+    return res.json({ cachedData });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "❌ Error en la solicitud.",
+        error: error.message,
+      });
+  }
 });
 app.post("/api/log", async (req, res) => {
-  NodeCache.set(req?.query?.cache ?? "cache",req.body);
-  return res.json({ ok:1 });
+  try {
+    NodeCache.set(req?.query?.cache ?? "cache",req.body);
+    return res.json({ ok:1 });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "❌ Error en la solicitud.",
+        error: error.message,
+      });
+  }
 });
 app.post("/api/create-contact", async (req, res) => {
   const accessToken = API_KEY;
