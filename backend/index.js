@@ -311,17 +311,26 @@ app.post("/api/create-note", async (req, res) => {
 });
 app.post("/api/send-whatsapp", async (req, res) => {
   const accessToken = API_KEY;
-  const contactId = req?.body?.contactId; // ID del contacto
-  const message = req?.body?.message; // Mensaje de WhatsApp
+  const contactId = req.body.contactId; // ID del contacto en HubSpot
+  const message = req.body.message; // Mensaje de WhatsApp
 
-  const url = "https://api.hubapi.com/whatsapp/v1/messages/send"; // URL correcta para WhatsApp
+  const url = "https://api.hubapi.com/crm/v3/objects/notes";
 
   const data = {
-    recipient: {
-      contactId: contactId, // Contacto de HubSpot al que se enviará el mensaje
-    },
-    message: {
-      text: message,
+    associations: [
+      {
+        to: { id: contactId },
+        types: [
+          {
+            associationCategory: "HUBSPOT_DEFINED",
+            associationTypeId: parseInt(ASSOCIATION_TYPE_ID), // Ajusta el ID correcto
+          },
+        ],
+      },
+    ],
+    properties: {
+      hs_note_body: `📲 WhatsApp Message: ${message}`,
+      hs_timestamp: Date.now(),
     },
   };
 
@@ -337,16 +346,16 @@ app.post("/api/send-whatsapp", async (req, res) => {
 
     const result = await response.json();
 
-    if (response.status === 200 || response.status === 201) {
+    if (response.status === 201) {
       return res.json({
         success: true,
-        message: "✅ Mensaje de WhatsApp enviado correctamente.",
+        message: "✅ Mensaje de WhatsApp registrado en HubSpot.",
         data: result,
       });
     } else {
       return res.status(response.status).json({
         success: false,
-        message: "❌ Error al enviar el mensaje de WhatsApp.",
+        message: "❌ Error al registrar el mensaje de WhatsApp.",
         error: result,
       });
     }
@@ -358,6 +367,7 @@ app.post("/api/send-whatsapp", async (req, res) => {
     });
   }
 });
+
 
 app.get("/api/log", async (req, res) => {
   try {
