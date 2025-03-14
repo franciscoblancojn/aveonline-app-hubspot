@@ -33,7 +33,7 @@ class AveChat {
         return {id_hs,url_hs}
     }
     async postIdHs({user_id, id_hs}){
-        const IDHS = await this.getIdHs()
+        const IDHS = await this.getIdCustomFiled()
         const result = await this.onRequest({
             url:`/users/${user_id}/custom_fields/${IDHS.id_hs}`,
             method:"POST",
@@ -44,7 +44,7 @@ class AveChat {
         return result;
     }
     async postUrlHs({user_id, url_hs}){
-        const IDHS = await this.getIdHs()
+        const IDHS = await this.getIdCustomFiled()
         const result = await this.onRequest({
             url:`/users/${user_id}/custom_fields/${IDHS.url_hs}`,
             method:"POST",
