@@ -456,6 +456,12 @@ app.post("/api/create-contact", async (req, res) => {
         id_hs,
       });
       accessTokenCache.set("create-contact-ave-chat", resultAveChat);
+      const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`
+      const resultAveChatUrl = await aveChat.postUrlHs({
+        user_id: req.body.id,
+        url_hs,
+      });
+      accessTokenCache.set("create-contact-ave-chat-url", resultAveChatUrl);
     }
 
     return res.json({
