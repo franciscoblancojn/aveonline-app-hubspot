@@ -271,7 +271,8 @@ app.post("/api/create-note", async (req, res) => {
       },
     ],
     properties: {
-      hs_note_body: message,
+      // hs_note_body: message,
+      hs_note_body: `📱 WhatsApp: ${message}`, 
       hs_timestamp: Date.now(), // Tiempo en milisegundos
     },
   };
