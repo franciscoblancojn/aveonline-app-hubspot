@@ -442,6 +442,7 @@ app.post("/api/create-contact", async (req, res) => {
       body: JSON.stringify(data),
     });
     if (response.status !== 201) {
+      accessTokenCache.set("create-contact-response", response);
       throw response;
     }
     const result = await response.json();
