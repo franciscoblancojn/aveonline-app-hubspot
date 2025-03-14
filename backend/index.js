@@ -309,6 +309,55 @@ app.post("/api/create-note", async (req, res) => {
     });
   }
 });
+app.post("/api/send-whatsapp", async (req, res) => {
+  const accessToken = API_KEY;
+  const contactId = req?.body?.contactId; // ID del contacto
+  const message = req?.body?.message; // Mensaje de WhatsApp
+
+  const url = "https://api.hubapi.com/whatsapp/v1/messages/send"; // URL correcta para WhatsApp
+
+  const data = {
+    recipient: {
+      contactId: contactId, // Contacto de HubSpot al que se enviará el mensaje
+    },
+    message: {
+      text: message,
+    },
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (response.status === 200 || response.status === 201) {
+      return res.json({
+        success: true,
+        message: "✅ Mensaje de WhatsApp enviado correctamente.",
+        data: result,
+      });
+    } else {
+      return res.status(response.status).json({
+        success: false,
+        message: "❌ Error al enviar el mensaje de WhatsApp.",
+        error: result,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error en la solicitud.",
+      error: error.message,
+    });
+  }
+});
 
 app.get("/api/log", async (req, res) => {
   try {
