@@ -329,6 +329,7 @@ app.post("/api/send-whatsapp", async (req, res) => {
       },
     ],
     properties: {
+      hs_communication_type: "WHATSAPP",
       hs_note_body: `📲 WhatsApp Message: ${message}`,
       hs_timestamp: Date.now(),
     },
