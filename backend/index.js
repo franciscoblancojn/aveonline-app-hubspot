@@ -4,6 +4,8 @@ const request = require("request-promise-native");
 const NodeCache = require("node-cache");
 const session = require("express-session");
 const { AveChat } = require("./avechat.js");
+const { Hubspot } = require("./hubspot.js");
+const { Ave } = require("./ave.js");
 const app = express();
 
 const PORT = 3000;
@@ -31,6 +33,10 @@ const API_KEY = process.env.API_KEY;
 const ASSOCIATION_TYPE_ID = process.env.ASSOCIATION_TYPE_ID;
 const HOST = process.env.HOST;
 const TOKEN_AVECHAT = process.env.TOKEN_AVECHAT;
+
+const hubspot = new Hubspot(API_KEY);
+const aveChat = new AveChat(TOKEN_AVECHAT);
+const ave = new Ave();
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
@@ -395,7 +401,7 @@ app.post("/api/log", async (req, res) => {
     });
   }
 });
-app.post("/api/create-contact", async (req, res) => {
+app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
   // "id": "573103557200",
   // "account_id": "1052476",
   // "page_id": "1052476",
@@ -417,49 +423,28 @@ app.post("/api/create-contact", async (req, res) => {
   // "subscribed_date": "2025-03-13 22:07:52",
   // "subscribed": "1"
 
-  const accessToken = API_KEY;
-  const url = "https://api.hubapi.com/crm/v3/objects/contacts";
-
-  // Body example
-  const properties = {
-    email: req.body.email,
-    firstname: req.body.first_name,
-    lastname: req.body.last_name,
-    phone: req.body.phone,
-    company: "AveChat",
-  };
-  const data = {
-    properties,
-  };
-
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (response.status !== 201) {
-      accessTokenCache.set("create-contact-response", response);
-      throw response;
-    }
-    const result = await response.json();
+    const result = await hubspot.crearContact({
+      email: req.body.email,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      phone: req.body.phone,
+    })
     accessTokenCache.set("create-contact-hubspot", result);
     const id_hs = result?.id;
 
     if (id_hs) {
-      const aveChat = new AveChat(TOKEN_AVECHAT);
-      const resultAveChat = await aveChat.postIdHs({
+      const resultAveChat = await aveChat.setCustomFiled({
         user_id: req.body.id,
-        id_hs,
+        key:"id_hs",
+        value:id_hs
       });
       accessTokenCache.set("create-contact-ave-chat", resultAveChat);
       const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`
       const resultAveChatUrl = await aveChat.postUrlHs({
         user_id: req.body.id,
-        url_hs,
+        key:"url_hs",
+        value:url_hs
       });
       accessTokenCache.set("create-contact-ave-chat-url", resultAveChatUrl);
     }

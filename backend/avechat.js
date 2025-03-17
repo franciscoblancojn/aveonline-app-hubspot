@@ -1,16 +1,16 @@
 class AveChat {
-    urlApiAveChat = 'https://chat.aveonline.co/api/'
-    tokenApiAveCaht = ''
+    urlApi = 'https://chat.aveonline.co/api/'
+    token = ''
 
     constructor(token){
-        this.tokenApiAveCaht = token
+        this.token = token
     }
     async onRequest({body = undefined,method = 'GET',url}){
         try {
-            const respond = await fetch(`${this.urlApiAveChat}${url}`, {
+            const respond = await fetch(`${this.urlApi}${url}`, {
                 headers: {
                   'accept': 'application/json',
-                  'X-ACCESS-TOKEN': this.tokenApiAveCaht
+                  'X-ACCESS-TOKEN': this.token
                 },
                 body,
                 method
@@ -23,33 +23,21 @@ class AveChat {
         }
     }
     
-    async getIdCustomFiled(){
+    async getIdCustomFiled(key){
         const result = await this.onRequest({
             url:"/accounts/custom_fields"
         })
-        const id_hs = result.find(e=>e.name=="id_hs").id
-        const url_hs = result.find(e=>e.name=="url_hs").id
+        const id = result.find(e=>e.name==key).id
 
-        return {id_hs,url_hs}
+        return id
     }
-    async postIdHs({user_id, id_hs}){
-        const IDHS = await this.getIdCustomFiled()
+    async setCustomFiled({key,value,user_id}){
+        const id = await this.getIdCustomFiled(key)
         const result = await this.onRequest({
-            url:`/users/${user_id}/custom_fields/${IDHS.id_hs}`,
+            url:`/users/${user_id}/custom_fields/${id}`,
             method:"POST",
             body:new URLSearchParams({
-                'value': id_hs
-            })
-        })
-        return result;
-    }
-    async postUrlHs({user_id, url_hs}){
-        const IDHS = await this.getIdCustomFiled()
-        const result = await this.onRequest({
-            url:`/users/${user_id}/custom_fields/${IDHS.url_hs}`,
-            method:"POST",
-            body:new URLSearchParams({
-                'value': url_hs
+                'value': value
             })
         })
         return result;
