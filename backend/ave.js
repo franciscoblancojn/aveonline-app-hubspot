@@ -32,6 +32,7 @@ class Ave {
     });
     return result;
   }
+  
 }
 
 module.exports = {

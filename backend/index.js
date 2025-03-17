@@ -155,79 +155,10 @@ const exchangeForTokens = async (userId, exchangeProof) => {
   }
 };
 
-const refreshAccessToken = async (userId) => {
-  const refreshTokenProof = {
-    grant_type: "refresh_token",
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    redirect_uri: REDIRECT_URI,
-    refresh_token: refreshTokenStore[userId],
-  };
-  return await exchangeForTokens(userId, refreshTokenProof);
-};
-
-const getAccessToken = async (userId) => {
-  // If the access token has expired, retrieve
-  // a new one using the refresh token
-  if (!accessTokenCache.get(userId)) {
-    console.log("Refreshing expired access token");
-    await refreshAccessToken(userId);
-  }
-  return accessTokenCache.get(userId);
-};
-
 const isAuthorized = (userId) => {
   return refreshTokenStore[userId] ? true : false;
 };
 
-//====================================================//
-//   Using an Access Token to Query the HubSpot API   //
-//====================================================//
-
-const getContact = async (accessToken) => {
-  console.log("");
-  console.log(
-    "=== Retrieving a contact from HubSpot using the access token ==="
-  );
-  try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    };
-    console.log(
-      "===> Replace the following request.get() to test other API calls"
-    );
-    console.log(
-      "===> request.get('https://api.hubapi.com/contacts/v1/lists/all/contacts/all?count=1')"
-    );
-    const result = await request.get(
-      "https://api.hubapi.com/contacts/v1/lists/all/contacts/all?count=1",
-      {
-        headers: headers,
-      }
-    );
-
-    return JSON.parse(result).contacts[0];
-  } catch (e) {
-    console.error("  > Unable to retrieve contact");
-    return JSON.parse(e.response.body);
-  }
-};
-
-//========================================//
-//   Displaying information to the user   //
-//========================================//
-
-const displayContactName = (res, contact) => {
-  if (contact.status === "error") {
-    res.write(
-      `<p>Unable to retrieve contact! Error Message: ${contact.message}</p>`
-    );
-    return;
-  }
-  const { firstname, lastname } = contact.properties;
-  res.write(`<p>Contact name: ${firstname.value} ${lastname.value}</p>`);
-};
 
 app.get("/", async (req, res) => {
   res.setHeader("Content-Type", "text/html");
@@ -316,65 +247,6 @@ app.post("/api/create-note", async (req, res) => {
     });
   }
 });
-app.post("/api/send-whatsapp", async (req, res) => {
-  const accessToken = API_KEY;
-  const contactId = req.body.contactId; // ID del contacto en HubSpot
-  const message = req.body.message; // Mensaje de WhatsApp
-
-  const url = "https://api.hubapi.com/crm/v3/objects/notes";
-
-  const data = {
-    associations: [
-      {
-        to: { id: contactId },
-        types: [
-          {
-            associationCategory: "HUBSPOT_DEFINED",
-            associationTypeId: parseInt(ASSOCIATION_TYPE_ID), // Ajusta el ID correcto
-          },
-        ],
-      },
-    ],
-    properties: {
-      hs_communication_type: "WHATSAPP",
-      hs_note_body: `📲 WhatsApp Message: ${message}`,
-      hs_timestamp: Date.now(),
-    },
-  };
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (response.status === 201) {
-      return res.json({
-        success: true,
-        message: "✅ Mensaje de WhatsApp registrado en HubSpot.",
-        data: result,
-      });
-    } else {
-      return res.status(response.status).json({
-        success: false,
-        message: "❌ Error al registrar el mensaje de WhatsApp.",
-        error: result,
-      });
-    }
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "❌ Error en la solicitud.",
-      error: error.message,
-    });
-  }
-});
 
 
 app.get("/api/log", async (req, res) => {
@@ -424,35 +296,44 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
   // "subscribed": "1"
 
   try {
-    const result = await hubspot.crearContact({
+    const userHubspot = await hubspot.crearContact({
       email: req.body.email,
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       phone: req.body.phone,
     })
-    accessTokenCache.set("create-contact-hubspot", result);
-    const id_hs = result?.id;
-
-    if (id_hs) {
-      const resultAveChat = await aveChat.setCustomFiled({
-        user_id: req.body.id,
-        key:"id_hs",
-        value:id_hs
-      });
-      accessTokenCache.set("create-contact-ave-chat", resultAveChat);
-      const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`
-      const resultAveChatUrl = await aveChat.postUrlHs({
-        user_id: req.body.id,
-        key:"url_hs",
-        value:url_hs
-      });
-      accessTokenCache.set("create-contact-ave-chat-url", resultAveChatUrl);
+    accessTokenCache.set("create-contact-hubspot", userHubspot);
+    const id_hs = userHubspot?.id;
+    const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`
+    if(!id_hs){
+      throw new Error("user hubspot not created")
     }
+
+    const phone = `${req.body.phone}`.replaceAll("+57","")
+    const userAve = await ave.crearLead({
+      id_aveChat: req.body.id,
+      name: `${req.body.first_name} ${req.body.last_name}`,
+      phone,
+      id_hs,
+    })
+    const  id_user_ave = userAve?.data?.lead?.id
+    const  url_ave_pre_register = userAve?.data?.lead?.urlPreRegister
+
+    if(!id_user_ave){
+      throw new Error("user ave not created")
+    }
+
+    const resultAveChatSaveFields = await aveChat.saveCustomFields({
+      id_hs,
+      url_hs,
+      id_user_ave,
+      url_ave_pre_register
+    });
+    accessTokenCache.set("create-contact-ave-chat-resultAveChatSaveFields", resultAveChatSaveFields);
 
     return res.json({
       success: true,
       message: "✅ Contacto creado correctamente.",
-      hubspot: result,
     });
   } catch (error) {
     accessTokenCache.set("create-contact-error", error);
