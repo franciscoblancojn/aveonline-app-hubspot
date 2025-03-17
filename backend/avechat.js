@@ -46,12 +46,25 @@ class AveChat {
     return await Promise.all(
       Object.keys(obj).map(async (key) => {
         return await this.setCustomField({
-            user_id,
-            key,
-            value: obj[key],
-          });
+          user_id,
+          key,
+          value: obj[key],
+        });
       })
     );
+  }
+  async createUser({ phone, first_name, last_name, gender }) {
+    const result = await this.onRequest({
+      url: `/users`,
+      method: "POST",
+      body: JSON.stringify({
+        phone,
+        first_name,
+        last_name,
+        gender,
+      }),
+    });
+    return result;
   }
 }
 

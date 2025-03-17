@@ -272,27 +272,6 @@ app.post("/api/log", async (req, res) => {
   }
 });
 app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
-  // "id": "573103557200",
-  // "account_id": "1052476",
-  // "page_id": "1052476",
-  // "external_id": "",
-  // "first_name": "Francisco",
-  // "last_name": "",
-  // "full_name": "Francisco",
-  // "channel": "5",
-  // "email": "",
-  // "phone": "+573103557200",
-  // "profile_pic": "",
-  // "locale": "es_CO",
-  // "gender": "2",
-  // "timezone": "-5",
-  // "last_sent": "0",
-  // "last_delivered": "1741903671520",
-  // "last_seen": "1741903672000",
-  // "last_interaction": "1741903672000",
-  // "subscribed_date": "2025-03-13 22:07:52",
-  // "subscribed": "1"
-
   try {
     const userHubspot = await hubspot.crearContact({
       email: req.body.email,
@@ -324,6 +303,64 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
 
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
       user_id: req.body.id,
+      obj: {
+        id_hs,
+        url_hs,
+        id_user_ave,
+        url_ave_pre_register,
+      },
+    });
+    accessTokenCache.set(
+      "create-contact-ave-chat-resultAveChatSaveFields",
+      resultAveChatSaveFields
+    );
+
+    return res.json({
+      success: true,
+      message: "✅ Contacto creado correctamente.",
+    });
+  } catch (error) {
+    accessTokenCache.set("create-contact-error", error);
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al crear el contacto.",
+      error: error.message,
+    });
+  }
+});
+
+app.post("/api/callback/ave/create-contact", async (req, res) => {
+  try {
+    const id_user_ave = req.body.id
+    const url_ave_pre_register = req.body.url_ave_pre_register
+    const userHubspot = await hubspot.crearContact({
+      email: req.body.email,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      phone: req.body.phone,
+    });
+
+    accessTokenCache.set("create-contact-hubspot", userHubspot);
+    const id_hs = userHubspot?.id;
+    const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
+    if (!id_hs) {
+      throw new Error("user hubspot not created");
+    }
+
+    const userAveChat = await aveChat.createUser({
+      email: req.body.email,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      phone: req.body.phone,
+      gender: req.body.gender,
+    });
+    const id_user_ave_chat = userAveChat?.data?.id;
+
+    if (!id_user_ave_chat) {
+      throw new Error("user aveChat not created");
+    }
+    const resultAveChatSaveFields = await aveChat.saveCustomFields({
+      user_id: id_user_ave_chat,
       obj: {
         id_hs,
         url_hs,
