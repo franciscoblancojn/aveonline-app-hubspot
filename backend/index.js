@@ -328,7 +328,6 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     });
   }
 });
-
 app.post("/api/ave-chat/create-contact", async (req, res) => {
   try {
     const id_user_ave = req.body.id
