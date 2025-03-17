@@ -329,24 +329,12 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
   }
 });
 
-app.post("/api/callback/ave/create-contact", async (req, res) => {
+app.post("/api/ave-chat/create-contact", async (req, res) => {
   try {
     const id_user_ave = req.body.id
     const url_ave_pre_register = req.body.url_ave_pre_register
-    const userHubspot = await hubspot.crearContact({
-      email: req.body.email,
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      phone: req.body.phone,
-    });
-
-    accessTokenCache.set("create-contact-hubspot", userHubspot);
-    const id_hs = userHubspot?.id;
+    const id_hs = req.body.id_hs
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
-    if (!id_hs) {
-      throw new Error("user hubspot not created");
-    }
-
     const userAveChat = await aveChat.createUser({
       email: req.body.email,
       first_name: req.body.first_name,
@@ -376,6 +364,7 @@ app.post("/api/callback/ave/create-contact", async (req, res) => {
     return res.json({
       success: true,
       message: "✅ Contacto creado correctamente.",
+      data:userAveChat
     });
   } catch (error) {
     accessTokenCache.set("create-contact-error", error);
