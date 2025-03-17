@@ -6,7 +6,7 @@ class Ave {
     try {
       const respond = await fetch(`${this.urlApi}${url}`, {
         headers: {
-          accept: "application/json",
+            "Content-Type": "application/json",
         },
         body,
         method,

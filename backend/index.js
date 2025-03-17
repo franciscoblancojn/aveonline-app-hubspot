@@ -159,7 +159,6 @@ const isAuthorized = (userId) => {
   return refreshTokenStore[userId] ? true : false;
 };
 
-
 app.get("/", async (req, res) => {
   res.setHeader("Content-Type", "text/html");
   // res.write(`<h2>HubSpot OAuth 2.0 Quickstart App</h2>`);
@@ -209,7 +208,7 @@ app.post("/api/create-note", async (req, res) => {
     ],
     properties: {
       // hs_note_body: message,
-      hs_note_body: `📱 WhatsApp: ${message}`, 
+      hs_note_body: `📱 WhatsApp: ${message}`,
       hs_timestamp: Date.now(), // Tiempo en milisegundos
     },
   };
@@ -248,7 +247,6 @@ app.post("/api/create-note", async (req, res) => {
   }
 });
 
-
 app.get("/api/log", async (req, res) => {
   try {
     const cachedData = accessTokenCache.get(req?.query?.cache ?? "cache");
@@ -264,7 +262,7 @@ app.get("/api/log", async (req, res) => {
 app.post("/api/log", async (req, res) => {
   try {
     accessTokenCache.set(req?.query?.cache ?? "cache", req.body);
-    return res.json({ ok: 1 ,data:req.body});
+    return res.json({ ok: 1, data: req.body });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -301,35 +299,42 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       phone: req.body.phone,
-    })
+    });
+
     accessTokenCache.set("create-contact-hubspot", userHubspot);
     const id_hs = userHubspot?.id;
-    const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`
-    if(!id_hs){
-      throw new Error("user hubspot not created")
+    const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
+    if (!id_hs) {
+      throw new Error("user hubspot not created");
     }
 
-    const phone = `${req.body.phone}`.replaceAll("+57","")
+    const phone = `${req.body.phone}`.replaceAll("+57", "");
     const userAve = await ave.crearLead({
       id_aveChat: req.body.id,
       name: `${req.body.first_name} ${req.body.last_name}`,
       phone,
       id_hs,
-    })
-    const  id_user_ave = userAve?.data?.lead?.id
-    const  url_ave_pre_register = userAve?.data?.lead?.urlPreRegister
+    });
+    const id_user_ave = userAve?.data?.lead?.id;
+    const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
 
-    if(!id_user_ave){
-      throw new Error("user ave not created")
+    if (!id_user_ave) {
+      throw new Error("user ave not created");
     }
 
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
-      id_hs,
-      url_hs,
-      id_user_ave,
-      url_ave_pre_register
+      user_id: req.body.id,
+      obj: {
+        id_hs,
+        url_hs,
+        id_user_ave,
+        url_ave_pre_register,
+      },
     });
-    accessTokenCache.set("create-contact-ave-chat-resultAveChatSaveFields", resultAveChatSaveFields);
+    accessTokenCache.set(
+      "create-contact-ave-chat-resultAveChatSaveFields",
+      resultAveChatSaveFields
+    );
 
     return res.json({
       success: true,
