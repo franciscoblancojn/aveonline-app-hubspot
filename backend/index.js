@@ -6,6 +6,7 @@ const session = require("express-session");
 const { AveChat } = require("./avechat.js");
 const { Hubspot } = require("./hubspot.js");
 const { Ave } = require("./ave.js");
+const { CSC } = require("./csc.js");
 const app = express();
 
 const PORT = 3000;
@@ -37,6 +38,7 @@ const TOKEN_AVECHAT = process.env.TOKEN_AVECHAT;
 const hubspot = new Hubspot(API_KEY);
 const aveChat = new AveChat(TOKEN_AVECHAT);
 const ave = new Ave();
+const csc = new CSC();
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
@@ -272,6 +274,27 @@ app.post("/api/log", async (req, res) => {
   }
 });
 app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
+
+  // "id": "573103557200",
+  // "account_id": "1052476",
+  // "page_id": "1052476",
+  // "external_id": "",
+  // "first_name": "Francisco",
+  // "last_name": "",
+  // "full_name": "Francisco",
+  // "channel": "5",
+  // "email": "",
+  // "phone": "+573103557200",
+  // "profile_pic": "",
+  // "locale": "es_CO",
+  // "gender": "2",
+  // "timezone": "-5",
+  // "last_sent": "0",
+  // "last_delivered": "1741903671520",
+  // "last_seen": "1741903672000",
+  // "last_interaction": "1741903672000",
+  // "subscribed_date": "2025-03-13 22:07:52",
+  // "subscribed": "1"
   try {
     const userHubspot = await hubspot.crearContact({
       email: req.body.email,
@@ -286,13 +309,16 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     if (!id_hs) {
       throw new Error("user hubspot not created");
     }
-
-    const phone = `${req.body.phone}`.replaceAll("+57", "");
+    const code = req?.body?.locale?.split?.("_")?.[1] ?? ''
+    const country = await csc.getCountrysByCode({code})
+    const indicativo_telefono = country.code_phone;
+    const phone = `${req.body.phone}`.replaceAll(indicativo_telefono, "");
     const userAve = await ave.crearLead({
       id_aveChat: req.body.id,
       name: `${req.body.first_name} ${req.body.last_name}`,
       phone,
       id_hs,
+      indicativo_telefono,
     });
     const id_user_ave = userAve?.data?.lead?.id;
     const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
@@ -339,7 +365,6 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       phone: req.body.phone,
-      gender: req.body.gender,
     });
     const id_user_ave_chat = userAveChat?.data?.id;
 
