@@ -66,6 +66,13 @@ class AveChat {
     });
     return result;
   }
+  async getAdmin() {
+    const result = await this.onRequest({
+      url: `/accounts/admins`,
+      method: "GET",
+    });
+    return result;
+  }
 }
 
 module.exports = {

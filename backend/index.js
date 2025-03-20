@@ -13,6 +13,7 @@ const PORT = 3000;
 
 const refreshTokenStore = {};
 const accessTokenCache = new NodeCache({ deleteOnExpire: true });
+const cacheNotExpire = new NodeCache({ deleteOnExpire: false, });
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Missing CLIENT_ID or CLIENT_SECRET environment variable.");
@@ -400,6 +401,60 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
   }
 });
 
+app.post("/api/callback/ave-chat/asignar-asesor-comercial", async (req, res) => {
+  try {
+    let n_asesor_comercial = parseInt(`${cacheNotExpire.get("n_asesor_comercial") ?? 0}`)
+    if(Number.isNaN(n_asesor_comercial)){
+      n_asesor_comercial = 0
+    }
+    n_asesor_comercial++
+    if(n_asesor_comercial>=5){
+      n_asesor_comercial = 1
+    }
+    cacheNotExpire.set("n_asesor_comercial",n_asesor_comercial)
+
+    const admins = await aveChat.getAdmin()
+
+    // MARIA CAROLINA CORDOBA CALLEJAS	ASESOR COMERCIAL 	comercial1@aveonline.co
+    // DANIELA GOMEZ ISAZA	ASESOR COMERCIAL 	daniela.gomez@aveonline.co
+    // YASMIN ALEXANDRA CORTES RESTREPO	ASESOR COMERCIAL 	comercial2@aveonline.co
+    // JUAN MANUEL YEPES RODRIGUEZ	ASESOR COMERCIAL 	comercial3@aveonline.co
+    const email_asesor_comercial = [
+      "comercial1@aveonline.co",
+      "daniela.gomez@aveonline.co",
+      "comercial2@aveonline.co",
+      "comercial3@aveonline.co",
+    ]?.[n_asesor_comercial - 1]
+
+    const admin = admins.find(e=>e.email === email_asesor_comercial)
+
+    const id_asesor_comercial = admin.id
+
+    const result = await aveChat.saveCustomFields({
+      user_id: req.body.id,
+      obj: {
+        n_asesor_comercial,
+        id_asesor_comercial,
+        id_asesor_comercial_inicial:id_asesor_comercial,
+        email_asesor_comercial,
+        email_asesor_comercial_inicial:email_asesor_comercial
+      },
+    });
+
+    return res.json({
+      success: true,
+      message: "✅ Asesor asignado correctamente.",
+      result
+    });
+  } catch (error) {
+    accessTokenCache.set("create-contact-error", error);
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al asiganar el Asesor.",
+      error: error.message,
+    });
+  }
+});
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
 );
