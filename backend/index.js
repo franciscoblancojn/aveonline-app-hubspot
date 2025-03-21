@@ -408,7 +408,6 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     });
   }
 });
-
 app.post("/api/callback/ave-chat/asignar-asesor-comercial", async (req, res) => {
   try {
     let n_asesor_comercial = parseInt(`${cacheNotExpire.get("n_asesor_comercial") ?? 0}`)
@@ -474,6 +473,40 @@ app.post("/api/callback/ave-chat/asignar-asesor-comercial", async (req, res) => 
     });
   }
 });
+
+app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
+  try {
+    const user_id = req.body.id
+    const email_asesor_logistico = req.body.email_asesor_logistico
+    const admins = await aveChat.getAdmin()
+
+    const admin = admins.find(e=>e.email === email_asesor_logistico)
+
+    const id_asesor_logistico = admin.id
+    const resultAveChatSaveFields = await aveChat.saveCustomFields({
+      user_id: user_id,
+      obj: {
+        email_asesor_logistico,
+        id_asesor_logistico
+      },
+    });
+    cacheNotExpire.set("asignar-asesor-logistico-resultAveChatSaveFields",resultAveChatSaveFields)
+    return res.json({
+      success: true,
+      message: "✅ Asesor asignado correctamente.",
+      data:userAveChat
+    });
+  } catch (error) {
+    accessTokenCache.set("create-contact-error", error);
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al asiganar el Asesor.",
+      error: error.message,
+    });
+  }
+});
+
+
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
 );
