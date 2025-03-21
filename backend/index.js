@@ -361,7 +361,6 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     const url_ave_pre_register = req.body.url_ave_pre_register
     const id_hs = req.body.id_hs
     const email_asesor_comercial = req.body.email_asesor_comercial
-    const id_asesor_comercial = req.body.id_asesor_comercial
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
     const userAveChat = await aveChat.createUser({
       email: req.body.email,
@@ -370,6 +369,9 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
       phone: req.body.phone,
     });
     const id_user_ave_chat = userAveChat?.data?.id;
+    const admins = await aveChat.getAdmin()
+    const admin = admins.find(e=>e.email === email_asesor_comercial)
+    const id_asesor_comercial = admin.id
 
     if (!id_user_ave_chat) {
       throw new Error("user aveChat not created");
