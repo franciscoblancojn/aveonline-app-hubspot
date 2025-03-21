@@ -494,7 +494,6 @@ app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
     return res.json({
       success: true,
       message: "✅ Asesor asignado correctamente.",
-      data:userAveChat
     });
   } catch (error) {
     accessTokenCache.set("create-contact-error", error);
