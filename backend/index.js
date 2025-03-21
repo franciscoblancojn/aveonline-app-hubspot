@@ -360,6 +360,8 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     const id_user_ave = req.body.id
     const url_ave_pre_register = req.body.url_ave_pre_register
     const id_hs = req.body.id_hs
+    const email_asesor_comercial = req.body.email_asesor_comercial
+    const id_asesor_comercial = req.body.id_asesor_comercial
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
     const userAveChat = await aveChat.createUser({
       email: req.body.email,
@@ -379,6 +381,10 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
         url_hs,
         id_user_ave,
         url_ave_pre_register,
+        id_asesor_comercial,
+        email_asesor_comercial,
+        id_asesor_comercial_inicial:id_asesor_comercial,
+        email_asesor_comercial_inicial:email_asesor_comercial,
       },
     });
     accessTokenCache.set(
@@ -415,10 +421,21 @@ app.post("/api/callback/ave-chat/asignar-asesor-comercial", async (req, res) => 
 
     const admins = await aveChat.getAdmin()
 
+    //COMERCIAL
     // MARIA CAROLINA CORDOBA CALLEJAS	ASESOR COMERCIAL 	comercial1@aveonline.co
     // DANIELA GOMEZ ISAZA	ASESOR COMERCIAL 	daniela.gomez@aveonline.co
     // YASMIN ALEXANDRA CORTES RESTREPO	ASESOR COMERCIAL 	comercial2@aveonline.co
     // JUAN MANUEL YEPES RODRIGUEZ	ASESOR COMERCIAL 	comercial3@aveonline.co
+
+    //LOGISTICO
+    // ANDRES FELIPE MOLINA ARROYAVE	ANALISTA SERVICIO AL CLIENTE	sc13@aveonline.co
+    // SANTIAGO CASTAÑO ARBOLEDA 	ANALISTA SERVICIO AL CLIENTE	sc12@aveonline.co
+    // LAURA GALEANO BETANCUR	ANALISTA SERVICIO AL CLIENTE	sc11@aveonline.co
+
+
+    // AMALIA GARCIA	ANALISTA SERVICIO AL CLIENTE	sc2@aveonline.co
+    // JHOANA ANDREA PINEDA MUÑOZ	ANALISTA SERVICIO AL CLIENTE	jhoana.pineda@aveonline.co
+    // MARIA ALEJANDRA MURIEL MOLINA	ANALISTA SERVICIO AL CLIENTE	sc3@aveonline.co
     const email_asesor_comercial = [
       "comercial1@aveonline.co",
       "daniela.gomez@aveonline.co",
