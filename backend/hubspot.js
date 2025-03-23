@@ -58,7 +58,7 @@ class Hubspot {
             ],
             properties: {
               // hs_note_body: message,
-              hs_note_body: `📱 WhatsApp(${user}): ${message}`,
+              hs_note_body: `📱 WhatsApp (${`${user}`.trim()}): ${message}`,
               hs_timestamp: Date.now(), // Tiempo en milisegundos
             },
         };
