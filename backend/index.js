@@ -510,6 +510,7 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
       body:req.body,
     });
     const type = req.query.type //logistico | comercial
+    const id_hs = req.body.id_hs
     const user_id = req.body.user_id
     const time_last_input = req.body.time_last_input
     const first_name = req.body.first_name
@@ -524,7 +525,7 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
     const admin = admins.find(e=>e.email === email_asesor)
     const adminName = `${admin?.first_name ?? ''} ${admin?.last_name ?? ''}`
 
-    const all_chat = `${req?.body?.all_chat ?? ''}`.split("\n\n").map(e=>{
+    let all_chat = `${req?.body?.all_chat ?? ''}`.split("\n\n").map(e=>{
       const a = e.split(/ \(|\): /);
       const user = `${a[0]}`.replaceAll("Yo",adminName).replaceAll("Usuario",userName)
       const time = a[1]
@@ -535,7 +536,23 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
         text
       }
     })
+    if(data.time_last_input){
+      const timeLastInput = new Date(data.time_last_input);
+      all_chat = all_chat.filter(chat => {
+        const chatTime = new Date(chat.time.replace(/(\d{4}-\d{2}-\d{2}) (\d{1,2}:\d{2})(am|pm)/, 
+            (_, date, time, meridian) => {
+                let [hours, minutes] = time.split(":").map(Number);
+                if (meridian === "pm" && hours !== 12) hours += 12;
+                if (meridian === "am" && hours === 12) hours = 0;
+                return `${date}T${String(hours).padStart(2, "0")}:${minutes}:00-05:00`; // Asumiendo zona horaria -05:00
+            })
+        );
+        return chatTime >= timeLastInput;
+    });
+
+    }
     accessTokenCache.set("chat", {
+      id_hs,
       user_id,
       time_last_input,
       all_chat
