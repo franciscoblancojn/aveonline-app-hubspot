@@ -473,7 +473,6 @@ app.post("/api/callback/ave-chat/asignar-asesor-comercial", async (req, res) => 
     });
   }
 });
-
 app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
   try {
     const user_id = req.body.id
@@ -500,6 +499,53 @@ app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "❌ Error al asiganar el Asesor.",
+      error: error.message,
+    });
+  }
+});
+app.post("/api/ave-chat/save-all-chat", async (req, res) => {
+  try {
+    const type = req.query.type //logistico | comercial
+    const user_id = req.body.user_id
+    const time_last_input = req.body.time_last_input
+    const first_name = req.body.first_name
+    const last_name = req.body.last_name
+    const userName =  `${first_name ?? ''} ${last_name ?? ''}`
+    const email_asesor_comercial = req.body.email_asesor_comercial
+    const email_asesor_logistico = req.body.email_asesor_logistico
+
+    const email_asesor = type == "comercial" ?  email_asesor_comercial : email_asesor_logistico
+
+    const admins = await aveChat.getAdmin()
+    const admin = admins.find(e=>e.email === email_asesor)
+    const adminName = `${admin?.first_name ?? ''} ${admin?.last_name ?? ''}`
+
+    const all_chat = `${req?.body?.all_chat ?? ''}`.split("\n\n").map(e=>{
+      const a = e.split(/ \(|\): /);
+      const user = `${a[0]}`.replaceAll("Yo",adminName).replaceAll("Usuario",userName)
+      const time = a[1]
+      const text = a[2]
+      return {
+        user,
+        time,
+        text
+      }
+    })
+    accessTokenCache.set("chat", {
+      user_id,
+      time_last_input,
+      all_chat
+    });
+
+    
+    return res.json({
+      success: true,
+      message: "✅ Chat guardador correctamente.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al guardar el Chat.",
       error: error.message,
     });
   }
