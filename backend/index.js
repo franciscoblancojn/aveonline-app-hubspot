@@ -536,8 +536,8 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
         text
       }
     })
-    if(data.time_last_input){
-      const timeLastInput = new Date(data.time_last_input);
+    if(time_last_input){
+      const timeLastInput = new Date(time_last_input);
       all_chat = all_chat.filter(chat => {
         const chatTime = new Date(chat.time.replace(/(\d{4}-\d{2}-\d{2}) (\d{1,2}:\d{2})(am|pm)/, 
             (_, date, time, meridian) => {
