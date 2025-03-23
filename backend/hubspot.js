@@ -41,6 +41,34 @@ class Hubspot {
         })
         return result;
     }
+    async crearNote({associationTypeId,message,user,contactId}){
+        const data = {
+            associations: [
+              {
+                types: [
+                  {
+                    associationCategory: "HUBSPOT_DEFINED",
+                    associationTypeId: associationTypeId,
+                  },
+                ],
+                to: {
+                  id: contactId,
+                },
+              },
+            ],
+            properties: {
+              // hs_note_body: message,
+              hs_note_body: `📱 WhatsApp(${user}): ${message}`,
+              hs_timestamp: Date.now(), // Tiempo en milisegundos
+            },
+        };
+        const result = await this.onRequest({
+            url:`/notes`,
+            method:"POST",
+            body:JSON.stringify(data)
+        })
+        return result;
+    }
 }
 
 

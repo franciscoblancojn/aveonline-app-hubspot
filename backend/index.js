@@ -551,17 +551,22 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
     });
 
     }
-    accessTokenCache.set("chat", {
-      id_hs,
-      user_id,
-      time_last_input,
-      all_chat
-    });
 
+    const associationTypeId = parseInt(ASSOCIATION_TYPE_ID); 
+    const listCreateChat = all_chat.map(async (msg)=>{
+      return await hubspot.crearNote({
+        associationTypeId,
+        contactId:id_hs,
+        message:msg.text,
+        user:msg.user
+      })
+    })
+    const listCreateChatResult = await Promise.all(listCreateChat)
     
     return res.json({
       success: true,
       message: "✅ Chat guardador correctamente.",
+      listCreateChatResult
     });
   } catch (error) {
     return res.status(500).json({
