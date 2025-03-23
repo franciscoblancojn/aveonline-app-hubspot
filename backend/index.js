@@ -505,6 +505,10 @@ app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
 });
 app.post("/api/ave-chat/save-all-chat", async (req, res) => {
   try {
+    accessTokenCache.set("chat-request", {
+      query:req.query,
+      body:req.body,
+    });
     const type = req.query.type //logistico | comercial
     const user_id = req.body.user_id
     const time_last_input = req.body.time_last_input
