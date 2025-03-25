@@ -576,6 +576,35 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
     });
   }
 });
+app.post("/api/ave-chat/change-custom-field", async (req, res) => {
+  try {
+    const user_id = req?.body?.user_id
+    if(!user_id){
+      throw new Error("user_id is required")
+    }
+    const fields = req?.body?.fields
+    if(!fields){
+      throw new Error("fields is required")
+    }
+    
+    const result = await aveChat.saveCustomFields({
+      user_id: user_id,
+      obj: fields
+    });
+    
+    return res.json({
+      success: true,
+      message: "✅ Campos guardados correctamente.",
+      result
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al guardar los Campos.",
+      error: error.message,
+    });
+  }
+});
 
 
 app.listen(PORT, () =>
