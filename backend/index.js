@@ -606,6 +606,36 @@ app.post("/api/ave-chat/change-custom-field", async (req, res) => {
   }
 });
 
+app.post("/api/ave-chat/send-message", async (req, res) => {
+  try {
+    const user_id = req?.body?.user_id
+    if(!user_id){
+      throw new Error("user_id is required")
+    }
+    const message = req?.body?.message
+    if(!message){
+      throw new Error("message is required")
+    }
+    
+    const result = await aveChat.sendMessage({
+      user_id,
+      message,
+    });
+    
+    return res.json({
+      success: true,
+      message: "✅ Mensaje enviado correctamente.",
+      result
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al enviar mensaje.",
+      error: error.message,
+    });
+  }
+});
+
 
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)

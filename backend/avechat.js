@@ -73,6 +73,17 @@ class AveChat {
     });
     return result;
   }
+  async sendMessage({user_id,message}) {
+    const result = await this.onRequest({
+      url: `/users/${user_id}/send/text`,
+      method: "POST",
+      body:JSON.stringify({
+        "text": message,
+        "channel": "whatsapp"
+      })
+    });
+    return result;
+  }
 }
 
 module.exports = {
