@@ -14,7 +14,6 @@
       "crm.objects.contacts.read",
       "crm.objects.contacts.write",
       "automation",
-      "crm.objects.contacts.sensitive.read",
       "crm.schemas.custom.read",
       "crm.objects.custom.read",
       "crm.objects.companies.sensitive.read",
