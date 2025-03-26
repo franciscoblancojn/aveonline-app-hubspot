@@ -16,7 +16,6 @@
       "automation",
       "crm.schemas.custom.read",
       "crm.objects.custom.read",
-      "crm.objects.companies.sensitive.read",
       "crm.objects.custom.write",
       "crm.schemas.custom.write",
       "crm.objects.companies.write",
