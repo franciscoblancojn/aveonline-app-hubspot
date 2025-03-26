@@ -7,8 +7,22 @@
     "https://aveonline-app-hubspot.vercel.app"
   ],
   "auth": {
-    "redirectUrls": ["https://aveonline-app-hubspot.vercel.app/oauth-callback"],
-    "requiredScopes": ["crm.objects.contacts.read", "crm.objects.contacts.write"],
+    "redirectUrls": [
+      "https://aveonline-app-hubspot.vercel.app/oauth-callback"
+    ],
+    "requiredScopes": [
+      "crm.objects.contacts.read",
+      "crm.objects.contacts.write",
+      "automation",
+      "crm.objects.contacts.sensitive.read",
+      "crm.schemas.custom.read",
+      "crm.objects.custom.read",
+      "crm.objects.companies.sensitive.read",
+      "crm.objects.custom.write",
+      "crm.schemas.custom.write",
+      "crm.objects.companies.write",
+      "crm.objects.companies.read"
+    ],
     "optionalScopes": [],
     "conditionallyRequiredScopes": []
   },
