@@ -86,6 +86,17 @@ class AveChat {
     });
     return result;
   }
+  async getUsersByCustomField({key,value}) {
+    const field_id = await this.getIdCustomField(key)
+    if(!field_id){
+      throw new Error("key custom field invalid")
+    }
+    const result = await this.onRequest({
+      url: `/users/find_by_custom_field?field_id=${field_id}&value=${value}`,
+      method: "GET",
+    });
+    return result;
+  }
 }
 
 module.exports = {

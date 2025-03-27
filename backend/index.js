@@ -13,7 +13,7 @@ const PORT = 3000;
 
 const refreshTokenStore = {};
 const accessTokenCache = new NodeCache({ deleteOnExpire: true });
-const cacheNotExpire = new NodeCache({ deleteOnExpire: false, });
+const cacheNotExpire = new NodeCache({ deleteOnExpire: false });
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Missing CLIENT_ID or CLIENT_SECRET environment variable.");
@@ -276,7 +276,6 @@ app.post("/api/log", async (req, res) => {
   }
 });
 app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
-
   // "id": "573103557200",
   // "account_id": "1052476",
   // "page_id": "1052476",
@@ -311,8 +310,8 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     if (!id_hs) {
       throw new Error("user hubspot not created");
     }
-    const code = req?.body?.locale?.split?.("_")?.[1] ?? ''
-    const country = await csc.getCountrysByCode({code})
+    const code = req?.body?.locale?.split?.("_")?.[1] ?? "";
+    const country = await csc.getCountrysByCode({ code });
     const indicativo_telefono = country.code_phone;
     const phone = `${req.body.phone}`.replaceAll(indicativo_telefono, "");
     const userAve = await ave.crearLead({
@@ -358,10 +357,10 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
 });
 app.post("/api/ave-chat/create-contact", async (req, res) => {
   try {
-    const id_user_ave = req.body.id
-    const url_ave_pre_register = req.body.url_ave_pre_register
-    const id_hs = req.body.id_hs
-    const email_asesor_comercial = req.body.email_asesor_comercial
+    const id_user_ave = req.body.id;
+    const url_ave_pre_register = req.body.url_ave_pre_register;
+    const id_hs = req.body.id_hs;
+    const email_asesor_comercial = req.body.email_asesor_comercial;
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
     const userAveChat = await aveChat.createUser({
       email: req.body.email,
@@ -370,9 +369,9 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
       phone: req.body.phone,
     });
     const id_user_ave_chat = userAveChat?.data?.id;
-    const admins = await aveChat.getAdmin()
-    const admin = admins.find(e=>e.email === email_asesor_comercial)
-    const id_asesor_comercial = admin.id
+    const admins = await aveChat.getAdmin();
+    const admin = admins.find((e) => e.email === email_asesor_comercial);
+    const id_asesor_comercial = admin.id;
 
     if (!id_user_ave_chat) {
       throw new Error("user aveChat not created");
@@ -386,8 +385,8 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
         url_ave_pre_register,
         id_asesor_comercial,
         email_asesor_comercial,
-        id_asesor_comercial_inicial:id_asesor_comercial,
-        email_asesor_comercial_inicial:email_asesor_comercial,
+        id_asesor_comercial_inicial: id_asesor_comercial,
+        email_asesor_comercial_inicial: email_asesor_comercial,
       },
     });
     accessTokenCache.set(
@@ -398,7 +397,7 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     return res.json({
       success: true,
       message: "✅ Contacto creado correctamente.",
-      data:userAveChat
+      data: userAveChat,
     });
   } catch (error) {
     accessTokenCache.set("create-contact-error", error);
@@ -409,88 +408,95 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     });
   }
 });
-app.post("/api/callback/ave-chat/asignar-asesor-comercial", async (req, res) => {
-  try {
-    let n_asesor_comercial = parseInt(`${cacheNotExpire.get("n_asesor_comercial") ?? 0}`)
-    if(Number.isNaN(n_asesor_comercial)){
-      n_asesor_comercial = 0
+app.post(
+  "/api/callback/ave-chat/asignar-asesor-comercial",
+  async (req, res) => {
+    try {
+      let n_asesor_comercial = parseInt(
+        `${cacheNotExpire.get("n_asesor_comercial") ?? 0}`
+      );
+      if (Number.isNaN(n_asesor_comercial)) {
+        n_asesor_comercial = 0;
+      }
+      n_asesor_comercial++;
+      if (n_asesor_comercial >= 5) {
+        n_asesor_comercial = 1;
+      }
+      cacheNotExpire.set("n_asesor_comercial", n_asesor_comercial);
+
+      const admins = await aveChat.getAdmin();
+
+      //COMERCIAL
+      // MARIA CAROLINA CORDOBA CALLEJAS	ASESOR COMERCIAL 	comercial1@aveonline.co
+      // DANIELA GOMEZ ISAZA	ASESOR COMERCIAL 	daniela.gomez@aveonline.co
+      // YASMIN ALEXANDRA CORTES RESTREPO	ASESOR COMERCIAL 	comercial2@aveonline.co
+      // JUAN MANUEL YEPES RODRIGUEZ	ASESOR COMERCIAL 	comercial3@aveonline.co
+
+      //LOGISTICO
+      // ANDRES FELIPE MOLINA ARROYAVE	ANALISTA SERVICIO AL CLIENTE	sc13@aveonline.co
+      // SANTIAGO CASTAÑO ARBOLEDA 	ANALISTA SERVICIO AL CLIENTE	sc12@aveonline.co
+      // LAURA GALEANO BETANCUR	ANALISTA SERVICIO AL CLIENTE	sc11@aveonline.co
+
+      // AMALIA GARCIA	ANALISTA SERVICIO AL CLIENTE	sc2@aveonline.co
+      // JHOANA ANDREA PINEDA MUÑOZ	ANALISTA SERVICIO AL CLIENTE	jhoana.pineda@aveonline.co
+      // MARIA ALEJANDRA MURIEL MOLINA	ANALISTA SERVICIO AL CLIENTE	sc3@aveonline.co
+      const email_asesor_comercial = [
+        "comercial1@aveonline.co",
+        "daniela.gomez@aveonline.co",
+        "comercial2@aveonline.co",
+        "comercial3@aveonline.co",
+      ]?.[n_asesor_comercial - 1];
+
+      const admin = admins.find((e) => e.email === email_asesor_comercial);
+
+      const id_asesor_comercial = admin.id;
+
+      const result = await aveChat.saveCustomFields({
+        user_id: req.body.id,
+        obj: {
+          n_asesor_comercial,
+          id_asesor_comercial,
+          id_asesor_comercial_inicial: id_asesor_comercial,
+          email_asesor_comercial,
+          email_asesor_comercial_inicial: email_asesor_comercial,
+        },
+      });
+
+      return res.json({
+        success: true,
+        message: "✅ Asesor asignado correctamente.",
+        result,
+      });
+    } catch (error) {
+      accessTokenCache.set("create-contact-error", error);
+      return res.status(500).json({
+        success: false,
+        message: "❌ Error al asiganar el Asesor.",
+        error: error.message,
+      });
     }
-    n_asesor_comercial++
-    if(n_asesor_comercial>=5){
-      n_asesor_comercial = 1
-    }
-    cacheNotExpire.set("n_asesor_comercial",n_asesor_comercial)
-
-    const admins = await aveChat.getAdmin()
-
-    //COMERCIAL
-    // MARIA CAROLINA CORDOBA CALLEJAS	ASESOR COMERCIAL 	comercial1@aveonline.co
-    // DANIELA GOMEZ ISAZA	ASESOR COMERCIAL 	daniela.gomez@aveonline.co
-    // YASMIN ALEXANDRA CORTES RESTREPO	ASESOR COMERCIAL 	comercial2@aveonline.co
-    // JUAN MANUEL YEPES RODRIGUEZ	ASESOR COMERCIAL 	comercial3@aveonline.co
-
-    //LOGISTICO
-    // ANDRES FELIPE MOLINA ARROYAVE	ANALISTA SERVICIO AL CLIENTE	sc13@aveonline.co
-    // SANTIAGO CASTAÑO ARBOLEDA 	ANALISTA SERVICIO AL CLIENTE	sc12@aveonline.co
-    // LAURA GALEANO BETANCUR	ANALISTA SERVICIO AL CLIENTE	sc11@aveonline.co
-
-
-    // AMALIA GARCIA	ANALISTA SERVICIO AL CLIENTE	sc2@aveonline.co
-    // JHOANA ANDREA PINEDA MUÑOZ	ANALISTA SERVICIO AL CLIENTE	jhoana.pineda@aveonline.co
-    // MARIA ALEJANDRA MURIEL MOLINA	ANALISTA SERVICIO AL CLIENTE	sc3@aveonline.co
-    const email_asesor_comercial = [
-      "comercial1@aveonline.co",
-      "daniela.gomez@aveonline.co",
-      "comercial2@aveonline.co",
-      "comercial3@aveonline.co",
-    ]?.[n_asesor_comercial - 1]
-
-    const admin = admins.find(e=>e.email === email_asesor_comercial)
-
-    const id_asesor_comercial = admin.id
-
-    const result = await aveChat.saveCustomFields({
-      user_id: req.body.id,
-      obj: {
-        n_asesor_comercial,
-        id_asesor_comercial,
-        id_asesor_comercial_inicial:id_asesor_comercial,
-        email_asesor_comercial,
-        email_asesor_comercial_inicial:email_asesor_comercial
-      },
-    });
-
-    return res.json({
-      success: true,
-      message: "✅ Asesor asignado correctamente.",
-      result
-    });
-  } catch (error) {
-    accessTokenCache.set("create-contact-error", error);
-    return res.status(500).json({
-      success: false,
-      message: "❌ Error al asiganar el Asesor.",
-      error: error.message,
-    });
   }
-});
+);
 app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
   try {
-    const user_id = req.body.id
-    const email_asesor_logistico = req.body.email_asesor_logistico
-    const admins = await aveChat.getAdmin()
+    const user_id = req.body.id;
+    const email_asesor_logistico = req.body.email_asesor_logistico;
+    const admins = await aveChat.getAdmin();
 
-    const admin = admins.find(e=>e.email === email_asesor_logistico)
+    const admin = admins.find((e) => e.email === email_asesor_logistico);
 
-    const id_asesor_logistico = admin.id
+    const id_asesor_logistico = admin.id;
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
       user_id: user_id,
       obj: {
         email_asesor_logistico,
-        id_asesor_logistico
+        id_asesor_logistico,
       },
     });
-    cacheNotExpire.set("asignar-asesor-logistico-resultAveChatSaveFields",resultAveChatSaveFields)
+    cacheNotExpire.set(
+      "asignar-asesor-logistico-resultAveChatSaveFields",
+      resultAveChatSaveFields
+    );
     return res.json({
       success: true,
       message: "✅ Asesor asignado correctamente.",
@@ -507,67 +513,75 @@ app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
 app.post("/api/ave-chat/save-all-chat", async (req, res) => {
   try {
     accessTokenCache.set("chat-request", {
-      query:req.query,
-      body:req.body,
+      query: req.query,
+      body: req.body,
     });
-    const type = req.query.type //logistico | comercial
-    const id_hs = req.body.id_hs
-    const user_id = req.body.user_id
-    const time_last_input = req.body.time_last_input
-    const first_name = req.body.first_name
-    const last_name = req.body.last_name
-    const userName =  `${first_name ?? ''} ${last_name ?? ''}`
-    const email_asesor_comercial = req.body.email_asesor_comercial
-    const email_asesor_logistico = req.body.email_asesor_logistico
+    const type = req.query.type; //logistico | comercial
+    const id_hs = req.body.id_hs;
+    const user_id = req.body.user_id;
+    const time_last_input = req.body.time_last_input;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const userName = `${first_name ?? ""} ${last_name ?? ""}`;
+    const email_asesor_comercial = req.body.email_asesor_comercial;
+    const email_asesor_logistico = req.body.email_asesor_logistico;
 
-    const email_asesor = type == "comercial" ?  email_asesor_comercial : email_asesor_logistico
+    const email_asesor =
+      type == "comercial" ? email_asesor_comercial : email_asesor_logistico;
 
-    const admins = await aveChat.getAdmin()
-    const admin = admins.find(e=>e.email === email_asesor)
-    const adminName = `${admin?.first_name ?? ''} ${admin?.last_name ?? ''}`
+    const admins = await aveChat.getAdmin();
+    const admin = admins.find((e) => e.email === email_asesor);
+    const adminName = `${admin?.first_name ?? ""} ${admin?.last_name ?? ""}`;
 
-    let all_chat = `${req?.body?.all_chat ?? ''}`.split("\n\n").map(e=>{
+    let all_chat = `${req?.body?.all_chat ?? ""}`.split("\n\n").map((e) => {
       const a = e.split(/ \(|\): /);
-      const user = `${a[0]}`.replaceAll("Yo",adminName).replaceAll("Usuario",userName)
-      const time = a[1]
-      const text = a[2]
+      const user = `${a[0]}`
+        .replaceAll("Yo", adminName)
+        .replaceAll("Usuario", userName);
+      const time = a[1];
+      const text = a[2];
       return {
         user,
         time,
-        text
-      }
-    })
-    if(time_last_input){
+        text,
+      };
+    });
+    if (time_last_input) {
       const timeLastInput = new Date(time_last_input);
-      all_chat = all_chat.filter(chat => {
-        const chatTime = new Date(chat.time.replace(/(\d{4}-\d{2}-\d{2}) (\d{1,2}:\d{2})(am|pm)/, 
+      all_chat = all_chat.filter((chat) => {
+        const chatTime = new Date(
+          chat.time.replace(
+            /(\d{4}-\d{2}-\d{2}) (\d{1,2}:\d{2})(am|pm)/,
             (_, date, time, meridian) => {
-                let [hours, minutes] = time.split(":").map(Number);
-                if (meridian === "pm" && hours !== 12) hours += 12;
-                if (meridian === "am" && hours === 12) hours = 0;
-                return `${date}T${String(hours).padStart(2, "0")}:${minutes}:00-05:00`; // Asumiendo zona horaria -05:00
-            })
+              let [hours, minutes] = time.split(":").map(Number);
+              if (meridian === "pm" && hours !== 12) hours += 12;
+              if (meridian === "am" && hours === 12) hours = 0;
+              return `${date}T${String(hours).padStart(
+                2,
+                "0"
+              )}:${minutes}:00-05:00`; // Asumiendo zona horaria -05:00
+            }
+          )
         );
         return chatTime >= timeLastInput;
-    });
-
+      });
     }
 
-    const associationTypeId = parseInt(ASSOCIATION_TYPE_ID); 
-    const listCreateChat = all_chat.map(async (msg)=>{
+    const associationTypeId = parseInt(ASSOCIATION_TYPE_ID);
+    const listCreateChat = all_chat.map(async (msg) => {
       return await hubspot.crearNote({
         associationTypeId,
-        contactId:id_hs,
-        message:msg.text,
-        user:msg.user
-      })
-    })
-    const listCreateChatResult = await Promise.all(listCreateChat)
-    
+        contactId: id_hs,
+        message: msg.text,
+        user: msg.user,
+      });
+    });
+    const listCreateChatResult = await Promise.all(listCreateChat);
+
     return res.json({
       success: true,
       message: "✅ Chat guardador correctamente.",
-      listCreateChatResult
+      listCreateChatResult,
     });
   } catch (error) {
     return res.status(500).json({
@@ -579,24 +593,24 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
 });
 app.post("/api/ave-chat/change-custom-field", async (req, res) => {
   try {
-    const user_id = req?.body?.user_id
-    if(!user_id){
-      throw new Error("user_id is required")
+    const user_id = req?.body?.user_id;
+    if (!user_id) {
+      throw new Error("user_id is required");
     }
-    const fields = req?.body?.fields
-    if(!fields){
-      throw new Error("fields is required")
+    const fields = req?.body?.fields;
+    if (!fields) {
+      throw new Error("fields is required");
     }
-    
+
     const result = await aveChat.saveCustomFields({
       user_id: user_id,
-      obj: fields
+      obj: fields,
     });
-    
+
     return res.json({
       success: true,
       message: "✅ Campos guardados correctamente.",
-      result
+      result,
     });
   } catch (error) {
     return res.status(500).json({
@@ -606,28 +620,27 @@ app.post("/api/ave-chat/change-custom-field", async (req, res) => {
     });
   }
 });
-
 app.post("/api/ave-chat/send-message", async (req, res) => {
   try {
-    const user_id = req?.body?.user_id
-    if(!user_id){
-      throw new Error("user_id is required")
+    const user_id = req?.body?.user_id;
+    if (!user_id) {
+      throw new Error("user_id is required");
     }
-    const message = req?.body?.message
-    if(!message){
-      throw new Error("message is required")
+    const message = req?.body?.message;
+    if (!message) {
+      throw new Error("message is required");
     }
-    
+
     const result = await aveChat.sendMessage({
       user_id,
       message,
-      flow_id:FLOW_ID
+      flow_id: FLOW_ID,
     });
-    
+
     return res.json({
       success: true,
       message: "✅ Mensaje enviado correctamente.",
-      result
+      result,
     });
   } catch (error) {
     return res.status(500).json({
@@ -637,7 +650,77 @@ app.post("/api/ave-chat/send-message", async (req, res) => {
     });
   }
 });
+app.post("/api/callback/hubspot/send-message", async (req, res) => {
+  //   {
+  //     "callbackId": "ap-47355542-1589400750477-3-0",
+  //     "origin": {
+  //         "portalId": 47355542,
+  //         "actionDefinitionId": 201903771,
+  //         "actionDefinitionVersion": 4,
+  //         "actionExecutionIndexIdentifier": {
+  //             "enrollmentId": 1589400750477,
+  //             "actionExecutionIndex": 0
+  //         },
+  //         "extensionDefinitionId": 201903771,
+  //         "extensionDefinitionVersionId": 4
+  //     },
+  //     "context": {
+  //         "workflowId": 1640937852,
+  //         "actionId": 3,
+  //         "actionExecutionIndexIdentifier": {
+  //             "enrollmentId": 1589400750477,
+  //             "actionExecutionIndex": 0
+  //         },
+  //         "source": "WORKFLOWS"
+  //     },
+  //     "object": {
+  //         "objectId": 108456792064,
+  //         "objectType": "CONTACT"
+  //     },
+  //     "fields": {
+  //         "message": "test message"
+  //     },
+  //     "inputFields": {
+  //         "message": "test message"
+  //     }
+  // }
+  try {
+    const id_hs = req?.body?.object?.objectId;
+    if (!id_hs) {
+      throw new Error("object.objectId is required");
+    }
+    const message =
+      req?.body?.fields?.message ?? req?.body?.inputFields?.message;
+    if (!message) {
+      throw new Error("inputFields.message is required");
+    }
+    const users_by_id_hs  =await aveChat.getUsersByCustomField({
+      key:"id_hs",
+      value:id_hs
+    })
+    const user_id = users_by_id_hs?.data?.[0]?.id
+    if (!user_id) {
+      throw new Error("object.objectId is invalid");
+    }
+    const result = await aveChat.sendMessage({
+      user_id,
+      message,
+      flow_id: FLOW_ID,
+    });
 
+    return res.json({
+      success: true,
+      message: "✅ Mensaje enviado correctamente.",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al enviar mensaje.",
+      error: error.message,
+    });
+  }
+});
 
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
