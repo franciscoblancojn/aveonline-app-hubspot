@@ -35,6 +35,7 @@ const API_KEY = process.env.API_KEY;
 const ASSOCIATION_TYPE_ID = process.env.ASSOCIATION_TYPE_ID;
 const HOST = process.env.HOST;
 const TOKEN_AVECHAT = process.env.TOKEN_AVECHAT;
+const FLOW_ID = process.env.FLOW_ID;
 
 const hubspot = new Hubspot(API_KEY);
 const aveChat = new AveChat(TOKEN_AVECHAT);
@@ -620,6 +621,7 @@ app.post("/api/ave-chat/send-message", async (req, res) => {
     const result = await aveChat.sendMessage({
       user_id,
       message,
+      flow_id:FLOW_ID
     });
     
     return res.json({

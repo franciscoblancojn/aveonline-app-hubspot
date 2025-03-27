@@ -73,14 +73,16 @@ class AveChat {
     });
     return result;
   }
-  async sendMessage({user_id,message}) {
+  async sendMessage({user_id,flow_id,message}) {
+    await this.saveCustomFields({
+      user_id,
+      obj:{
+        message
+      }
+    })
     const result = await this.onRequest({
-      url: `/users/${user_id}/send/text`,
+      url: `/users/${user_id}/send/${flow_id}`,
       method: "POST",
-      body:JSON.stringify({
-        "text": message,
-        "channel": "whatsapp"
-      })
     });
     return result;
   }
