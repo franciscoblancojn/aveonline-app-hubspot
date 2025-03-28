@@ -568,7 +568,7 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
         return chatTime >= timeLastInput;
       });
     }
-    
+
     const associationTypeId = parseInt(ASSOCIATION_TYPE_ID);
     const listCreateChat = all_chat.map(async (msg) => {
       return await hubspot.crearNote({
@@ -709,6 +709,30 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
       message,
       flow_id: FLOW_ID,
     });
+
+    return res.json({
+      success: true,
+      message: "✅ Mensaje enviado correctamente.",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al enviar mensaje.",
+      error: error.message,
+    });
+  }
+});
+app.post("/api/ave-chat/validate-date", async (req, res) => {
+  try {
+    const day = new Date().getDay()
+    if(day == 0 || day == 6){
+      throw new Error("Dia invalido")
+    }
+    const time = new Date().getHours() * 60 + new Date().getMinutes()
+    if( time < (7*60+30) || time > ((5+12)*60+30)){
+      throw new Error("Horario invalido invalido")
+    }
 
     return res.json({
       success: true,
