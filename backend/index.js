@@ -523,11 +523,13 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
     const userName = `${first_name ?? ""} ${last_name ?? ""}`;
+    const email_asesor_cartera = req.body.email_asesor_cartera;
     const email_asesor_comercial = req.body.email_asesor_comercial;
     const email_asesor_logistico = req.body.email_asesor_logistico;
 
     const email_asesor =
-      type == "comercial" ? email_asesor_comercial : email_asesor_logistico;
+      type == "comercial" ? email_asesor_comercial :  type == "cartera" ? email_asesor_cartera : email_asesor_logistico;
+
 
     const admins = await aveChat.getAdmin();
     const admin = admins.find((e) => e.email === email_asesor);
@@ -566,13 +568,7 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
         return chatTime >= timeLastInput;
       });
     }
-    await aveChat.saveCustomFields({
-      user_id,
-      obj:{
-        chat_open:false
-      }
-    })
-
+    
     const associationTypeId = parseInt(ASSOCIATION_TYPE_ID);
     const listCreateChat = all_chat.map(async (msg) => {
       return await hubspot.crearNote({
