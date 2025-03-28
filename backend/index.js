@@ -736,13 +736,13 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
 
     return res.json({
       success: true,
-      message: "✅ Mensaje enviado correctamente.",
+      message: "✅ Horario correcto.",
       result,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "❌ Error al enviar mensaje.",
+      message: "❌ Error, Horario Incorrecto.",
       error: error.message,
     });
   }
