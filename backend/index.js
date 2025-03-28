@@ -725,13 +725,19 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
 });
 app.post("/api/ave-chat/validate-date", async (req, res) => {
   try {
-    const day = new Date().getDay()
-    if(day == 0 || day == 6){
-      throw new Error("Dia invalido")
+    const options = { timeZone: "America/Bogota", hour12: false };
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat("en-US", { ...options, hour: "numeric", minute: "numeric", weekday: "numeric" });
+
+    const [{ value: day }, , { value: hours }, , { value: minutes }] = formatter.formatToParts(now);
+
+    if (day == 0 || day == 6) {
+      throw new Error("Día inválido");
     }
-    const time = new Date().getHours() * 60 + new Date().getMinutes()
-    if( time < (7*60+30) || time > ((5+12)*60+30)){
-      throw new Error("Horario invalido invalido")
+
+    const time = parseInt(hours) * 60 + parseInt(minutes);
+    if (time < (7 * 60 + 30) || time > (17 * 60 + 30)) {
+      throw new Error("Horario inválido");
     }
 
     return res.json({
