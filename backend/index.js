@@ -566,6 +566,12 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
         return chatTime >= timeLastInput;
       });
     }
+    await aveChat.saveCustomFields({
+      user_id,
+      obj:{
+        chat_open:false
+      }
+    })
 
     const associationTypeId = parseInt(ASSOCIATION_TYPE_ID);
     const listCreateChat = all_chat.map(async (msg) => {
