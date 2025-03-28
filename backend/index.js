@@ -727,18 +727,27 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
   try {
     const options = { timeZone: "America/Bogota", hour12: false };
     const now = new Date();
-    const formatter = new Intl.DateTimeFormat("en-US", { ...options, hour: "numeric", minute: "numeric", weekday: "numeric" });
 
-    const [{ value: day }, , { value: hours }, , { value: minutes }] = formatter.formatToParts(now);
+    // Obtener el día de la semana y la hora en zona horaria de Colombia
+    const day = new Intl.DateTimeFormat("en-US", { ...options, weekday: "short" }).format(now);
+    const timeString = new Intl.DateTimeFormat("en-US", { ...options, hour: "2-digit", minute: "2-digit" }).format(now);
 
-    if (day == 0 || day == 6) {
+    // Convertir el día a número (domingo = 0, lunes = 1, ..., sábado = 6)
+    const daysMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const dayNumber = daysMap[day];
+
+    // Convertir la hora a minutos
+    const [hour, minute] = timeString.split(":").map(Number);
+    const time = hour * 60 + minute;
+
+    if (dayNumber === 0 || dayNumber === 6) {
       throw new Error("Día inválido");
     }
 
-    const time = parseInt(hours) * 60 + parseInt(minutes);
     if (time < (7 * 60 + 30) || time > (17 * 60 + 30)) {
       throw new Error("Horario inválido");
     }
+
 
     return res.json({
       success: true,
