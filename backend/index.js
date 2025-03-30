@@ -408,6 +408,30 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     });
   }
 });
+app.get(
+  "/api/n_asesor_comercial",
+  async (req, res) => {
+    try {
+      let n_asesor_comercial = parseInt(
+        `${cacheNotExpire.get("n_asesor_comercial") ?? 0}`
+      );
+      if (Number.isNaN(n_asesor_comercial)) {
+        n_asesor_comercial = 0;
+      }
+      n_asesor_comercial++;
+
+      return res.json({
+        success: true,n_asesor_comercial
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "❌ Error al asiganar el Asesor.",
+        error: error.message,
+      });
+    }
+  }
+);
 app.post(
   "/api/callback/ave-chat/asignar-asesor-comercial",
   async (req, res) => {
