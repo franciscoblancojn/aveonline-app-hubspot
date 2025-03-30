@@ -13,7 +13,7 @@ const PORT = 3000;
 
 const refreshTokenStore = {};
 const accessTokenCache = new NodeCache({ deleteOnExpire: true });
-const cacheNotExpire = new NodeCache({ deleteOnExpire: false });
+const cacheNotExpire = new NodeCache({ deleteOnExpire: false, });
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Missing CLIENT_ID or CLIENT_SECRET environment variable.");
@@ -36,6 +36,7 @@ const ASSOCIATION_TYPE_ID = process.env.ASSOCIATION_TYPE_ID;
 const HOST = process.env.HOST;
 const TOKEN_AVECHAT = process.env.TOKEN_AVECHAT;
 const FLOW_ID = process.env.FLOW_ID;
+let n_asesor_comercial = 0;
 
 const hubspot = new Hubspot(API_KEY);
 const aveChat = new AveChat(TOKEN_AVECHAT);
@@ -408,16 +409,9 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     });
   }
 });
+
 app.get("/api/n_asesor_comercial", async (req, res) => {
   try {
-    let n_asesor_comercial = parseInt(
-      `${cacheNotExpire.get("n_asesor_comercial") ?? 0}`
-    );
-    if (Number.isNaN(n_asesor_comercial)) {
-      n_asesor_comercial = 0;
-    }
-    n_asesor_comercial++;
-
     return res.json({
       success: true,
       n_asesor_comercial,
@@ -432,17 +426,10 @@ app.get("/api/n_asesor_comercial", async (req, res) => {
 });
 app.post("/api/n_asesor_comercial", async (req, res) => {
   try {
-    let n_asesor_comercial = parseInt(
-      `${cacheNotExpire.get("n_asesor_comercial") ?? 0}`
-    );
-    if (Number.isNaN(n_asesor_comercial)) {
-      n_asesor_comercial = 0;
-    }
     n_asesor_comercial++;
     if (n_asesor_comercial >= 5) {
       n_asesor_comercial = 1;
     }
-    cacheNotExpire.set("n_asesor_comercial", n_asesor_comercial + "");
 
     return res.json({
       success: true,
@@ -460,17 +447,10 @@ app.post(
   "/api/callback/ave-chat/asignar-asesor-comercial",
   async (req, res) => {
     try {
-      let n_asesor_comercial = parseInt(
-        `${cacheNotExpire.get("n_asesor_comercial") ?? 0}`
-      );
-      if (Number.isNaN(n_asesor_comercial)) {
-        n_asesor_comercial = 0;
-      }
       n_asesor_comercial++;
       if (n_asesor_comercial >= 5) {
         n_asesor_comercial = 1;
       }
-      cacheNotExpire.set("n_asesor_comercial", n_asesor_comercial + "");
 
       const admins = await aveChat.getAdmin();
 
