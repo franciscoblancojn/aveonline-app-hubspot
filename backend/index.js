@@ -446,7 +446,7 @@ app.post(
       if (n_asesor_comercial >= 5) {
         n_asesor_comercial = 1;
       }
-      cacheNotExpire.set("n_asesor_comercial", n_asesor_comercial);
+      cacheNotExpire.set("n_asesor_comercial", n_asesor_comercial+"");
 
       const admins = await aveChat.getAdmin();
 
