@@ -408,30 +408,54 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     });
   }
 });
-app.get(
-  "/api/n_asesor_comercial",
-  async (req, res) => {
-    try {
-      let n_asesor_comercial = parseInt(
-        `${cacheNotExpire.get("n_asesor_comercial") ?? 0}`
-      );
-      if (Number.isNaN(n_asesor_comercial)) {
-        n_asesor_comercial = 0;
-      }
-      n_asesor_comercial++;
-
-      return res.json({
-        success: true,n_asesor_comercial
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "❌ Error al asiganar el Asesor.",
-        error: error.message,
-      });
+app.get("/api/n_asesor_comercial", async (req, res) => {
+  try {
+    let n_asesor_comercial = parseInt(
+      `${cacheNotExpire.get("n_asesor_comercial") ?? 0}`
+    );
+    if (Number.isNaN(n_asesor_comercial)) {
+      n_asesor_comercial = 0;
     }
+    n_asesor_comercial++;
+
+    return res.json({
+      success: true,
+      n_asesor_comercial,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al asiganar el Asesor.",
+      error: error.message,
+    });
   }
-);
+});
+app.post("/api/n_asesor_comercial", async (req, res) => {
+  try {
+    let n_asesor_comercial = parseInt(
+      `${cacheNotExpire.get("n_asesor_comercial") ?? 0}`
+    );
+    if (Number.isNaN(n_asesor_comercial)) {
+      n_asesor_comercial = 0;
+    }
+    n_asesor_comercial++;
+    if (n_asesor_comercial >= 5) {
+      n_asesor_comercial = 1;
+    }
+    cacheNotExpire.set("n_asesor_comercial", n_asesor_comercial + "");
+
+    return res.json({
+      success: true,
+      n_asesor_comercial,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al asiganar el Asesor.",
+      error: error.message,
+    });
+  }
+});
 app.post(
   "/api/callback/ave-chat/asignar-asesor-comercial",
   async (req, res) => {
@@ -446,7 +470,7 @@ app.post(
       if (n_asesor_comercial >= 5) {
         n_asesor_comercial = 1;
       }
-      cacheNotExpire.set("n_asesor_comercial", n_asesor_comercial+"");
+      cacheNotExpire.set("n_asesor_comercial", n_asesor_comercial + "");
 
       const admins = await aveChat.getAdmin();
 
@@ -552,8 +576,11 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
     const email_asesor_logistico = req.body.email_asesor_logistico;
 
     const email_asesor =
-      type == "comercial" ? email_asesor_comercial :  type == "cartera" ? email_asesor_cartera : email_asesor_logistico;
-
+      type == "comercial"
+        ? email_asesor_comercial
+        : type == "cartera"
+        ? email_asesor_cartera
+        : email_asesor_logistico;
 
     const admins = await aveChat.getAdmin();
     const admin = admins.find((e) => e.email === email_asesor);
@@ -720,11 +747,11 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
     if (!message) {
       throw new Error("inputFields.message is required");
     }
-    const users_by_id_hs  =await aveChat.getUsersByCustomField({
-      key:"id_hs",
-      value:id_hs
-    })
-    const user_id = users_by_id_hs?.data?.[0]?.id
+    const users_by_id_hs = await aveChat.getUsersByCustomField({
+      key: "id_hs",
+      value: id_hs,
+    });
+    const user_id = users_by_id_hs?.data?.[0]?.id;
     if (!user_id) {
       throw new Error("object.objectId is invalid");
     }
@@ -753,8 +780,15 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
     const now = new Date();
 
     // Obtener el día de la semana y la hora en zona horaria de Colombia
-    const day = new Intl.DateTimeFormat("en-US", { ...options, weekday: "short" }).format(now);
-    const timeString = new Intl.DateTimeFormat("en-US", { ...options, hour: "2-digit", minute: "2-digit" }).format(now);
+    const day = new Intl.DateTimeFormat("en-US", {
+      ...options,
+      weekday: "short",
+    }).format(now);
+    const timeString = new Intl.DateTimeFormat("en-US", {
+      ...options,
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(now);
 
     // Convertir el día a número (domingo = 0, lunes = 1, ..., sábado = 6)
     const daysMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
@@ -768,10 +802,9 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
       throw new Error("Día inválido");
     }
 
-    if (time < (7 * 60 + 30) || time > (17 * 60 + 30)) {
+    if (time < 7 * 60 + 30 || time > 17 * 60 + 30) {
       throw new Error("Horario inválido");
     }
-
 
     return res.json({
       success: true,
