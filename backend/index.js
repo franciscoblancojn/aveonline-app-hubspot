@@ -7,7 +7,7 @@ const { AveChat } = require("./avechat.js");
 const { Hubspot } = require("./hubspot.js");
 const { Ave } = require("./ave.js");
 const { CSC } = require("./csc.js");
-const { File } = require("./file.js");
+const { Count } = require("./count.js");
 const app = express();
 
 const PORT = 3000;
@@ -42,7 +42,7 @@ const hubspot = new Hubspot(API_KEY);
 const aveChat = new AveChat(TOKEN_AVECHAT);
 const ave = new Ave();
 const csc = new CSC();
-const file = new File();
+const count = new Count();
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
@@ -413,7 +413,7 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
 
 app.get("/api/n_asesor_comercial", async (req, res) => {
   try {
-    let n_asesor_comercial = await file.getStoredNumber();
+    let n_asesor_comercial = await count.getCount();
     return res.json({
       success: true,
       n_asesor_comercial,
@@ -428,12 +428,12 @@ app.get("/api/n_asesor_comercial", async (req, res) => {
 });
 app.post("/api/n_asesor_comercial", async (req, res) => {
   try {
-    let n_asesor_comercial = await file.getStoredNumber();
+    let n_asesor_comercial = await count.getCount();
     n_asesor_comercial++;
     if (n_asesor_comercial >= 5) {
       n_asesor_comercial = 1;
     }
-    await file.saveNumber(n_asesor_comercial);
+    await count.setCount(n_asesor_comercial);
     return res.json({
       success: true,
       n_asesor_comercial,
@@ -450,7 +450,7 @@ app.post(
   "/api/callback/ave-chat/asignar-asesor-comercial",
   async (req, res) => {
     try {
-      let n_asesor_comercial = await file.getStoredNumber();
+      let n_asesor_comercial = await count.getCount();
       n_asesor_comercial++;
       if (n_asesor_comercial >= 5) {
         n_asesor_comercial = 1;
@@ -493,7 +493,7 @@ app.post(
           email_asesor_comercial_inicial: email_asesor_comercial,
         },
       });
-      await file.saveNumber(n_asesor_comercial);
+      await count.setCount(n_asesor_comercial);
 
       return res.json({
         success: true,
