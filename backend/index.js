@@ -810,7 +810,7 @@ app.post("/api/hubspot/create-company", async (req, res) => {
     const associationTypeId = parseInt(ASSOCIATION_TYPE_ID);
     const result = await hubspot.crearCompany({
       ...req?.body,
-      associationTypeId,
+      associationTypeId:"0-46",
     })
     return res.json({
       success: true,
