@@ -308,7 +308,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     accessTokenCache.set("create-contact-hubspot", userHubspot);
     const id_hs = userHubspot?.id;
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
-    if (undefined==id_hs) {
+    if (!id_hs) {
       throw new Error("user hubspot not created");
     }
     const code = req?.body?.locale?.split?.("_")?.[1] ?? "";
@@ -325,7 +325,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     const id_user_ave = userAve?.data?.lead?.id;
     const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
 
-    if (undefined==id_user_ave) {
+    if (!id_user_ave) {
       throw new Error("user ave not created");
     }
 
@@ -374,7 +374,7 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
     const admin = admins.find((e) => e.email === email_asesor_comercial);
     const id_asesor_comercial = admin.id;
 
-    if (undefined==id_user_ave_chat) {
+    if (!id_user_ave_chat) {
       throw new Error("user aveChat not created");
     }
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
@@ -631,11 +631,11 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
 app.post("/api/ave-chat/change-custom-field", async (req, res) => {
   try {
     const user_id = req?.body?.user_id;
-    if (undefined==user_id) {
+    if (!user_id) {
       throw new Error("user_id is required");
     }
     const fields = req?.body?.fields;
-    if (undefined==fields) {
+    if (!fields) {
       throw new Error("fields is required");
     }
 
@@ -660,11 +660,11 @@ app.post("/api/ave-chat/change-custom-field", async (req, res) => {
 app.post("/api/ave-chat/send-message", async (req, res) => {
   try {
     const user_id = req?.body?.user_id;
-    if (undefined==user_id) {
+    if (!user_id) {
       throw new Error("user_id is required");
     }
     const message = req?.body?.message;
-    if (undefined==message) {
+    if (!message) {
       throw new Error("message is required");
     }
 
@@ -724,12 +724,13 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
   try {
     accessTokenCache.set("ssss", req.body);
     const id_hs = req?.body?.object?.objectId;
-    if (id_hs==undefined) {
+    accessTokenCache.set("id_hs", id_hs);
+    if (!id_hs) {
       throw new Error("object.objectId is required");
     }
     const message =
       req?.body?.fields?.message ?? req?.body?.inputFields?.message;
-    if (undefined==message) {
+    if (!message) {
       throw new Error("inputFields.message is required");
     }
     const users_by_id_hs = await aveChat.getUsersByCustomField({
@@ -737,7 +738,7 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
       value: id_hs,
     });
     const user_id = users_by_id_hs?.data?.[0]?.id;
-    if (undefined==user_id) {
+    if (!user_id) {
       throw new Error("object.objectId is invalid");
     }
     const result = await aveChat.sendMessage({
