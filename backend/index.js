@@ -805,6 +805,24 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
     });
   }
 });
+app.post("/api/hubspot/create-company", async (req, res) => {
+  try {
+    const result = await hubspot.crearCompany(req?.body)
+    return res.json({
+      success: true,
+      message: "✅ Company creado correctamente.",
+      result
+    });
+  } catch (error) {
+    accessTokenCache.set("create-contact-error", error);
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al crear el Company.",
+      error: error.message,
+    });
+  }
+});
+
 
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
