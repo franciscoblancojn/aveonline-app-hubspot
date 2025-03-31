@@ -45,9 +45,7 @@ class Hubspot {
   }
   async crearCompany({name}){
       const properties = {
-        properties:{
-          name
-        }
+        name
       };
       const data = {
         properties,
