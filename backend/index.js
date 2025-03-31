@@ -722,6 +722,7 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
   //     }
   // }
   try {
+    accessTokenCache.set("ssss", req.body);
     const id_hs = req?.body?.object?.objectId;
     if (!id_hs) {
       throw new Error("object.objectId is required");
