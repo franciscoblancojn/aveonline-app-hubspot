@@ -737,6 +737,7 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
       key: "id_hs",
       value: id_hs,
     });
+    accessTokenCache.set("users_by_id_hs", users_by_id_hs);
     const user_id = users_by_id_hs?.data?.[0]?.id;
     if (!user_id) {
       throw new Error("object.objectId is invalid");
