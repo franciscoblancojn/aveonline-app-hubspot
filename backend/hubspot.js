@@ -43,7 +43,7 @@ class Hubspot {
     });
     return result;
   }
-  async crearCompany({ name, phone ,id_hs,associationTypeId}) {
+  async crearCompany({ name, phone ,id_hs}) {
     const properties = {
       name,
       phone,
