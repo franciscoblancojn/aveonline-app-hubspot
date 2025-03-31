@@ -10,6 +10,8 @@ const { CSC } = require("./csc.js");
 const { Count } = require("./count.js");
 const app = express();
 
+
+// rute server /var/www/clients/client1/web32/web/api
 const PORT = 3005;
 
 const refreshTokenStore = {};
@@ -128,11 +130,6 @@ app.get("/oauth-callback", async (req, res) => {
     res.redirect(`/`);
   }
 });
-
-//==========================================//
-//   Exchanging Proof for an Access Token   //
-//==========================================//
-
 const exchangeForTokens = async (userId, exchangeProof) => {
   try {
     const responseBody = await request.post(
