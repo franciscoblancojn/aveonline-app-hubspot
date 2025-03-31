@@ -1,3 +1,5 @@
+const {fetch} = require('./fetch.js');
+
 class Count {
   urlApi = "https://aveonline.co/wp-json/avagb";
   constructor() {}

@@ -1,3 +1,5 @@
+
+const {fetch} = require('./fetch.js');
 class Ave {
   urlApi = "https://api.aveonline.co/api-onboarding/public/api/v1";
 

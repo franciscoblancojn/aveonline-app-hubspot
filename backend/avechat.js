@@ -1,3 +1,5 @@
+const {fetch} = require('./fetch.js');
+
 class AveChat {
   urlApi = "https://chat.aveonline.co/api/";
   token = "";

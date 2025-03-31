@@ -1,3 +1,5 @@
+const {fetch} = require('./fetch.js');
+
 class Hubspot {
     urlApi = 'https://api.hubapi.com/crm/v3/objects'
     token = ''

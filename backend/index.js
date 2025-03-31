@@ -8,6 +8,8 @@ const { Hubspot } = require("./hubspot.js");
 const { Ave } = require("./ave.js");
 const { CSC } = require("./csc.js");
 const { Count } = require("./count.js");
+const {fetch} = require('./fetch.js');
+
 const app = express();
 
 

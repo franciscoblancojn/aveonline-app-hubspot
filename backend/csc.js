@@ -1,3 +1,5 @@
+
+const {fetch} = require('./fetch.js');
 class CSC {
   urlApi = "https://country-state-city-nextjs.vercel.app";
 
