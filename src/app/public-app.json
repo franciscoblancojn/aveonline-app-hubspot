@@ -4,11 +4,11 @@
   "description": "",
   "allowedUrls": [
     "https://chat.aveonline.co",
-    "https://aveonline-app-hubspot.vercel.app"
+    "https://avechat-hubspot.api.aveonline.co"
   ],
   "auth": {
     "redirectUrls": [
-      "https://aveonline-app-hubspot.vercel.app/oauth-callback"
+      "https://avechat-hubspot.api.aveonline.co/oauth-callback"
     ],
     "requiredScopes": [
       "crm.objects.contacts.read",
