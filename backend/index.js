@@ -807,7 +807,11 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
 });
 app.post("/api/hubspot/create-company", async (req, res) => {
   try {
-    const result = await hubspot.crearCompany(req?.body)
+    const associationTypeId = parseInt(ASSOCIATION_TYPE_ID);
+    const result = await hubspot.crearCompany({
+      ...req?.body,
+      associationTypeId,
+    })
     return res.json({
       success: true,
       message: "✅ Company creado correctamente.",

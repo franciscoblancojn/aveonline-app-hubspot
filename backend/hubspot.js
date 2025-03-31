@@ -43,20 +43,33 @@ class Hubspot {
     });
     return result;
   }
-  async crearCompany({name,phone}){
-      const properties = {
-        name,
-        phone,
-      };
-      const data = {
-        properties,
-      };
-      const result = await this.onRequest({
-          url:`/companies`,
-          method:"POST",
-          body:JSON.stringify(data)
-      })
-      return result;
+  async crearCompany({ name, phone ,id_hs,associationTypeId}) {
+    const properties = {
+      name,
+      phone,
+    };
+    const data = {
+      properties,
+      associations: [
+        {
+          to: {
+            id: id_hs,
+          },
+          types: [
+            {
+              associationCategory: "HUBSPOT_DEFINED",
+              associationTypeId: associationTypeId,
+            },
+          ],
+        },
+      ],
+    };
+    const result = await this.onRequest({
+      url: `/companies`,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    return result;
   }
   async crearNote({ associationTypeId, message, user, contactId }) {
     const data = {
