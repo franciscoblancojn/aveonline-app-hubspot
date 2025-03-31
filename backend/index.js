@@ -10,7 +10,7 @@ const { CSC } = require("./csc.js");
 const { Count } = require("./count.js");
 const app = express();
 
-const PORT = 3000;
+const PORT = 3005;
 
 const refreshTokenStore = {};
 const accessTokenCache = new NodeCache({ deleteOnExpire: true });
