@@ -97,6 +97,7 @@ class AveChat {
       url: `/users/find_by_custom_field?field_id=${field_id}&value=${value}`,
       method: "GET",
     });
+    result.field_id = field_id
     return result;
   }
 }
