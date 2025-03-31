@@ -43,12 +43,11 @@ class Hubspot {
     });
     return result;
   }
-  async crearCompany({email,first_name,last_name,phone}){
+  async crearCompany({name}){
       const properties = {
-        email,
-        firstname: first_name,
-        lastname: last_name,
-        phone,
+        properties:{
+          name
+        }
       };
       const data = {
         properties,
