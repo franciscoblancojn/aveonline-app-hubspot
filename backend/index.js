@@ -812,29 +812,16 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
 });
 app.post("/api/hubspot/create-company", async (req, res) => {
   try {
-    let associationTypeId =1
-    let sw = true
-    do {
-      accessTokenCache.set("associationTypeId", associationTypeId);
-      const result = await hubspot.crearCompany({
-        id_hs:req?.body?.id_hs,
-        name:req?.body?.name,
-        phone:req?.body?.phone,
-        associationTypeId
-      })
-      if(result.status == "error"){
-        associationTypeId++
-      }else{
-        sw = false
-      }
-      sw = false
-      return res.json({
-        success: true,
-        message: "✅ Company creado correctamente.",
-        result,
-        associationTypeId
-      });
-    } while (sw);
+    const result = await hubspot.crearCompany({
+      id_hs:req?.body?.id_hs,
+      name:req?.body?.name,
+      phone:req?.body?.phone,
+    })
+    return res.json({
+      success: true,
+      message: "✅ Company creado correctamente.",
+      result
+    });
   } catch (error) {
     accessTokenCache.set("create-contact-error", error);
     return res.status(500).json({

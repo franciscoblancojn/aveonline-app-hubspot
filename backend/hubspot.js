@@ -69,16 +69,6 @@ class Hubspot {
       method: "POST",
       body: JSON.stringify(data),
     });
-    // if(result.status == "error"){
-    //   result = await this.crearCompany({
-    //     id_hs,
-    //     name,
-    //     phone,
-    //     associationTypeId:associationTypeId+1
-    //   })
-    // }else{
-    //   result.associationTypeId = associationTypeId
-    // }
     return result;
   }
   async crearNote({ associationTypeId, message, user, contactId }) {
