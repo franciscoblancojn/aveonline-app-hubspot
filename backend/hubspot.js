@@ -58,7 +58,7 @@ class Hubspot {
           types: [
             {
               associationCategory: "HUBSPOT_DEFINED",
-              associationTypeId:280,
+              associationTypeId:2,
             },
           ],
         },
