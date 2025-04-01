@@ -826,15 +826,15 @@ app.post("/api/hubspot/create-company", async (req, res) => {
         associationTypeId++
       }else{
         sw = false
+        return res.json({
+          success: true,
+          message: "✅ Company creado correctamente.",
+          result,
+          associationTypeId
+        });
       }
       sw = false
     } while (sw);
-    return res.json({
-      success: true,
-      message: "✅ Company creado correctamente.",
-      result,
-      associationTypeId
-    });
   } catch (error) {
     accessTokenCache.set("create-contact-error", error);
     return res.status(500).json({
