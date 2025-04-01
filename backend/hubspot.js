@@ -43,7 +43,7 @@ class Hubspot {
     });
     return result;
   }
-  async crearCompany({ name, phone ,id_hs,associationTypeId=1}) {
+  async crearCompany({ name, phone ,id_hs}) {
     const properties = {
       name,
       phone,
@@ -58,7 +58,7 @@ class Hubspot {
           types: [
             {
               associationCategory: "HUBSPOT_DEFINED",
-              associationTypeId,
+              associationTypeId:280,
             },
           ],
         },

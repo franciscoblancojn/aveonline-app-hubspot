@@ -827,6 +827,7 @@ app.post("/api/hubspot/create-company", async (req, res) => {
       }else{
         sw = false
       }
+      sw = false
     } while (sw);
     return res.json({
       success: true,
