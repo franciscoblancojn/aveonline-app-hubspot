@@ -55,12 +55,12 @@ class Hubspot {
           to: {
             id: id_hs,
           },
-          // types: [
-          //   {
-          //     associationCategory: "HUBSPOT_DEFINED",
-          //     associationTypeId: 2,
-          //   },
-          // ],
+          types: [
+            {
+              associationCategory: "HUBSPOT_DEFINED",
+              associationTypeId: 2,
+            },
+          ],
         },
       ],
     };
