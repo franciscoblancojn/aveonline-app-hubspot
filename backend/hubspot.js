@@ -43,7 +43,7 @@ class Hubspot {
     });
     return result;
   }
-  async crearCompany({ name, phone ,id_hs}) {
+  async crearCompany({ name, phone ,id_hs,associationTypeId=1}) {
     const properties = {
       name,
       phone,
@@ -58,17 +58,27 @@ class Hubspot {
           types: [
             {
               associationCategory: "HUBSPOT_DEFINED",
-              associationTypeId: 1,
+              associationTypeId,
             },
           ],
         },
       ],
     };
-    const result = await this.onRequest({
+    let result = await this.onRequest({
       url: `/companies`,
       method: "POST",
       body: JSON.stringify(data),
     });
+    if(result.status == "error"){
+      result = await this.crearCompany({
+        id_hs,
+        name,
+        phone,
+        associationTypeId:associationTypeId+1
+      })
+    }else{
+      result.associationTypeId = associationTypeId
+    }
     return result;
   }
   async crearNote({ associationTypeId, message, user, contactId }) {
