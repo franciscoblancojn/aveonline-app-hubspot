@@ -340,6 +340,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
         id_hs,
         url_hs,
         id_user_ave,
+        id_lead:id_user_ave,
         url_ave_pre_register,
       },
     });
