@@ -305,13 +305,15 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       phone: req.body.phone,
     });
 
+
     accessTokenCache.set("create-contact-hubspot", userHubspot);
     const id_hs = userHubspot?.id;
-    await hubspot.crearCompany({
+    const companyHubspot = await hubspot.crearCompany({
       id_hs,
       name:req?.body?.first_name,
       phone:req?.body?.phone,
     })
+    const id_company_hs = companyHubspot?.id;
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
     if (!id_hs) {
       throw new Error("user hubspot not created");
@@ -326,6 +328,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       phone,
       id_hs,
       indicativo_telefono,
+      id_company_hs,
     });
     const id_user_ave = userAve?.data?.lead?.id;
     const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
@@ -338,10 +341,12 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       user_id: req.body.id,
       obj: {
         id_hs,
+        id_company_hs,
         url_hs,
         id_user_ave,
         id_lead:id_user_ave,
         url_ave_pre_register,
+        
       },
     });
     accessTokenCache.set(
