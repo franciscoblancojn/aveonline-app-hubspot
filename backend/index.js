@@ -9,6 +9,7 @@ const { Ave } = require("./ave.js");
 const { CSC } = require("./csc.js");
 const { Count } = require("./count.js");
 const {fetch} = require('./fetch.js');
+const { ASESORES } = require("./dataAcesot.js");
 
 const app = express();
 
@@ -330,12 +331,36 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       indicativo_telefono,
       id_company_hs,
     });
+    const id_empresa_ave = userAve?.data?.company?.idempresa;
     const id_user_ave = userAve?.data?.lead?.id;
     const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
+    const idAssessor = userAve?.data?.lead?.idAssessor;
+    const idlogistico = userAve?.data?.company?.idlogistico;
 
-    if (!id_user_ave) {
+    if (!id_user_ave && !id_empresa_ave) {
       throw new Error("user ave not created");
     }
+    const asesor_comercial = ASESORES.find(e=>e.id==idAssessor)
+    const asesor_logistico = ASESORES.find(e=>e.id==idlogistico)
+
+    const tipo_asesor = asesor_logistico ? "logistico" : (asesor_comercial ? "comercial" : "cartera")
+
+
+    const name_asesor_logistico  = asesor_logistico?.dsnombre
+    const name_asesor_logistico_inicial =  asesor_logistico?.dsnombre
+    const id_asesor_logistico =  asesor_logistico?.id
+    const id_asesor_logistico_inicial =  asesor_logistico?.id
+    const id_asesor_logistico_hs =  asesor_logistico?.hubspot
+    const email_asesor_logistico =  asesor_logistico?.dscorreo
+    const email_asesor_logistico_inicial =  asesor_logistico?.dscorreo
+
+    const name_asesor_comercial  = asesor_comercial?.dsnombre
+    const name_asesor_comercial_inicial =  asesor_comercial?.dsnombre
+    const id_asesor_comercial =  asesor_comercial?.id
+    const id_asesor_comercial_inicial =  asesor_comercial?.id
+    const id_asesor_comercial_hs =  asesor_comercial?.hubspot
+    const email_asesor_comercial =  asesor_comercial?.dscorreo
+    const email_asesor_comercial_inicial =  asesor_comercial?.dscorreo
 
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
       user_id: req.body.id,
@@ -346,7 +371,22 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
         id_user_ave,
         id_lead:id_user_ave,
         url_ave_pre_register,
-        
+        id_empresa_ave,
+        tipo_asesor,
+        name_asesor_logistico,
+        name_asesor_logistico_inicial,
+        id_asesor_logistico,
+        id_asesor_logistico_inicial,
+        id_asesor_logistico_hs,
+        email_asesor_logistico,
+        email_asesor_logistico_inicial,
+        name_asesor_comercial,
+        name_asesor_comercial_inicial,
+        id_asesor_comercial,
+        id_asesor_comercial_inicial,
+        id_asesor_comercial_hs,
+        email_asesor_comercial,
+        email_asesor_comercial_inicial
       },
     });
     accessTokenCache.set(
