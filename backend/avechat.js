@@ -152,7 +152,7 @@ class AveChat {
     } catch (error) {
       return {
         create: false,
-        error: error.message,
+        message: error.message,
         error,
       };
     }
