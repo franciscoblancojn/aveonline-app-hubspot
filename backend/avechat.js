@@ -139,7 +139,7 @@ class AveChat {
           email,
         });
         await this.saveCustomFields({
-          user_id: d?.id_avechat,
+          user_id: id_avechat,
           obj: {
             id_hs,
             url_hs,
