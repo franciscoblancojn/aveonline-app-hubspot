@@ -1,4 +1,4 @@
-const {fetch} = require('./fetch.js');
+const { fetch } = require("./fetch.js");
 
 class AveChat {
   urlApi = "https://chat.aveonline.co/api/";
@@ -75,30 +75,67 @@ class AveChat {
     });
     return result;
   }
-  async sendMessage({user_id,flow_id,message}) {
+  async sendMessage({ user_id, flow_id, message }) {
     await this.saveCustomFields({
       user_id,
-      obj:{
-        message
-      }
-    })
+      obj: {
+        message,
+      },
+    });
     const result = await this.onRequest({
       url: `/users/${user_id}/send/${flow_id}`,
       method: "POST",
     });
     return result;
   }
-  async getUsersByCustomField({key,value}) {
-    const field_id = await this.getIdCustomField(key)
-    if(!field_id){
-      throw new Error("key custom field invalid")
+  async getUsersByCustomField({ key, value }) {
+    const field_id = await this.getIdCustomField(key);
+    if (!field_id) {
+      throw new Error("key custom field invalid");
     }
     const result = await this.onRequest({
       url: `/users/find_by_custom_field?field_id=${field_id}&value=${value}`,
       method: "GET",
     });
-    result.field_id = field_id
+    result.field_id = field_id;
     return result;
+  }
+
+  async createUserIfNotExist({
+    id_avechat,
+    first_name,
+    last_name,
+    phone,
+    email,
+    id_hs,
+    url_hs,
+  }) {
+    try {
+      const user = await this.getUsersById({ id: id_avechat });
+      if (user == undefined) {
+        await this.createUser({
+          first_name,
+          last_name,
+          phone,
+          email,
+        });
+        await this.saveCustomFields({
+          user_id: d?.id_avechat,
+          obj: {
+            id_hs,
+            url_hs
+          },
+        });
+      }
+      return {
+        create: true,
+      };
+    } catch (error) {
+      return {
+        create: false,
+        error,
+      };
+    }
   }
 }
 

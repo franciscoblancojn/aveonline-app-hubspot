@@ -8,18 +8,17 @@ const { Hubspot } = require("./hubspot.js");
 const { Ave } = require("./ave.js");
 const { CSC } = require("./csc.js");
 const { Count } = require("./count.js");
-const {fetch} = require('./fetch.js');
+const { fetch } = require("./fetch.js");
 const { ASESORES } = require("./dataAcesot.js");
 
 const app = express();
-
 
 // rute server /var/www/clients/client1/web32/web/api
 const PORT = 3005;
 
 const refreshTokenStore = {};
 const accessTokenCache = new NodeCache({ deleteOnExpire: true });
-const cacheNotExpire = new NodeCache({ deleteOnExpire: false, });
+const cacheNotExpire = new NodeCache({ deleteOnExpire: false });
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Missing CLIENT_ID or CLIENT_SECRET environment variable.");
@@ -306,14 +305,13 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       phone: req.body.phone,
     });
 
-
     accessTokenCache.set("create-contact-hubspot", userHubspot);
     const id_hs = userHubspot?.id;
     const companyHubspot = await hubspot.crearCompany({
       id_hs,
-      name:req?.body?.first_name,
-      phone:req?.body?.phone,
-    })
+      name: req?.body?.first_name,
+      phone: req?.body?.phone,
+    });
     const id_company_hs = companyHubspot?.id;
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
     if (!id_hs) {
@@ -340,27 +338,30 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     if (!id_user_ave && !id_empresa_ave) {
       throw new Error("user ave not created");
     }
-    const asesor_comercial = ASESORES.find(e=>e.id==idAssessor)
-    const asesor_logistico = ASESORES.find(e=>e.id==idlogistico)
+    const asesor_comercial = ASESORES.find((e) => e.id == idAssessor);
+    const asesor_logistico = ASESORES.find((e) => e.id == idlogistico);
 
-    const tipo_asesor = asesor_logistico ? "logistico" : (asesor_comercial ? "comercial" : "cartera")
+    const tipo_asesor = asesor_logistico
+      ? "logistico"
+      : asesor_comercial
+      ? "comercial"
+      : "cartera";
 
+    const name_asesor_logistico = asesor_logistico?.dsnombre;
+    const name_asesor_logistico_inicial = asesor_logistico?.dsnombre;
+    const id_asesor_logistico = asesor_logistico?.id;
+    const id_asesor_logistico_inicial = asesor_logistico?.id;
+    const id_asesor_logistico_hs = asesor_logistico?.hubspot;
+    const email_asesor_logistico = asesor_logistico?.dscorreo;
+    const email_asesor_logistico_inicial = asesor_logistico?.dscorreo;
 
-    const name_asesor_logistico  = asesor_logistico?.dsnombre
-    const name_asesor_logistico_inicial =  asesor_logistico?.dsnombre
-    const id_asesor_logistico =  asesor_logistico?.id
-    const id_asesor_logistico_inicial =  asesor_logistico?.id
-    const id_asesor_logistico_hs =  asesor_logistico?.hubspot
-    const email_asesor_logistico =  asesor_logistico?.dscorreo
-    const email_asesor_logistico_inicial =  asesor_logistico?.dscorreo
-
-    const name_asesor_comercial  = asesor_comercial?.dsnombre
-    const name_asesor_comercial_inicial =  asesor_comercial?.dsnombre
-    const id_asesor_comercial =  asesor_comercial?.id
-    const id_asesor_comercial_inicial =  asesor_comercial?.id
-    const id_asesor_comercial_hs =  asesor_comercial?.hubspot
-    const email_asesor_comercial =  asesor_comercial?.dscorreo
-    const email_asesor_comercial_inicial =  asesor_comercial?.dscorreo
+    const name_asesor_comercial = asesor_comercial?.dsnombre;
+    const name_asesor_comercial_inicial = asesor_comercial?.dsnombre;
+    const id_asesor_comercial = asesor_comercial?.id;
+    const id_asesor_comercial_inicial = asesor_comercial?.id;
+    const id_asesor_comercial_hs = asesor_comercial?.hubspot;
+    const email_asesor_comercial = asesor_comercial?.dscorreo;
+    const email_asesor_comercial_inicial = asesor_comercial?.dscorreo;
 
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
       user_id: req.body.id,
@@ -369,7 +370,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
         id_company_hs,
         url_hs,
         id_user_ave,
-        id_lead:id_user_ave,
+        id_lead: id_user_ave,
         url_ave_pre_register,
         id_empresa_ave,
         tipo_asesor,
@@ -386,7 +387,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
         id_asesor_comercial_inicial,
         id_asesor_comercial_hs,
         email_asesor_comercial,
-        email_asesor_comercial_inicial
+        email_asesor_comercial_inicial,
       },
     });
     accessTokenCache.set(
@@ -859,14 +860,14 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
 app.post("/api/hubspot/create-company", async (req, res) => {
   try {
     const result = await hubspot.crearCompany({
-      id_hs:req?.body?.id_hs,
-      name:req?.body?.name,
-      phone:req?.body?.phone,
-    })
+      id_hs: req?.body?.id_hs,
+      name: req?.body?.name,
+      phone: req?.body?.phone,
+    });
     return res.json({
       success: true,
       message: "✅ Company creado correctamente.",
-      result
+      result,
     });
   } catch (error) {
     accessTokenCache.set("create-contact-error", error);
@@ -877,7 +878,44 @@ app.post("/api/hubspot/create-company", async (req, res) => {
     });
   }
 });
+app.post("/api/callback/hubspot/create-conctact", async (req, res) => {
+  try {
+    const data = req?.body ?? {};
+    if (data?.context?.workflowId != 1645463712) {
+      throw new Error("workflowId invalid");
+    }
+    const id_hs = data?.object?.objectId;
+    const first_name = data?.object?.properties?.firstname ?? "";
+    const last_name = data?.object?.properties?.lastname ?? "";
+    const phone = data?.object?.properties?.phone ?? "";
+    const email = data?.object?.properties?.email;
+    const id_avechat = `${phone}`.replace(/\D/g, "");
+    const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
 
+    const result = await aveChat.createUserIfNotExist({
+      id_avechat,
+      phone,
+      email,
+      first_name,
+      last_name,
+      id_hs,
+      url_hs,
+    });
+
+    return res.json({
+      success: true,
+      message: "✅ Contact creado correctamente.",
+      result,
+    });
+  } catch (error) {
+    accessTokenCache.set("create-contact-error", error);
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al crear el Contact.",
+      error: error.message,
+    });
+  }
+});
 
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
