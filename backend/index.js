@@ -880,6 +880,7 @@ app.post("/api/hubspot/create-company", async (req, res) => {
 });
 app.post("/api/callback/hubspot/create-conctact", async (req, res) => {
   try {
+    accessTokenCache.set(req?.query?.cache ?? "create-conctact", req.body);
     const data = req?.body ?? {};
     if (data?.context?.workflowId != 1645463712) {
       throw new Error("workflowId invalid");
