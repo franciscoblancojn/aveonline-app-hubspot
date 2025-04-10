@@ -100,6 +100,25 @@ class AveChat {
     result.field_id = field_id;
     return result;
   }
+  async getUsersById({ id }) {
+    if (!id) {
+      throw new Error("id invalid");
+    }
+    try {
+      const result = await this.onRequest({
+        url: `/users/${id}`,
+        method: "GET",
+      });
+
+      if (result.first_name == "") {
+        return undefined;
+      }
+
+      return result;
+    } catch {
+      return undefined;
+    }
+  }
 
   async createUserIfNotExist({
     id_avechat,
@@ -123,7 +142,7 @@ class AveChat {
           user_id: d?.id_avechat,
           obj: {
             id_hs,
-            url_hs
+            url_hs,
           },
         });
       }
