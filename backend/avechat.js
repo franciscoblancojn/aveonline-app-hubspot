@@ -38,7 +38,7 @@ class AveChat {
     const result = await this.onRequest({
       url: `/users/${user_id}/custom_fields/${id}`,
       method: "POST",
-      body: new URLSearchParams({
+      body: JSON.stringify({
         value: value,
       }),
     });
@@ -152,6 +152,7 @@ class AveChat {
     } catch (error) {
       return {
         create: false,
+        error: error.message,
         error,
       };
     }
