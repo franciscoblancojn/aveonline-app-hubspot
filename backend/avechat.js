@@ -38,7 +38,7 @@ class AveChat {
     const result = await this.onRequest({
       url: `/users/${user_id}/custom_fields/${id}`,
       method: "POST",
-      body: JSON.stringify({
+      body: new URLSearchParams({
         value: value,
       }),
     });
