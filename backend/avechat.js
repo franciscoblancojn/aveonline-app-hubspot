@@ -132,19 +132,24 @@ class AveChat {
     try {
       const user = await this.getUsersById({ id: id_avechat });
       if (user == undefined) {
-        await this.createUser({
+        const resutCreate = await this.createUser({
           first_name,
           last_name,
           phone,
           email,
         });
-        await this.saveCustomFields({
+        const resutCustonField = await this.saveCustomFields({
           user_id: id_avechat,
           obj: {
             id_hs,
             url_hs,
           },
         });
+        return {
+          create: true,
+          resutCreate,
+          resutCustonField
+        };
       }
       return {
         create: true,
