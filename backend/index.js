@@ -10,6 +10,7 @@ const { CSC } = require("./csc.js");
 const { Count } = require("./count.js");
 const { fetch } = require("./fetch.js");
 const { ASESORES } = require("./dataAcesot.js");
+const { avechat } = require("../../../script-ave-collbet/avechat/index.js");
 
 const app = express();
 
@@ -946,6 +947,39 @@ app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
   }
 });
 
+app.post("/api/ave-chat/change-nit", async (req, res) => {
+  try {
+    const phone = req?.body?.phone ?? "";
+    const NIT = req?.body?.NIT ?? "";
+    const id_company_hs = req?.body?.id_company_hs ?? "";
+    if (phone == "" || id_company_hs == "" || NIT == "") {
+      throw new Error("Body Invalid");
+    }
+    const url_company_hs = `https://app.hubspot.com/contacts/47355542/company/${id_company_hs}/`;
+
+    const result = avechat.saveCustomFields({
+      user_id:phone,
+      obj:{
+        NIT,
+        id_company_hs,
+        url_company_hs
+      }
+    })
+
+    return res.json({
+      success: true,
+      message: "✅ NIT Actualizado.",
+      association,
+      result
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error, Al Actualizar NIT.",
+      error: error.message,
+    });
+  }
+});
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
 );
