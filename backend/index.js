@@ -956,7 +956,7 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
     }
     const url_company_hs = `https://app.hubspot.com/contacts/47355542/company/${id_company_hs}/`;
 
-    const result = aveChat.saveCustomFields({
+    const result = await aveChat.saveCustomFields({
       user_id:phone,
       obj:{
         NIT,
