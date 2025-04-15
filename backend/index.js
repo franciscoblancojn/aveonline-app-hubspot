@@ -917,6 +917,34 @@ app.post("/api/callback/hubspot/create-conctact", async (req, res) => {
     });
   }
 });
+app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
+  try {
+    const NIT = req?.body?.NIT ?? "";
+    const contact_id = req?.body?.id_hs ?? "";
+    if (contact_id == "" || NIT == "") {
+      throw new Error("Body Invalid");
+    }
+    const company = await hubspot.getCompanyByNIT({ NIT });
+    const company_id = company?.id;
+
+    const association = await hubspot.asignarCompanyToContact({
+      company_id,
+      contact_id,
+    });
+
+    return res.json({
+      success: true,
+      message: "✅ Horario correcto.",
+      association,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error, Horario Incorrecto.",
+      error: error.message,
+    });
+  }
+});
 
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)

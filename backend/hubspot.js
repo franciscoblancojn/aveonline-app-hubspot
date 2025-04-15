@@ -43,7 +43,7 @@ class Hubspot {
     });
     return result;
   }
-  async crearCompany({ name, phone ,id_hs}) {
+  async crearCompany({ name, phone, id_hs }) {
     const properties = {
       name,
       phone,
@@ -58,7 +58,7 @@ class Hubspot {
           types: [
             {
               associationCategory: "HUBSPOT_DEFINED",
-              associationTypeId:2,
+              associationTypeId: 2,
             },
           ],
         },
@@ -98,6 +98,41 @@ class Hubspot {
       body: JSON.stringify(data),
     });
     return result;
+  }
+  async getCompanyByNIT({ NIT }) {
+    const data = {
+      limit: 1,
+      properties: [
+        "createdate",
+        "documento",
+        "hs_lastmodifieddate",
+        "hs_object_id",
+      ],
+      filterGroups: [
+        {
+          filters: [{ propertyName: "documento", value: NIT, operator: "EQ" }],
+        },
+      ],
+    };
+    const result = await this.onRequest({
+      url: `/companies/search`,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    if(!result?.results?.[0]?.id){
+      throw new Error("Company not found")
+    }
+    return result?.results?.[0];
+  }
+  async asignarCompanyToContact({ contact_id, company_id }) {
+    const result = await this.onRequest({
+      url: `/contacts/${contact_id}/associations/companies/${company_id}/contact_to_company`,
+      method: "PUT",
+    });
+    if(!result?.id){
+      throw new Error("Asignar Company to Contact error")
+    }
+    return result
   }
 }
 
