@@ -968,7 +968,6 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
     return res.json({
       success: true,
       message: "✅ NIT Actualizado.",
-      association,
       result
     });
   } catch (error) {
