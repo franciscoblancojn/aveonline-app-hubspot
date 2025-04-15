@@ -964,6 +964,9 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
         url_company_hs
       }
     })
+    if(!result?.every((e)=>e?.success===true)){
+      throw new Error("Error al guardar NIT");
+    }
 
     return res.json({
       success: true,
