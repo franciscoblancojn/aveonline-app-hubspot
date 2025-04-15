@@ -1,3 +1,4 @@
+const { AveChatFields } = require("./data/avechat-fields.js");
 const { fetch } = require("./fetch.js");
 
 class AveChat {
@@ -25,11 +26,14 @@ class AveChat {
     }
   }
 
-  async getIdCustomField(key) {
+  async getIdCustomFieldApi() {
     const result = await this.onRequest({
       url: "/accounts/custom_fields",
     });
-    const id = result.find((e) => e.name == key).id;
+    return result;
+  }
+  async getIdCustomField(key) {
+    const id = AveChatFields.find((e) => e.name == key).id;
 
     return id;
   }

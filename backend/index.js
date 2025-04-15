@@ -184,6 +184,24 @@ app.get("/error", (req, res) => {
   res.end();
 });
 
+// app.get("/test", async (req, res) => {
+//   try {
+//     const response = await aveChat.getIdCustomField("NIT")
+
+//     return res.json({
+//       success: true,
+//       message: "✅ Ok.",
+//       data: response,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: "❌ Error en la solicitud.",
+//       error: error.message,
+//     });
+//   }
+// });
+
 app.post("/api/create-note", async (req, res) => {
   const accessToken = API_KEY;
   const contactId = req?.body?.contactId; // ID del contacto

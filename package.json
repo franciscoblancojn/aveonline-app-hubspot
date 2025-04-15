@@ -3,6 +3,7 @@
     "upload": "hs project upload",
     "dev": "hs project dev",
     "backend-start": "node backend/index.js",
+    "backend-loadFieldsAveChat":"bun ./backend/scripts/loadFieldsAveChat.ts",
     "pm2-start": "pm2 start backend/index.js --name backend-start",
     "pm2-restart": "pm2 restart backend-start && pm2 save",
     "pull": "git pull && npm run pm2-restart && pm2 list"
