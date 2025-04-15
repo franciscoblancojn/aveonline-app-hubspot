@@ -983,7 +983,7 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
       }
     })
     if(!result?.every((e)=>e?.success===true)){
-      throw new Error("Error al guardar NIT "+JSON.stringify(result));
+      throw new Error("TIMEOUT");
     }
 
     return res.json({
