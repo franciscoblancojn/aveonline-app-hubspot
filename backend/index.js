@@ -10,7 +10,6 @@ const { CSC } = require("./csc.js");
 const { Count } = require("./count.js");
 const { fetch } = require("./fetch.js");
 const { ASESORES } = require("./dataAcesot.js");
-const { avechat } = require("../../../script-ave-collbet/avechat/index.js");
 
 const app = express();
 
@@ -957,7 +956,7 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
     }
     const url_company_hs = `https://app.hubspot.com/contacts/47355542/company/${id_company_hs}/`;
 
-    const result = avechat.saveCustomFields({
+    const result = aveChat.saveCustomFields({
       user_id:phone,
       obj:{
         NIT,
