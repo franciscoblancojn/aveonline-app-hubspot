@@ -166,6 +166,13 @@ class AveChat {
       };
     }
   }
+  async asignarAsesor({ user_id }) {
+    const result = await this.onRequest({
+      url: `/users/${user_id}/send/1744048919301`,
+      method: "POST",
+    });
+    return result;
+  }
 }
 
 module.exports = {

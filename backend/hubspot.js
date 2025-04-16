@@ -104,6 +104,7 @@ class Hubspot {
       limit: 1,
       properties: [
         "createdate",
+        "asesor_logistico",
         "documento",
         "hs_lastmodifieddate",
         "hs_object_id",

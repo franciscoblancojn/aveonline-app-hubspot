@@ -938,22 +938,50 @@ app.post("/api/callback/hubspot/create-conctact", async (req, res) => {
 app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
   try {
     const NIT = req?.body?.NIT ?? "";
+    const phone = req?.body?.phone ?? "";
     const contact_id = req?.body?.id_hs ?? "";
     if (contact_id == "" || NIT == "") {
       throw new Error("Body Invalid");
     }
+    const id_avechat = phone?.replaceAll("+", "");
     const company = await hubspot.getCompanyByNIT({ NIT });
     const company_id = company?.id;
+    const id_asesor_logistico_hs = company?.properties?.asesor_logistico;
 
     const association = await hubspot.asignarCompanyToContact({
       company_id,
       contact_id,
     });
 
+    const asesor = ASESORES.find((e) => e.hubspot == id_asesor_logistico_hs);
+    const asignarAsesorLogistico = {};
+    if (asesor) {
+      const url_company_hs = company_id
+        ? `https://app.hubspot.com/contacts/47355542/company/${company_id}/`
+        : null;
+  
+      asignarAsesorLogistico.fields = await aveChat.saveCustomFields({
+        user_id: id_avechat,
+        obj: {
+          id_company_hs:company_id,
+          name_asesor_logistico:asesor?.dsnombre,
+          email_asesor_logistico:asesor?.dscorreo,
+          id_asesor_logistico:asesor?.id,
+          id_asesor_logistico_hs,
+          url_company_hs,
+
+        },
+      });
+      asignarAsesorLogistico.asignacion = await aveChat.asignarAsesor({
+        user_id: id_avechat,
+      });
+    }
+
     return res.json({
       success: true,
       message: "✅ Horario correcto.",
       association,
+      asignarAsesorLogistico,
     });
   } catch (error) {
     return res.status(500).json({
@@ -975,21 +1003,21 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
     const url_company_hs = `https://app.hubspot.com/contacts/47355542/company/${id_company_hs}/`;
 
     const result = await aveChat.saveCustomFields({
-      user_id:phone,
-      obj:{
+      user_id: phone,
+      obj: {
         NIT,
         id_company_hs,
-        url_company_hs
-      }
-    })
-    if(!result?.every((e)=>e?.success===true)){
+        url_company_hs,
+      },
+    });
+    if (!result?.every((e) => e?.success === true)) {
       throw new Error("TIMEOUT");
     }
 
     return res.json({
       success: true,
       message: "✅ NIT Actualizado.",
-      result
+      result,
     });
   } catch (error) {
     return res.status(500).json({
