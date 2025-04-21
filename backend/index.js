@@ -581,6 +581,60 @@ app.post(
     }
   }
 );
+
+app.post(
+  "/api/callback/ave-chat/asignar-asesor-logistico",
+  async (req, res) => {
+    try {
+      let n_asesor_logistico = await count.getCount("logistico");
+      n_asesor_logistico++;
+      const list_asesor_logistico = [
+        "sc13@aveonline.co",
+        "sc12@aveonline.co",
+        "sc11@aveonline.co",
+        "sc2@aveonline.co",
+        "jhoana.pineda@aveonline.co",
+        "sc3@aveonline.co",
+      ]
+      if (n_asesor_logistico >= list_asesor_logistico.length + 1) {
+        n_asesor_logistico = 1;
+      }
+
+      const admins = await aveChat.getAdmin();
+
+      const email_asesor_logistico = list_asesor_logistico?.[n_asesor_logistico - 1];
+
+      const admin = admins.find((e) => e.email === email_asesor_logistico);
+
+      const id_asesor_logistico = admin.id;
+
+      const result = await aveChat.saveCustomFields({
+        user_id: req.body.id,
+        obj: {
+          n_asesor_logistico,
+          id_asesor_logistico,
+          id_asesor_logistico_inicial: id_asesor_logistico,
+          email_asesor_logistico,
+          email_asesor_logistico_inicial: email_asesor_logistico,
+        },
+      });
+      await count.setCount(n_asesor_logistico,"logistico");
+
+      return res.json({
+        success: true,
+        message: "✅ Asesor asignado correctamente.",
+        result,
+      });
+    } catch (error) {
+      accessTokenCache.set("create-contact-error", error);
+      return res.status(500).json({
+        success: false,
+        message: "❌ Error al asiganar el Asesor.",
+        error: error.message,
+      });
+    }
+  }
+);
 app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
   try {
     const user_id = req.body.id;

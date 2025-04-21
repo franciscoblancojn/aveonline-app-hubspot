@@ -19,16 +19,16 @@ class Count {
       throw error;
     }
   }
-  async getCount() {
+  async getCount(id="") {
     const result = await this.onRequest({
-      url: `/count`,
+      url: `/count?id=${id}`,
     });
     return result.n_asesor_comercial;
   }
   // Función para guardar el número en el archivo
-  async setCount(n_asesor_comercial) {
+  async setCount(n_asesor_comercial,id="") {
     const result = await this.onRequest({
-      url: `/count`,
+      url: `/count?id=${id}`,
       method:"POST",
       body:JSON.stringify({n_asesor_comercial})
     });
