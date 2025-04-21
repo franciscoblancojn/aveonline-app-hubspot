@@ -48,16 +48,46 @@ class AveChat {
     });
     return result;
   }
+  // async saveCustomFields({ user_id, obj }) {
+  //   return await Promise.all(
+  //     Object.keys(obj).map(async (key) => {
+  //       return await this.setCustomField({
+  //         user_id,
+  //         key,
+  //         value: obj[key],
+  //       });
+  //     })
+  //   );
+  // }
   async saveCustomFields({ user_id, obj }) {
-    return await Promise.all(
-      Object.keys(obj).map(async (key) => {
-        return await this.setCustomField({
-          user_id,
-          key,
-          value: obj[key],
-        });
-      })
-    );
+    const listResult = [];
+    const listkey = Object.keys(obj);
+    for (let i = 0; i < listkey.length; i++) {
+      const key = listkey[i];
+      const value = obj[key];
+      if (value == null || value == undefined || value == "undefined") {
+        continue;
+      }
+      const result = await this.setCustomField({
+        user_id,
+        key,
+        value,
+      });
+      // console.log({result,key,value,user_id});
+
+      if (
+        result?.error?.message ==
+        "Your account exceeded the limit of 100 requests per 60 seconds"
+      ) {
+        i--;
+        // console.log("await save filed " + key + ": " + value);
+        await sleep(1000 * 55);
+        continue;
+      }
+
+      listResult.push(result);
+    }
+    return listResult;
   }
   async createUser({ phone, first_name, last_name, gender }) {
     const result = await this.onRequest({
@@ -152,7 +182,7 @@ class AveChat {
         return {
           create: true,
           resutCreate,
-          resutCustonField
+          resutCustonField,
         };
       }
       return {
@@ -172,6 +202,19 @@ class AveChat {
       method: "POST",
     });
     return result;
+  }
+  async sendMessageTemplate({ user_id, flow_id, template }) {
+    // await this.saveCustomFields({
+    //   user_id,
+    //   obj: {
+    //     message,
+    //   },
+    // });
+    // const result = await this.onRequest({
+    //   url: `/users/${user_id}/send/${flow_id}`,
+    //   method: "POST",
+    // });
+    // return result;
   }
 }
 

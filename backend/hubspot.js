@@ -108,6 +108,7 @@ class Hubspot {
         "documento",
         "hs_lastmodifieddate",
         "hs_object_id",
+        "hubspot_owner_id"
       ],
       filterGroups: [
         {
