@@ -6,9 +6,10 @@ class AveChat {
   token = "";
   campana = false;
 
-  constructor(token,{ campana = false } ) {
+  constructor(token,options = {}) {
+    const { campana = false } = options;
     this.token = token;
-    this.campana = campana;
+    this.campana ??= campana;
   }
   async onRequest({ body = undefined, method = "GET", url }) {
     try {
