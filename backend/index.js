@@ -1099,7 +1099,6 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
 
 app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
   try {
-    accessTokenCache.set("id_hs", id_hs);
     const id_hs = req?.body?.object?.objectId;
     accessTokenCache.set("id_hs", id_hs);
     // throw 1
@@ -1116,7 +1115,7 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
       value: id_hs,
     });
     accessTokenCache.set("users_by_id_hs", users_by_id_hs);
-    let user_id = (users_by_id_hs?.data?.[0] ?? {})?.id;
+    let user_id = (users_by_id_hs?.data?.[0] ?? {})?.id ?? null;
     if (!user_id) {
       const first_name = req?.body?.object?.properties?.firstname;
       const last_name = req?.body?.object?.properties?.lastname;
@@ -1132,6 +1131,7 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
           email,
         });
         user_id = id_avechat;
+        // console.log({user_id});
         const resutCustonField = await aveChatCampana.saveCustomFields({
           user_id,
           obj: {
@@ -1139,6 +1139,8 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
             url_hs,
           },
         });
+        // console.log(resutCustonField);
+        
       } else {
         throw new Error("object.objectId is invalid");
       }
@@ -1158,6 +1160,7 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "❌ Error al enviar mensaje.",
+      // err:error,
       error: error.message,
     });
   }

@@ -9,7 +9,7 @@ class AveChat {
   constructor(token,options = {}) {
     const { campana = false } = options;
     this.token = token;
-    this.campana ??= campana;
+    this.campana = campana;
   }
   async onRequest({ body = undefined, method = "GET", url }) {
     try {
@@ -42,6 +42,8 @@ class AveChat {
   }
   async setCustomField({ key, value, user_id }) {
     const id = await this.getIdCustomField(key);
+    // console.log({ id, key, value ,user_id});
+    
     const result = await this.onRequest({
       url: `/users/${user_id}/custom_fields/${id}`,
       method: "POST",
