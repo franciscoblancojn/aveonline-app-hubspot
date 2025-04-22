@@ -203,18 +203,18 @@ class AveChat {
     });
     return result;
   }
-  async sendMessageTemplate({ user_id, flow_id, template }) {
-    // await this.saveCustomFields({
-    //   user_id,
-    //   obj: {
-    //     message,
-    //   },
-    // });
-    // const result = await this.onRequest({
-    //   url: `/users/${user_id}/send/${flow_id}`,
-    //   method: "POST",
-    // });
-    // return result;
+  async sendMessageTemplate({ user_id, flow_id, id_template }) {
+    await this.saveCustomFields({
+      user_id,
+      obj: {
+        id_template,
+      },
+    });
+    const result = await this.onRequest({
+      url: `/users/${user_id}/send/${flow_id}`,
+      method: "POST",
+    });
+    return result;
   }
 }
 

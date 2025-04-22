@@ -42,10 +42,11 @@ const HOST = process.env.HOST;
 const TOKEN_AVECHAT = process.env.TOKEN_AVECHAT;
 const TOKEN_AVECHAT_CAMPANA = process.env.TOKEN_AVECHAT_CAMPANA;
 const FLOW_ID = process.env.FLOW_ID;
+const FLOW_ID_CAMPANA = process.env.FLOW_ID_CAMPANA;
 
 const hubspot = new Hubspot(API_KEY);
 const aveChat = new AveChat(TOKEN_AVECHAT);
-const aveChatCamana = new AveChat(TOKEN_AVECHAT_CAMPANA);
+const aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA);
 const ave = new Ave();
 const csc = new CSC();
 const count = new Count();
@@ -595,14 +596,15 @@ app.post(
         "sc2@aveonline.co",
         "jhoana.pineda@aveonline.co",
         "sc3@aveonline.co",
-      ]
+      ];
       if (n_asesor_logistico >= list_asesor_logistico.length + 1) {
         n_asesor_logistico = 1;
       }
 
       const admins = await aveChat.getAdmin();
 
-      const email_asesor_logistico = list_asesor_logistico?.[n_asesor_logistico - 1];
+      const email_asesor_logistico =
+        list_asesor_logistico?.[n_asesor_logistico - 1];
 
       const admin = admins.find((e) => e.email === email_asesor_logistico);
 
@@ -618,7 +620,7 @@ app.post(
           email_asesor_logistico_inicial: email_asesor_logistico,
         },
       });
-      await count.setCount(n_asesor_logistico,"logistico");
+      await count.setCount(n_asesor_logistico, "logistico");
 
       return res.json({
         success: true,
@@ -1010,30 +1012,33 @@ app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
       contact_id,
     });
 
-    const asesorLogistico = ASESORES.find((e) => e.hubspot == id_asesor_logistico_hs);
-    const asesorComercial = ASESORES.find((e) => e.hubspot == id_asesor_comercial_hs);
+    const asesorLogistico = ASESORES.find(
+      (e) => e.hubspot == id_asesor_logistico_hs
+    );
+    const asesorComercial = ASESORES.find(
+      (e) => e.hubspot == id_asesor_comercial_hs
+    );
     const asignarAsesorLogistico = {};
     if (asesorLogistico || asesorComercial) {
       const url_company_hs = company_id
         ? `https://app.hubspot.com/contacts/47355542/company/${company_id}/`
         : null;
-  
+
       asignarAsesorLogistico.fields = await aveChat.saveCustomFields({
         user_id: id_avechat,
         obj: {
-          id_company_hs:company_id,
+          id_company_hs: company_id,
           url_company_hs,
 
-          name_asesor_logistico:asesorLogistico?.dsnombre,
-          email_asesor_logistico:asesorLogistico?.dscorreo,
-          id_asesor_logistico:asesorLogistico?.id,
+          name_asesor_logistico: asesorLogistico?.dsnombre,
+          email_asesor_logistico: asesorLogistico?.dscorreo,
+          id_asesor_logistico: asesorLogistico?.id,
           id_asesor_logistico_hs,
 
           name_asesor_comercial: asesorComercial?.dsnombre,
           email_asesor_comercial: asesorComercial?.dscorreo,
           id_asesor_comercial: asesorComercial?.id,
           id_asesor_comercial_hs: asesorComercial?.hubspot,
-
         },
       });
       asignarAsesorLogistico.asignacion = await aveChat.asignarAsesor({
@@ -1093,41 +1098,7 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
 });
 
 app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
-  //   {
-  //     "callbackId": "ap-47355542-1589400750477-3-0",
-  //     "origin": {
-  //         "portalId": 47355542,
-  //         "actionDefinitionId": 201903771,
-  //         "actionDefinitionVersion": 4,
-  //         "actionExecutionIndexIdentifier": {
-  //             "enrollmentId": 1589400750477,
-  //             "actionExecutionIndex": 0
-  //         },
-  //         "extensionDefinitionId": 201903771,
-  //         "extensionDefinitionVersionId": 4
-  //     },
-  //     "context": {
-  //         "workflowId": 1640937852,
-  //         "actionId": 3,
-  //         "actionExecutionIndexIdentifier": {
-  //             "enrollmentId": 1589400750477,
-  //             "actionExecutionIndex": 0
-  //         },
-  //         "source": "WORKFLOWS"
-  //     },
-  //     "object": {
-  //         "objectId": 108456792064,
-  //         "objectType": "CONTACT"
-  //     },
-  //     "fields": {
-  //         "template": "test message"
-  //     },
-  //     "inputFields": {
-  //         "template": "test message"
-  //     }
-  // }
   try {
-    accessTokenCache.set("ssss", req.body);
     const id_hs = req?.body?.object?.objectId;
     accessTokenCache.set("id_hs", id_hs);
     if (!id_hs) {
@@ -1138,19 +1109,41 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
     if (!template) {
       throw new Error("inputFields.template is required");
     }
-    const users_by_id_hs = await aveChat.getUsersByCustomField({
+    const users_by_id_hs = await aveChatCampana.getUsersByCustomField({
       key: "id_hs",
       value: id_hs,
     });
     accessTokenCache.set("users_by_id_hs", users_by_id_hs);
     const user_id = users_by_id_hs?.data?.[0]?.id;
     if (!user_id) {
-      throw new Error("object.objectId is invalid");
+      const first_name = req?.body?.object?.properties?.firstname;
+      const last_name = req?.body?.object?.properties?.lastname;
+      const phone = req?.body?.object?.properties?.phone;
+      const email = req?.body?.object?.properties?.email;
+      const id_avechat = phone.replace(/\D/g, "");
+      const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
+      if(phone){
+        const resutCreate = await aveChatCampana.createUser({
+          first_name,
+          last_name,
+          phone,
+          email,
+        });
+        const resutCustonField = await aveChatCampana.saveCustomFields({
+          user_id: id_avechat,
+          obj: {
+            id_hs,
+            url_hs,
+          },
+        });
+      }else{
+        throw new Error("object.objectId is invalid");
+      } 
     }
-    const result = await aveChat.sendMessageTemplate({
+    const result = await aveChatCampana.sendMessageTemplate({
       user_id,
-      template,
-      flow_id: FLOW_ID,
+      id_template: template,
+      flow_id: FLOW_ID_CAMPANA,
     });
 
     return res.json({

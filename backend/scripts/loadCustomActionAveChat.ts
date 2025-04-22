@@ -33,7 +33,7 @@ const main = async () => {
       ],
       supportedValueTypes: ["STATIC_VALUE"],
       objectRequestOptions: {
-        properties: ["email", "id", "phone"],
+        properties: ["email", "id", "phone","firstname","lastname"],
       },
       labels: {
         en: {
