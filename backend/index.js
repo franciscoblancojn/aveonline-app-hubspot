@@ -1099,8 +1099,10 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
 
 app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
   try {
+    accessTokenCache.set("id_hs", id_hs);
     const id_hs = req?.body?.object?.objectId;
     accessTokenCache.set("id_hs", id_hs);
+    // throw 1
     if (!id_hs) {
       throw new Error("object.objectId is required");
     }
@@ -1114,7 +1116,7 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
       value: id_hs,
     });
     accessTokenCache.set("users_by_id_hs", users_by_id_hs);
-    let user_id = users_by_id_hs?.data?.[0]?.id;
+    let user_id = (users_by_id_hs?.data?.[0] ?? {})?.id;
     if (!user_id) {
       const first_name = req?.body?.object?.properties?.firstname;
       const last_name = req?.body?.object?.properties?.lastname;
