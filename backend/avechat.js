@@ -1,12 +1,14 @@
-const { AveChatFields } = require("./data/avechat-fields.js");
+const { AveChatFields, AveChatFiedsCampana } = require("./data/avechat-fields.js");
 const { fetch } = require("./fetch.js");
 
 class AveChat {
   urlApi = "https://chat.aveonline.co/api/";
   token = "";
+  campana = false;
 
-  constructor(token) {
+  constructor(token,{ campana = false } ) {
     this.token = token;
+    this.campana = campana;
   }
   async onRequest({ body = undefined, method = "GET", url }) {
     try {
@@ -33,7 +35,7 @@ class AveChat {
     return result;
   }
   async getIdCustomField(key) {
-    const id = AveChatFields.find((e) => e.name == key).id;
+    const id = (this.campana ? AveChatFiedsCampana : AveChatFields).find((e) => e.name == key).id;
 
     return id;
   }

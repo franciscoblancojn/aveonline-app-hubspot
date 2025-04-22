@@ -46,7 +46,7 @@ const FLOW_ID_CAMPANA = process.env.FLOW_ID_CAMPANA;
 
 const hubspot = new Hubspot(API_KEY);
 const aveChat = new AveChat(TOKEN_AVECHAT);
-const aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA);
+const aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA,{campana: true});
 const ave = new Ave();
 const csc = new CSC();
 const count = new Count();
@@ -1114,7 +1114,7 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
       value: id_hs,
     });
     accessTokenCache.set("users_by_id_hs", users_by_id_hs);
-    const user_id = users_by_id_hs?.data?.[0]?.id;
+    let user_id = users_by_id_hs?.data?.[0]?.id;
     if (!user_id) {
       const first_name = req?.body?.object?.properties?.firstname;
       const last_name = req?.body?.object?.properties?.lastname;
@@ -1122,23 +1122,24 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
       const email = req?.body?.object?.properties?.email;
       const id_avechat = phone.replace(/\D/g, "");
       const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
-      if(phone){
+      if (phone) {
         const resutCreate = await aveChatCampana.createUser({
           first_name,
           last_name,
           phone,
           email,
         });
+        user_id = id_avechat;
         const resutCustonField = await aveChatCampana.saveCustomFields({
-          user_id: id_avechat,
+          user_id,
           obj: {
             id_hs,
             url_hs,
           },
         });
-      }else{
+      } else {
         throw new Error("object.objectId is invalid");
-      } 
+      }
     }
     const result = await aveChatCampana.sendMessageTemplate({
       user_id,

@@ -7,7 +7,8 @@ const main = async () => {
     const raw = JSON.stringify({
       published: true,
       label: "Avechat Enviar Template",
-      actionUrl: "https://franciscoblanco.vercel.app/api/cache?id=test",
+    //   actionUrl: "https://franciscoblanco.vercel.app/api/cache?id=test",
+      actionUrl:process.env.HOST+"/api/callback/hubspot/send-message-template",
       objectTypes: ["CONTACT"],
       inputFields: [
         {
@@ -65,7 +66,7 @@ const main = async () => {
         process.env.HAPIKEY,
       requestOptions
     );
-    const result = await response.text();
+    const result = await response.json();
     console.log(result);
   } catch (error) {
     console.error("Error:", error);
