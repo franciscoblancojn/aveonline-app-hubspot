@@ -1017,6 +1017,7 @@ app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
     const asesorLogistico = ASESORES.find(
       (e) => e.hubspot == id_asesor_logistico_hs
     );
+    
     const asesorComercial = ASESORES.find(
       (e) => e.hubspot == id_asesor_comercial_hs
     );
@@ -1050,15 +1051,16 @@ app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
 
     return res.json({
       success: true,
-      message: "✅ Horario correcto.",
+      message: "✅ Asignacion correcta.",
       association,
       asignarAsesorLogistico,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "❌ Error, Horario Incorrecto.",
+      message: "❌ Error, Asignacion Incorrecta.",
       error: error.message,
+      err:error
     });
   }
 });
