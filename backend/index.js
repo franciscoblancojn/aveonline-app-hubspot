@@ -605,19 +605,19 @@ app.post(
 
       const email_asesor_logistico =
         list_asesor_logistico?.[n_asesor_logistico - 1];
-
       const admin = admins.find((e) => e.email === email_asesor_logistico);
 
       const id_asesor_logistico = admin.id;
 
+      // throw {id_asesor_logistico,id:req.body.id}
       const result = await aveChat.saveCustomFields({
         user_id: req.body.id,
         obj: {
-          n_asesor_logistico,
+          // n_asesor_logistico,
           id_asesor_logistico,
-          id_asesor_logistico_inicial: id_asesor_logistico,
+          // id_asesor_logistico_inicial: id_asesor_logistico,
           email_asesor_logistico,
-          email_asesor_logistico_inicial: email_asesor_logistico,
+          // email_asesor_logistico_inicial: email_asesor_logistico,
         },
       });
       await count.setCount(n_asesor_logistico, "logistico");
@@ -633,6 +633,7 @@ app.post(
         success: false,
         message: "❌ Error al asiganar el Asesor.",
         error: error.message,
+        err:error
       });
     }
   }
