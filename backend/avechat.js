@@ -1,3 +1,4 @@
+const { AveChatAdmin } = require("./data/avechat-Admin.js");
 const { AveChatFields, AveChatFiedsCampana } = require("./data/avechat-fields.js");
 const { fetch } = require("./fetch.js");
 
@@ -108,11 +109,7 @@ class AveChat {
     return result;
   }
   async getAdmin() {
-    const result = await this.onRequest({
-      url: `/accounts/admins`,
-      method: "GET",
-    });
-    return result;
+    return AveChatAdmin;
   }
   async sendMessage({ user_id, flow_id, message }) {
     await this.saveCustomFields({

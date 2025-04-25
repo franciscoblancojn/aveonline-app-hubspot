@@ -583,6 +583,7 @@ app.post(
   }
 );
 
+//ASIGNAR ASESOR DESDE FLUJO
 app.post(
   "/api/callback/ave-chat/asignar-asesor-logistico",
   async (req, res) => {
@@ -594,7 +595,7 @@ app.post(
         "sc12@aveonline.co",
         "sc11@aveonline.co",
         "sc2@aveonline.co",
-        "jhoana.pineda@aveonline.co",
+        "sc1@aveonline.co",
         "sc3@aveonline.co",
       ];
       if (n_asesor_logistico >= list_asesor_logistico.length + 1) {
@@ -606,6 +607,7 @@ app.post(
       const email_asesor_logistico =
         list_asesor_logistico?.[n_asesor_logistico - 1];
       const admin = admins.find((e) => e.email === email_asesor_logistico);
+      // throw {admin}
 
       const id_asesor_logistico = admin.id;
 
