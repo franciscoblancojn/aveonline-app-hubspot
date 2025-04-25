@@ -617,6 +617,7 @@ app.post(
           id_asesor_logistico,
           // id_asesor_logistico_inicial: id_asesor_logistico,
           email_asesor_logistico,
+          name_asesor_logistico: admin.full_name,
           // email_asesor_logistico_inicial: email_asesor_logistico,
         },
       });
