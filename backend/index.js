@@ -593,7 +593,7 @@ app.post(
       n_asesor_logistico++;
       const list_asesor_logistico = [
         "sc13@aveonline.co",
-        // "sc12@aveonline.co",
+        "sc12@aveonline.co",
         "sc11@aveonline.co",
         "sc2@aveonline.co",
         "sc1@aveonline.co",
