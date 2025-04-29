@@ -523,12 +523,10 @@ app.post(
   async (req, res) => {
     try {
       const list_asesor_comercial = [
-        "sc13@aveonline.co",
-        // "sc12@aveonline.co",
-        "sc11@aveonline.co",
-        "sc2@aveonline.co",
-        "sc1@aveonline.co",
-        "sc3@aveonline.co",
+        "comercial1@aveonline.co",
+        "daniela.gomez@aveonline.co",
+        // "comercial2@aveonline.co",
+        "comercial3@aveonline.co",
       ];
       let n_asesor_comercial = await count.getCount();
       n_asesor_comercial++;
