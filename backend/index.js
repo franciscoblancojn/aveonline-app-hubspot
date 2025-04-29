@@ -530,7 +530,7 @@ app.post(
       ];
       let n_asesor_comercial = await count.getCount();
       n_asesor_comercial++;
-      if (n_asesor_logistico >= list_asesor_comercial.length + 1) {
+      if (n_asesor_comercial >= list_asesor_comercial.length + 1) {
         n_asesor_comercial = 1;
       }
 
