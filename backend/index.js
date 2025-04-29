@@ -547,7 +547,7 @@ app.post(
       const email_asesor_comercial = [
         "comercial1@aveonline.co",
         "daniela.gomez@aveonline.co",
-        "comercial2@aveonline.co",
+        // "comercial2@aveonline.co",
         "comercial3@aveonline.co",
       ]?.[n_asesor_comercial - 1];
 
@@ -592,7 +592,7 @@ app.post(
       n_asesor_logistico++;
       const list_asesor_logistico = [
         "sc13@aveonline.co",
-        "sc12@aveonline.co",
+        // "sc12@aveonline.co",
         "sc11@aveonline.co",
         "sc2@aveonline.co",
         "sc1@aveonline.co",
