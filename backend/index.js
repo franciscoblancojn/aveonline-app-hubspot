@@ -522,9 +522,17 @@ app.post(
   "/api/callback/ave-chat/asignar-asesor-comercial",
   async (req, res) => {
     try {
+      const list_asesor_comercial = [
+        "sc13@aveonline.co",
+        // "sc12@aveonline.co",
+        "sc11@aveonline.co",
+        "sc2@aveonline.co",
+        "sc1@aveonline.co",
+        "sc3@aveonline.co",
+      ];
       let n_asesor_comercial = await count.getCount();
       n_asesor_comercial++;
-      if (n_asesor_comercial >= 5) {
+      if (list_asesor_comercial >= list_asesor_logistico.length + 1) {
         n_asesor_comercial = 1;
       }
 
@@ -544,12 +552,7 @@ app.post(
       // AMALIA GARCIA	ANALISTA SERVICIO AL CLIENTE	sc2@aveonline.co
       // JHOANA ANDREA PINEDA MUÑOZ	ANALISTA SERVICIO AL CLIENTE	jhoana.pineda@aveonline.co
       // MARIA ALEJANDRA MURIEL MOLINA	ANALISTA SERVICIO AL CLIENTE	sc3@aveonline.co
-      const email_asesor_comercial = [
-        "comercial1@aveonline.co",
-        "daniela.gomez@aveonline.co",
-        // "comercial2@aveonline.co",
-        "comercial3@aveonline.co",
-      ]?.[n_asesor_comercial - 1];
+      const email_asesor_comercial = list_asesor_comercial?.[n_asesor_comercial - 1];
 
       const admin = admins.find((e) => e.email === email_asesor_comercial);
 
