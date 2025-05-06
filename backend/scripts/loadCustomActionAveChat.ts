@@ -9,7 +9,7 @@ const main = async () => {
       label: "Avechat Enviar Template",
     //   actionUrl: "https://franciscoblanco.vercel.app/api/cache?id=test",
       actionUrl:process.env.HOST+"/api/callback/hubspot/send-message-template",
-      objectTypes: ["CONTACT"],
+      objectTypes: ["CONTACT","COMPANY"],
       inputFields: [
         {
           typeDefinition: {

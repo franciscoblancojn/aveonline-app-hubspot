@@ -539,17 +539,16 @@ app.post(
       //COMERCIAL
       // MARIA CAROLINA CORDOBA CALLEJAS	ASESOR COMERCIAL 	comercial1@aveonline.co
       // DANIELA GOMEZ ISAZA	ASESOR COMERCIAL 	daniela.gomez@aveonline.co
-      // YASMIN ALEXANDRA CORTES RESTREPO	ASESOR COMERCIAL 	comercial2@aveonline.co
       // JUAN MANUEL YEPES RODRIGUEZ	ASESOR COMERCIAL 	comercial3@aveonline.co
 
       //LOGISTICO
       // ANDRES FELIPE MOLINA ARROYAVE	ANALISTA SERVICIO AL CLIENTE	sc13@aveonline.co
       // SANTIAGO CASTAÑO ARBOLEDA 	ANALISTA SERVICIO AL CLIENTE	sc12@aveonline.co
       // LAURA GALEANO BETANCUR	ANALISTA SERVICIO AL CLIENTE	sc11@aveonline.co
-
       // AMALIA GARCIA	ANALISTA SERVICIO AL CLIENTE	sc2@aveonline.co
       // JHOANA ANDREA PINEDA MUÑOZ	ANALISTA SERVICIO AL CLIENTE	jhoana.pineda@aveonline.co
-      // MARIA ALEJANDRA MURIEL MOLINA	ANALISTA SERVICIO AL CLIENTE	sc3@aveonline.co
+      // ALEJANDRA MURIEL MOLINA	ANALISTA SERVICIO AL CLIENTE	sc3@aveonline.co
+
       const email_asesor_comercial = list_asesor_comercial?.[n_asesor_comercial - 1];
 
       const admin = admins.find((e) => e.email === email_asesor_comercial);
