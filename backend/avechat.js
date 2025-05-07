@@ -112,7 +112,7 @@ class AveChat {
     return AveChatAdmin;
   }
   async sendMessage({ user_id, flow_id, message }) {
-    await this.saveCustomFields({
+    const saveCustomFields = await this.saveCustomFields({
       user_id,
       obj: {
         message,
@@ -122,7 +122,10 @@ class AveChat {
       url: `/users/${user_id}/send/${flow_id}`,
       method: "POST",
     });
-    return result;
+    return {
+      ...result,
+      saveCustomFields
+    };
   }
   async getUsersByCustomField({ key, value }) {
     const field_id = await this.getIdCustomField(key);

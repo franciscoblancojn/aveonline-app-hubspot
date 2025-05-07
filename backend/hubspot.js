@@ -126,6 +126,52 @@ class Hubspot {
     }
     return result?.results?.[0];
   }
+  async getConctactById({ ID }) {
+    const data = {
+      limit: 1,
+      properties: [
+        "phone",
+        "hs_object_id"
+      ],
+      filterGroups: [
+        {
+          filters: [{ propertyName: "hs_object_id", value: ID, operator: "EQ" }],
+        },
+      ],
+    };
+    const result = await this.onRequest({
+      url: `/contacts/search`,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    if(!result?.results?.[0]?.id){
+      throw new Error("contacts not found")
+    }
+    return result?.results?.[0];
+  }
+  async getCompanytById({ ID }) {
+    const data = {
+      limit: 1,
+      properties: [
+        "phone",
+        "hs_object_id"
+      ],
+      filterGroups: [
+        {
+          filters: [{ propertyName: "hs_object_id", value: ID, operator: "EQ" }],
+        },
+      ],
+    };
+    const result = await this.onRequest({
+      url: `/companies/search`,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    if(!result?.results?.[0]?.id){
+      throw new Error("companies not found")
+    }
+    return result?.results?.[0];
+  }
   async asignarCompanyToContact({ contact_id, company_id }) {
     const result = await this.onRequest({
       url: `/contacts/${contact_id}/associations/companies/${company_id}/contact_to_company`,

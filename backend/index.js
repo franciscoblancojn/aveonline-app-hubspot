@@ -856,6 +856,7 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
   try {
     accessTokenCache.set("ssss", req.body);
     const id_hs = req?.body?.object?.objectId;
+    const objectType = req?.body?.object?.objectType;
     accessTokenCache.set("id_hs", id_hs);
     if (!id_hs) {
       throw new Error("object.objectId is required");
@@ -865,15 +866,24 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
     if (!message) {
       throw new Error("inputFields.message is required");
     }
-    const users_by_id_hs = await aveChat.getUsersByCustomField({
-      key: "id_hs",
-      value: id_hs,
-    });
-    accessTokenCache.set("users_by_id_hs", users_by_id_hs);
-    const user_id = users_by_id_hs?.data?.[0]?.id;
+    //         "objectType": "CONTACT"
+    let userHs
+    if(objectType == "CONTACT"){
+      userHs = await hubspot.getConctactById({ID:id_hs})
+    }else{
+      userHs = await hubspot.getCompanytById({ID:id_hs})
+    }
+
+    if(!userHs){
+      throw new Error("object.objectId is invalid");
+    }
+    const prosesingPhone = (phone) => `${phone ?? ""}`.replace(/\D/g, "");
+    const user_id = prosesingPhone(userHs?.properties?.phone)
+
     if (!user_id) {
       throw new Error("object.objectId is invalid");
     }
+
     const result = await aveChat.sendMessage({
       user_id,
       message,
