@@ -209,7 +209,7 @@ class AveChat {
     return result;
   }
   async sendMessageTemplate({ user_id, flow_id, id_template }) {
-    await this.saveCustomFields({
+    const scf = await this.saveCustomFields({
       user_id,
       obj: {
         id_template,
@@ -219,7 +219,11 @@ class AveChat {
       url: `/users/${user_id}/send/${flow_id}`,
       method: "POST",
     });
-    return result;
+    return {
+      ...result,
+      scf,
+      user_id
+    };
   }
 }
 

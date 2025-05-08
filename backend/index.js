@@ -205,6 +205,7 @@ app.get("/error", (req, res) => {
 //   }
 // });
 
+//Permite guardar mensajes en Hubspot como Notas.
 app.post("/api/create-note", async (req, res) => {
   const accessToken = API_KEY;
   const contactId = req?.body?.contactId; // ID del contacto
@@ -273,6 +274,7 @@ app.post("/api/create-note", async (req, res) => {
   }
 });
 
+//Permite obtener datos guardados en cache, ya sea guardados manualmente o guardados por otros enpoints.
 app.get("/api/log", async (req, res) => {
   try {
     const cachedData = accessTokenCache.get(req?.query?.cache ?? "cache");
@@ -285,6 +287,7 @@ app.get("/api/log", async (req, res) => {
     });
   }
 });
+//Permite guardar datos guardados en cache manualmente.
 app.post("/api/log", async (req, res) => {
   try {
     accessTokenCache.set(req?.query?.cache ?? "cache", req.body);
@@ -297,6 +300,9 @@ app.post("/api/log", async (req, res) => {
     });
   }
 });
+
+//Enpoint que se ejecuta desde avechat después de crear un nuevo usuario.
+// Esta función crea e contacto en **hubspot**, luego crear una empresa(con los mismo datos del usuario), luego crear o conecta con un **lead en ave** y asigna un asesor comercial y logístico en caso de que lo tenga en ave, termina guardando dichos datos en avechat
 app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
   // "id": "573103557200",
   // "account_id": "1052476",
@@ -429,6 +435,8 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     });
   }
 });
+
+//Enpoint para crear un contacto en avechat manualmente y asignarle asesor comercial
 app.post("/api/ave-chat/create-contact", async (req, res) => {
   try {
     const id_user_ave = req.body.id;
@@ -483,6 +491,8 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
   }
 });
 
+
+//Enpoint para obtener el numero actual de la cola de asignación de asesor comercial.
 app.get("/api/n_asesor_comercial", async (req, res) => {
   try {
     let n_asesor_comercial = await count.getCount();
@@ -498,6 +508,9 @@ app.get("/api/n_asesor_comercial", async (req, res) => {
     });
   }
 });
+
+
+//Enpoint para aumentar en 1 el numero actual de la cola de asignación de asesor comercial.
 app.post("/api/n_asesor_comercial", async (req, res) => {
   try {
     let n_asesor_comercial = await count.getCount();
@@ -518,6 +531,8 @@ app.post("/api/n_asesor_comercial", async (req, res) => {
     });
   }
 });
+
+//Enpoint para asignar asesor comercial con la cola de asignación .
 app.post(
   "/api/callback/ave-chat/asignar-asesor-comercial",
   async (req, res) => {
@@ -583,7 +598,8 @@ app.post(
   }
 );
 
-//ASIGNAR ASESOR DESDE FLUJO
+
+//Enpoint para asignar asesor logistico con la cola de asignación.
 app.post(
   "/api/callback/ave-chat/asignar-asesor-logistico",
   async (req, res) => {
@@ -641,6 +657,9 @@ app.post(
     }
   }
 );
+
+
+// Enpoint para asignar asesor logistico pasado por parametros.
 app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
   try {
     const user_id = req.body.id;
@@ -674,13 +693,16 @@ app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
     });
   }
 });
+
+
+//Enpoint para guardar el chat del usuario en hubspot tomando la variable **all_chat** y validando con **time_last_input** si x mensaje ya se guardo en hubspot.
 app.post("/api/ave-chat/save-all-chat", async (req, res) => {
   try {
     accessTokenCache.set("chat-request", {
       query: req.query,
       body: req.body,
     });
-    const type = req.query.type; //logistico | comercial
+    const type = req.query.type; //logistico | comercial | cartera
     const id_hs = req.body.id_hs;
     const user_id = req.body.user_id;
     const time_last_input = req.body.time_last_input;
@@ -760,6 +782,9 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
     });
   }
 });
+
+
+//Enpoint para guardar variables personalizadas en un usuario.
 app.post("/api/ave-chat/change-custom-field", async (req, res) => {
   try {
     const user_id = req?.body?.user_id;
@@ -789,6 +814,9 @@ app.post("/api/ave-chat/change-custom-field", async (req, res) => {
     });
   }
 });
+
+
+//Enpoint para enviar un mensaje a un usuario.
 app.post("/api/ave-chat/send-message", async (req, res) => {
   try {
     const user_id = req?.body?.user_id;
@@ -819,6 +847,9 @@ app.post("/api/ave-chat/send-message", async (req, res) => {
     });
   }
 });
+
+
+//Enpoint que se ejecuta al enviar un mensaje a trabes de hubspot por medio de custon action "Avechat", este mensaje es almacenado y enviado al usuario por medio de avechat.
 app.post("/api/callback/hubspot/send-message", async (req, res) => {
   //   {
   //     "callbackId": "ap-47355542-1589400750477-3-0",
@@ -903,6 +934,7 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
     });
   }
 });
+
 app.post("/api/ave-chat/validate-date", async (req, res) => {
   try {
     const options = { timeZone: "America/Bogota", hour12: false };
@@ -947,6 +979,8 @@ app.post("/api/ave-chat/validate-date", async (req, res) => {
     });
   }
 });
+
+//Enpoint para crear company en hubspot.
 app.post("/api/hubspot/create-company", async (req, res) => {
   try {
     const result = await hubspot.crearCompany({
@@ -968,6 +1002,8 @@ app.post("/api/hubspot/create-company", async (req, res) => {
     });
   }
 });
+
+//Enpoint que se ejecuta cuando se crea un usuario en hubspot, este crear el contacto en avechat si no existe.
 app.post("/api/callback/hubspot/create-conctact", async (req, res) => {
   try {
     accessTokenCache.set(req?.query?.cache ?? "create-conctact", req.body);
@@ -1007,6 +1043,8 @@ app.post("/api/callback/hubspot/create-conctact", async (req, res) => {
     });
   }
 });
+
+//Enpoint que se ejecuta cuando se cambia el **NIT** en avechat, busca una company que tenga ese nit como documento, si al encuentra tomas su asesor comercial y logístico, y se lo asigna en avechat.
 app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
   try {
     const NIT = req?.body?.NIT ?? "";
@@ -1077,6 +1115,7 @@ app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
   }
 });
 
+//Enpoint para cambiar el **NIT** y **id_company_hs** manualmente .
 app.post("/api/ave-chat/change-nit", async (req, res) => {
   try {
     const phone = req?.body?.phone ?? "";
@@ -1113,9 +1152,12 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
   }
 });
 
+
+//Enpoint que se ejecuta al enviar un tempate a trabes de hubspot por medio de custon action "Avechat Enviar Template", este mensaje es almacenado y enviado al usuario por medio de avechat campañas.
 app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
   try {
     const id_hs = req?.body?.object?.objectId;
+    const objectType = req?.body?.object?.objectType;
     accessTokenCache.set("id_hs", id_hs);
     // throw 1
     if (!id_hs) {
@@ -1126,41 +1168,29 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
     if (!template) {
       throw new Error("inputFields.template is required");
     }
+
+
+    let userHs
+    if(objectType == "CONTACT"){
+      userHs = await hubspot.getConctactById({ID:id_hs})
+    }else{
+      userHs = await hubspot.getCompanytById({ID:id_hs})
+    }
+    if(!userHs){
+      throw new Error("object.objectId is invalid");
+    }
+    const prosesingPhone = (phone) => `${phone ?? ""}`.replace(/\D/g, "");
+    const user_id = prosesingPhone(userHs?.properties?.phone)
+
+    if (!user_id) {
+      throw new Error("object.objectId is invalid");
+    }
+
     const users_by_id_hs = await aveChatCampana.getUsersByCustomField({
       key: "id_hs",
       value: id_hs,
     });
     accessTokenCache.set("users_by_id_hs", users_by_id_hs);
-    let user_id = (users_by_id_hs?.data?.[0] ?? {})?.id ?? null;
-    if (!user_id) {
-      const first_name = req?.body?.object?.properties?.firstname;
-      const last_name = req?.body?.object?.properties?.lastname;
-      const phone = req?.body?.object?.properties?.phone;
-      const email = req?.body?.object?.properties?.email;
-      const id_avechat = phone.replace(/\D/g, "");
-      const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
-      if (phone) {
-        const resutCreate = await aveChatCampana.createUser({
-          first_name,
-          last_name,
-          phone,
-          email,
-        });
-        user_id = id_avechat;
-        // console.log({user_id});
-        const resutCustonField = await aveChatCampana.saveCustomFields({
-          user_id,
-          obj: {
-            id_hs,
-            url_hs,
-          },
-        });
-        // console.log(resutCustonField);
-        
-      } else {
-        throw new Error("object.objectId is invalid");
-      }
-    }
     const result = await aveChatCampana.sendMessageTemplate({
       user_id,
       id_template: template,
