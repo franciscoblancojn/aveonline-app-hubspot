@@ -1,10 +1,12 @@
-**Api**
+# Api
+
 Hubspot y avechat se comunican por medio de un api intermedia alojada en https://avechat-hubspot.api.aveonline.co
 
-**Enpoints**
+## Enpoints
+
 El api intermedia tiene distintos enpoints para distintas funcionalidades:
 
-1. **[POST] /api/create-note**
+1. ### **[POST] /api/create-note**
    Permite guardar mensajes en Hubspot como Notas.
 
 ```js
