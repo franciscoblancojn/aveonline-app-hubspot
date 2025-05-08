@@ -17,7 +17,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-2. **[GET] /api/log?cache=key**
+2. ### **[GET] /api/log?cache=key**
    Permite obtener datos guardados en cache, ya sea guardados manualmente o guardados por otros enpoints.
 
 ```js
@@ -29,7 +29,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-3. **[POST] /api/log?cache=key**
+3. ### **[POST] /api/log?cache=key**
    Permite guardar datos guardados en cache manualmente.
 
 ```js
@@ -39,7 +39,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-4. **[POST] /api/callback/ave-chat/create-contact**
+4. ### **[POST] /api/callback/ave-chat/create-contact**
    Enpoint que se ejecuta desde avechat después de crear un nuevo usuario.
    Esta función crea e contacto en **hubspot**, luego crear una empresa(con los mismo datos del usuario), luego crear o conecta con un **lead en ave** y asigna un asesor comercial y logístico en caso de que lo tenga en ave, termina guardando dichos datos en avechat
 
@@ -55,7 +55,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-5. **[POST] /api/ave-chat/create-contact**
+5. ### **[POST] /api/ave-chat/create-contact**
    Enpoint para crear un contacto en avechat manualmente y asignarle asesor comercial
 
 ```js
@@ -72,7 +72,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-6. **[GET] /api/n_asesor_comercial**
+6. ### **[GET] /api/n_asesor_comercial**
    Enpoint para obtener el numero actual de la cola de asignación de asesor comercial.
 
 ```js
@@ -83,10 +83,10 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-7. **[POST] /api/n_asesor_comercial**
+7. ### **[POST] /api/n_asesor_comercial**
    Enpoint para aumentar en 1 el numero actual de la cola de asignación de asesor comercial.
 
-8. **[POST] /api/callback/ave-chat/asignar-asesor-comercial**
+8. ### **[POST] /api/callback/ave-chat/asignar-asesor-comercial**
    Enpoint para asignar asesor comercial con la cola de asignación .
 
 ```js
@@ -96,7 +96,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-9. **[POST] /api/callback/ave-chat/asignar-asesor-logistico**
+9. ### **[POST] /api/callback/ave-chat/asignar-asesor-logistico**
    Enpoint para asignar asesor logistico con la cola de asignación.
 
 ```js
@@ -106,7 +106,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-10. **[POST] /api/ave-chat/asignar-asesor-logistico**
+10. ### **[POST] /api/ave-chat/asignar-asesor-logistico**
     Enpoint para asignar asesor logistico pasado por parametros.
 
 ```js
@@ -117,7 +117,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-11. **[POST] /api/ave-chat/save-all-chat?type=(logistico | comercial |cartera)**
+11. ### **[POST] /api/ave-chat/save-all-chat?type=(logistico | comercial |cartera)**
     Enpoint para guardar el chat del usuario en hubspot tomando la variable **all_chat** y validando con **time_last_input** si x mensaje ya se guardo en hubspot.
 
 ```js
@@ -136,7 +136,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-12. **[POST] /api/ave-chat/change-custom-field**
+12. ### **[POST] /api/ave-chat/change-custom-field**
     Enpoint para guardar variables personalizadas en un usuario.
 
 ```js
@@ -151,7 +151,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-13. **[POST] /api/ave-chat/send-message**
+13. ### **[POST] /api/ave-chat/send-message**
     Enpoint para enviar un mensaje a un usuario.
 
 ```js
@@ -162,7 +162,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-14. **[POST] /api/callback/hubspot/send-message**
+14. ### **[POST] /api/callback/hubspot/send-message**
     Enpoint que se ejecuta al enviar un mensaje a trabes de hubspot por medio de custon action "Avechat", este mensaje es almacenado y enviado al usuario por medio de avechat.
 
 ```js
@@ -202,7 +202,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-15. **[POST] /api/hubspot/create-company**
+15. ### **[POST] /api/hubspot/create-company**
     Enpoint para crear company en hubspot.
 
 ```js
@@ -214,10 +214,10 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-16. **[POST] /api/callback/hubspot/create-conctact**
+16. ### **[POST] /api/callback/hubspot/create-conctact**
     Enpoint que se ejecuta cuando se crea un usuario en hubspot, este crear el contacto en avechat si no existe.
 
-17. **[POST] /api/callback/ave-chat/change-nit**
+17. ### **[POST] /api/callback/ave-chat/change-nit**
     Enpoint que se ejecuta cuando se cambia el **NIT** en avechat, busca una company que tenga ese nit como documento, si al encuentra tomas su asesor comercial y logístico, y se lo asigna en avechat.
 
 ```js
@@ -229,7 +229,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-18. **[POST] /api/ave-chat/change-nit**
+18. ### **[POST] /api/ave-chat/change-nit**
     Enpoint para cambiar el **NIT** y **id_company_hs** manualmente .
 
 ```js
@@ -241,7 +241,7 @@ El api intermedia tiene distintos enpoints para distintas funcionalidades:
 }
 ```
 
-19. **[POST] /api/callback/hubspot/send-message-template**
+19. ### **[POST] /api/callback/hubspot/send-message-template**
     Enpoint que se ejecuta al enviar un tempate a trabes de hubspot por medio de custon action "Avechat Enviar Template", este mensaje es almacenado y enviado al usuario por medio de avechat campañas.
 
 ```js
