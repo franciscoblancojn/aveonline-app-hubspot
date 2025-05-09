@@ -1,4 +1,4 @@
-import { AVECHAT_LIST_CAMPANA } from "../data/avechat-campana";
+import { AVECHAT_LIST_CAMPANA } from "../../data/avechat-campana";
 
 const main = async () => {
   try {

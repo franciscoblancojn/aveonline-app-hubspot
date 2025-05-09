@@ -1,0 +1,344 @@
+{
+	"info": {
+		"_postman_id": "81b10921-2566-44f8-b22a-273b7f301648",
+		"name": "Hubsport Custom Action",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10596157"
+	},
+	"item": [
+		{
+			"name": "Enviar mensajes por AveChat CREATE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n\n{\n  \"id\": \"my_custom_action\",\n  \"label\": \"Enviar datos a API externa\",\n  \"actionUrl\": \"https://franciscoblanco.vercel.app/api/cache?id=test\",\n  \"objectTypes\": [\"CONTACT\"],\n  \"inputFields\": [\n    {\n      \"typeDefinition\": {\n        \"name\": \"staticInput\",\n        \"type\": \"enumeration\",\n        \"fieldType\": \"select\",\n        \"options\": [\n          {\n            \"value\": \"red\",\n            \"label\": \"Red\"\n          },\n          {\n            \"value\": \"blue\",\n            \"label\": \"Blue\"\n          },\n          {\n            \"value\": \"green\",\n            \"label\": \"Green\"\n          }\n        ]\n      },\n      \"supportedValueTypes\": [\"STATIC_VALUE\"],\n      \"isRequired\": true\n    }\n  ],\n  \"objectRequestOptions\": {\n    \"properties\": [\"email\"]\n  },\n  \"labels\": {\n    \"en\": {\n      \"inputFieldLabels\": {\n        \"staticInput\": \"Static Input\",\n        \"objectInput\": \"Object Property Input\",\n        \"optionsInput\": \"External Options Input\"\n      },\n      \"actionName\": \"My Extension\",\n      \"actionDescription\": \"My Extension Description\",\n      \"appDisplayName\": \"My App Display Name\",\n      \"actionCardContent\": \"My Action Card Content\"\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.hubapi.com/automation/v4/actions/{{idApp}}?hapikey={{hapikey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"hubapi",
+						"com"
+					],
+					"path": [
+						"automation",
+						"v4",
+						"actions",
+						"{{idApp}}"
+					],
+					"query": [
+						{
+							"key": "hapikey",
+							"value": "{{hapikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enviar mensajes por AveChat UPDATE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n\n{\n    \"label\": \"Enviar mensajes por AveChat\",\n    \"actionUrl\": \"https://avechat-hubspot.api.aveonline.co/api/callback/hubspot/send-message\",\n    \"objectTypes\": [\"CONTACT\",\"COMPANY\"],\n    \"published\":true,\n    \"inputFields\": [\n      {\n        \"typeDefinition\": {\n          \"name\": \"message\",\n          \"type\": \"string\",\n          \"fieldType\": \"textarea\",\n          \"label\": \"Mensaje a enviar\",\n          \"description\": \"Tenga en cuenta que el mensaje tiene este formato : Hola {{name}}, quería comentarte que {{message}}\"\n        },\n        \"label\": \"Mensaje a enviar\",\n        \"description\": \"Tenga en cuenta que el mensaje tiene este formato : Hola {{name}}, quería comentarte que {{message}}\",\n        \"supportedValueTypes\": [\"STATIC_VALUE\"],\n        \"isRequired\": false\n      }\n    ],\n    \"objectRequestOptions\": {\n      \"properties\": [\n            \"id\",\n            \"email\",\n            \"phone\",\n            \"firstname\",\n            \"lastname\",\n            \"name\"\n      ]\n    },\n    \"labels\": {\n      \"en\": {\n        \"inputFieldLabels\": {\n          \"message\": \"Mensaje a enviar\"\n        },\n        \"inputFieldDescriptions\": {\n          \"message\": \"Tenga en cuenta que el mensaje tiene este formato : Hola {{name}}, quería comentarte que {{message}}\"\n        },\n        \"actionName\": \"AveChat\",\n        \"actionDescription\": \"Enviar mensajes por AveChat\",\n        \"appDisplayName\": \"AveChat\",\n        \"actionCardContent\": \"AveChat\"\n      }\n    }\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.hubapi.com/automation/v4/actions/{{idApp}}/{{id_action_send_message}}?hapikey={{hapikey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"hubapi",
+						"com"
+					],
+					"path": [
+						"automation",
+						"v4",
+						"actions",
+						"{{idApp}}",
+						"{{id_action_send_message}}"
+					],
+					"query": [
+						{
+							"key": "hapikey",
+							"value": "{{hapikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action Create Contact CREATE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n\n{\n  \"id\": \"avechat_create_contact\",\n  \"label\": \"Crear Contacto Avechat\",\n  \"actionUrl\": \"https://franciscoblanco.vercel.app/api/cache?id=test\",\n  \"objectTypes\": [\"CONTACT\"],\n  \"objectRequestOptions\": {\n    \"properties\": [\"email\",\"id\",\"phone\"]\n  },\n  \"labels\": {\n    \"en\": {\n      \"actionName\": \"Crear Contacto Avechat\",\n      \"actionDescription\": \"Hook a ejecutar despues de crear un contacto\",\n      \"appDisplayName\": \"Crear Contacto Avechat\",\n      \"actionCardContent\": \"Crear Contacto Avechat\"\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.hubapi.com/automation/v4/actions/{{idApp}}?hapikey={{hapikey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"hubapi",
+						"com"
+					],
+					"path": [
+						"automation",
+						"v4",
+						"actions",
+						"{{idApp}}"
+					],
+					"query": [
+						{
+							"key": "hapikey",
+							"value": "{{hapikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action Create Contact UPDATE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n\n{\n  \"label\": \"Crear Contacto Avechat\",\n  \"name\": \"Crear Contacto Avechat\",\n  \"actionUrl\": \"https://avechat-hubspot.api.aveonline.co/api/callback/hubspot/create-conctact\",\n    \"published\":true,\n  \"objectTypes\": [\"CONTACT\",\"COMPANY\"],\n  \"objectRequestOptions\": {\n    \"properties\": [\"email\",\"id\",\"phone\",\"firstname\",\"lastname\"]\n  },\n  \"labels\": {\n    \"en\": {\n      \"actionName\": \"Crear Contacto Avechat\",\n      \"actionDescription\": \"Hook a ejecutar despues de crear un contacto\",\n      \"appDisplayName\": \"Crear Contacto Avechat\",\n      \"actionCardContent\": \"Crear Contacto Avechat\"\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.hubapi.com/automation/v4/actions/{{idApp}}/{{id_action_create_contact}}?hapikey={{hapikey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"hubapi",
+						"com"
+					],
+					"path": [
+						"automation",
+						"v4",
+						"actions",
+						"{{idApp}}",
+						"{{id_action_create_contact}}"
+					],
+					"query": [
+						{
+							"key": "hapikey",
+							"value": "{{hapikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action Send Template CREATE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n\n{\n  \"id\": \"avechat_create_contact\",\n  \"label\": \"Avechat Enviar Template\",\n  \"actionUrl\": \"https://franciscoblanco.vercel.app/api/cache?id=test\",\n  \"objectTypes\": [\"CONTACT\"],\n  \"objectRequestOptions\": {\n    \"properties\": [\"email\",\"id\",\"phone\"]\n  },\n  \"labels\": {\n    \"en\": {\n      \"actionName\": \"Avechat Enviar Template\",\n      \"actionDescription\": \"Hook a ejecutar para enviar Template de mensaje por Avechat\",\n      \"appDisplayName\": \"Avechat Enviar Template\",\n      \"actionCardContent\": \"Avechat Enviar Template\"\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.hubapi.com/automation/v4/actions/{{idApp}}?hapikey={{hapikey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"hubapi",
+						"com"
+					],
+					"path": [
+						"automation",
+						"v4",
+						"actions",
+						"{{idApp}}"
+					],
+					"query": [
+						{
+							"key": "hapikey",
+							"value": "{{hapikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Action Send Template UPDATE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"published\": true,\n  \"label\": \"Avechat Enviar Template\",\n  \"actionUrl\": \"https://franciscoblanco.vercel.app/api/cache?id=test\",\n  \"objectTypes\": [\n    \"CONTACT\",\"COMPANY\"\n  ],\n  \"inputFields\": [\n    {\n      \"typeDefinition\": {\n        \"name\": \"template\",\n        \"label\": \"Template\",\n        \"type\": \"enumeration\",\n        \"fieldType\": \"select\",\n        \"options\": [\n          {\n            \"value\": \"red\",\n            \"label\": \"Red\"\n          },\n          {\n            \"value\": \"blue\",\n            \"label\": \"Blue\"\n          },\n          {\n            \"value\": \"green\",\n            \"label\": \"Green\"\n          }\n        ],\n        \"isRequired\": false,\n        \"description\": \"Plantillar el template que se va a usar para enviar el mensaje\"\n      },\n      \"label\": \"Template\",\n      \"description\": \"Plantillar el template que se va a usar para enviar el mensaje\",\n      \"supportedValueTypes\": [\n        \"STATIC_VALUE\"\n      ],\n      \"isRequired\": false\n    }\n  ],\n  \"supportedValueTypes\": [\"STATIC_VALUE\"],\n  \"objectRequestOptions\": {\n    \"properties\": [\n      \"email\",\n      \"id\",\n      \"phone\"\n    ]\n  },\n  \"labels\": {\n    \"en\": {\n      \"inputFieldLabels\": {\n        \"template\": \"Template\"\n      },\n      \"inputFieldDescriptions\": {\n        \"template\": \"Plantillar el template que se va a usar para enviar el mensaje\"\n      },\n      \"actionName\": \"Avechat Enviar Template\",\n      \"actionDescription\": \"Hook a ejecutar para enviar Template de mensaje por Avechat\",\n      \"appDisplayName\": \"Avechat Enviar Template\",\n      \"actionCardContent\": \"Avechat Enviar Template\"\n    }\n  }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.hubapi.com/automation/v4/actions/{{idApp}}/{{id_action_send_templante}}?hapikey={{hapikey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"hubapi",
+						"com"
+					],
+					"path": [
+						"automation",
+						"v4",
+						"actions",
+						"{{idApp}}",
+						"{{id_action_send_templante}}"
+					],
+					"query": [
+						{
+							"key": "hapikey",
+							"value": "{{hapikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hapikey",
+			"value": "d74a0dc6-71df-439e-80e3-b905a69fa823",
+			"type": "string"
+		},
+		{
+			"key": "idApp",
+			"value": "9277520",
+			"type": "string"
+		},
+		{
+			"key": "id_action_send_message",
+			"value": "201903771",
+			"type": "string"
+		},
+		{
+			"key": "id_action_create_contact",
+			"value": "204012702",
+			"type": "string"
+		},
+		{
+			"key": "id_action_send_templante",
+			"value": "205664900",
+			"type": "string"
+		}
+	]
+}
