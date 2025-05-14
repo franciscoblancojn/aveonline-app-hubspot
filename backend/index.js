@@ -381,28 +381,25 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     const asesor_comercial = ASESORES.find((e) => e.id == idAssessor);
     const asesor_logistico = ASESORES.find((e) => e.id == idlogistico);
 
-    const tipo_asesor = asesor_logistico
-      ? "logistico"
-      : asesor_comercial
-      ? "comercial"
-      : "cartera";
 
-    const name_asesor_logistico = asesor_logistico?.dsnombre;
-    const name_asesor_logistico_inicial = asesor_logistico?.dsnombre;
-    const id_asesor_logistico = asesor_logistico?.id;
-    const id_asesor_logistico_inicial = asesor_logistico?.id;
-    const id_asesor_logistico_hs = asesor_logistico?.hubspot;
     const email_asesor_logistico = asesor_logistico?.dscorreo;
-    const email_asesor_logistico_inicial = asesor_logistico?.dscorreo;
-
-    const name_asesor_comercial = asesor_comercial?.dsnombre;
-    const name_asesor_comercial_inicial = asesor_comercial?.dsnombre;
-    const id_asesor_comercial = asesor_comercial?.id;
-    const id_asesor_comercial_inicial = asesor_comercial?.id;
-    const id_asesor_comercial_hs = asesor_comercial?.hubspot;
+    
     const email_asesor_comercial = asesor_comercial?.dscorreo;
-    const email_asesor_comercial_inicial = asesor_comercial?.dscorreo;
 
+    accessTokenCache.set("/api/callback/ave-chat/create-contact/saveCustomFields", {
+      user_id: req.body.id,
+      obj: {
+        id_hs,
+        id_company_hs,
+        url_hs,
+        id_user_ave,
+        id_lead: id_user_ave,
+        url_ave_pre_register,
+        id_empresa_ave,
+        email_asesor_logistico,
+        email_asesor_comercial,
+      },
+    });
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
       user_id: req.body.id,
       obj: {
@@ -413,21 +410,8 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
         id_lead: id_user_ave,
         url_ave_pre_register,
         id_empresa_ave,
-        tipo_asesor,
-        name_asesor_logistico,
-        name_asesor_logistico_inicial,
-        id_asesor_logistico,
-        id_asesor_logistico_inicial,
-        id_asesor_logistico_hs,
         email_asesor_logistico,
-        email_asesor_logistico_inicial,
-        name_asesor_comercial,
-        name_asesor_comercial_inicial,
-        id_asesor_comercial,
-        id_asesor_comercial_inicial,
-        id_asesor_comercial_hs,
         email_asesor_comercial,
-        email_asesor_comercial_inicial,
       },
     });
     accessTokenCache.set(
