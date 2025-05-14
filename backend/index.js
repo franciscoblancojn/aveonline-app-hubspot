@@ -431,7 +431,11 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       message: "✅ Contacto creado correctamente.",
     });
   } catch (error) {
-    accessTokenCache.set("create-contact-error", error);
+    accessTokenCache.set("/api/callback/ave-chat/create-contact/error", {
+      success: false,
+      message: "❌ Error al crear el contacto.",
+      error: error.message,
+    });
     return res.status(500).json({
       success: false,
       message: "❌ Error al crear el contacto.",
