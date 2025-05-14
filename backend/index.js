@@ -351,6 +351,14 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     const country = await csc.getCountrysByCode({ code });
     const indicativo_telefono = country?.code_phone ?? "";
     const phone = prosesingPhone(`+${req.body.id}`.replaceAll(indicativo_telefono, ""));
+    accessTokenCache.set("/api/callback/ave-chat/create-contact/pre_crearLead", {
+      id_aveChat: req.body.id,
+      name: `${req.body.first_name} ${req.body.last_name}`,
+      phone,
+      id_hs,
+      indicativo_telefono,
+      id_company_hs,
+    });
     const userAve = await ave.crearLead({
       id_aveChat: req.body.id,
       name: `${req.body.first_name} ${req.body.last_name}`,
@@ -359,6 +367,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       indicativo_telefono,
       id_company_hs,
     });
+    accessTokenCache.set("/api/callback/ave-chat/create-contact/userAve", userAve);
     const id_empresa_ave = userAve?.data?.company?.idempresa;
     const id_user_ave = userAve?.data?.lead?.id;
     const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
