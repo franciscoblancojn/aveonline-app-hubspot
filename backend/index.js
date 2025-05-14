@@ -50,6 +50,7 @@ const aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA,{campana: true});
 const ave = new Ave();
 const csc = new CSC();
 const count = new Count();
+const prosesingPhone = (phone) => `${phone ?? ""}`.replace(/\D/g, "");
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
@@ -348,8 +349,8 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     }
     const code = req?.body?.locale?.split?.("_")?.[1] ?? "";
     const country = await csc.getCountrysByCode({ code });
-    const indicativo_telefono = country.code_phone;
-    const phone = `${req.body.phone}`.replaceAll(indicativo_telefono, "");
+    const indicativo_telefono = country?.code_phone ?? "";
+    const phone = prosesingPhone(`+${req.body.id}`.replaceAll(indicativo_telefono, ""));
     const userAve = await ave.crearLead({
       id_aveChat: req.body.id,
       name: `${req.body.first_name} ${req.body.last_name}`,
@@ -364,6 +365,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     const idAssessor = userAve?.data?.lead?.idAssessor;
     const idlogistico = userAve?.data?.company?.idlogistico;
 
+    accessTokenCache.set("/api/callback/ave-chat/create-contact/pre", {id_user_ave,id_empresa_ave});
     if (!id_user_ave && !id_empresa_ave) {
       throw new Error("user ave not created");
     }
