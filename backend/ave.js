@@ -27,7 +27,7 @@ class Ave {
       method: "POST",
       body: JSON.stringify({
         name,
-        phone,
+        phone:`${phone ?? ''}`.slice(0,10),
         id_hs,
         id_company_hs,
         id_keybe: id_aveChat,
