@@ -340,6 +340,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       name: req?.body?.first_name,
       phone: req?.body?.id,
     });
+    accessTokenCache.set("create-company-hubspot", companyHubspot);
     const id_company_hs = companyHubspot?.id;
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
     if (!id_hs) {
