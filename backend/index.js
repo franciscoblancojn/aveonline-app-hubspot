@@ -324,6 +324,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
   // "last_interaction": "1741903672000",
   // "subscribed_date": "2025-03-13 22:07:52",
   // "subscribed": "1"
+    accessTokenCache.set("/api/callback/ave-chat/create-contact", req.body);
   try {
     const userHubspot = await hubspot.crearContact({
       email: req.body.email,
