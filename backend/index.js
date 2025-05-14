@@ -1186,11 +1186,6 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
       throw new Error("object.objectId is invalid");
     }
 
-    const users_by_id_hs = await aveChatCampana.getUsersByCustomField({
-      key: "id_hs",
-      value: id_hs,
-    });
-    accessTokenCache.set("users_by_id_hs", users_by_id_hs);
     const result = await aveChatCampana.sendMessageTemplate({
       user_id,
       id_template: template,
@@ -1201,6 +1196,8 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
       success: true,
       message: "✅ Mensaje enviado correctamente.",
       result,
+      user_id,
+      id_template: template,
     });
   } catch (error) {
     return res.status(500).json({
