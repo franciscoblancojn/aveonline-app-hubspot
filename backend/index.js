@@ -1184,7 +1184,7 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
     const user_id = prosesingPhone(userHs?.properties?.phone)
 
     if (!user_id) {
-      throw new Error("object.objectId is invalid");
+      throw new Error("phone is invalid");
     }
 
     const result = await aveChatCampana.sendMessageTemplate({
