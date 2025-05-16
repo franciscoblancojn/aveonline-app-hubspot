@@ -215,12 +215,12 @@ class AveChat {
         id_template,
       },
     });
-    const result = await this.onRequest({
-      url: `/users/${user_id}/send/${flow_id}`,
-      method: "POST",
-    });
+    // const result = await this.onRequest({
+    //   url: `/users/${user_id}/send/${flow_id}`,
+    //   method: "POST",
+    // });
     return {
-      ...result,
+      // ...result,
       scf,
       user_id
     };
