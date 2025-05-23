@@ -96,7 +96,23 @@ const AVECHAT_LIST_CAMPANA = [
     "venta_cruzada_clientes_activos8",
     "venta_cruzada_clientes_activos9",
     "verificacion_codigo_seguridad",
-    "won_salescard_trigger_template"
+    "won_salescard_trigger_template",
+
+    "creacion_de_empresa_onboarding_3",
+    "creacion_de_empresa_onboarding_2",
+    "confirmacion_correo3",
+    "creacion_de_empresa_onboarding_1",
+    "confirmacion_correo2",
+    "registrado_onboarding_3",
+    "confirmacion_correo1",
+    "registrado_onboarding_2",
+    "preregistro_onboarding3",
+    "registrado_onboarding_1",
+    "preregistro_onboarding2",
+    "preregistro_onboarding1",
+    "potencial_onboarding_3",
+    "potencial_onboarding_2",
+    "potencial_unboarding",
 ]
 module.exports = {
     AVECHAT_LIST_CAMPANA
