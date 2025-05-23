@@ -112,7 +112,7 @@ const AVECHAT_LIST_CAMPANA = [
     "preregistro_onboarding1",
     "potencial_onboarding_3",
     "potencial_onboarding_2",
-    "potencial_unboarding",
+    "potencial_unboarding_1",
 ]
 module.exports = {
     AVECHAT_LIST_CAMPANA
