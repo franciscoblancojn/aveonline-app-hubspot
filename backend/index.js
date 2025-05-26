@@ -328,7 +328,6 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     accessTokenCache.set("/api/callback/ave-chat/create-contact", req.body);
   try {
     const userHubspot = await hubspot.crearContact({
-      email: req.body.email,
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       phone: req.body.id,
