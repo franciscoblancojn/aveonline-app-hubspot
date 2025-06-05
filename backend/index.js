@@ -46,7 +46,7 @@ const FLOW_ID_CAMPANA = process.env.FLOW_ID_CAMPANA;
 
 const hubspot = new Hubspot(API_KEY);
 const aveChat = new AveChat(TOKEN_AVECHAT);
-const aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA,{campana: true});
+const aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA, { campana: true });
 const ave = new Ave();
 const csc = new CSC();
 const count = new Count();
@@ -325,7 +325,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
   // "last_interaction": "1741903672000",
   // "subscribed_date": "2025-03-13 22:07:52",
   // "subscribed": "1"
-    accessTokenCache.set("/api/callback/ave-chat/create-contact", req.body);
+  accessTokenCache.set("/api/callback/ave-chat/create-contact", req.body);
   try {
     const userHubspot = await hubspot.crearContact({
       first_name: req.body.first_name,
@@ -349,15 +349,20 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     const code = req?.body?.locale?.split?.("_")?.[1] ?? "";
     const country = await csc.getCountrysByCode({ code });
     const indicativo_telefono = country?.code_phone ?? "";
-    const phone = prosesingPhone(`+${req.body.id}`.replaceAll(indicativo_telefono, ""));
-    accessTokenCache.set("/api/callback/ave-chat/create-contact/pre_crearLead", {
-      id_aveChat: req.body.id,
-      name: `${req.body.first_name} ${req.body.last_name}`,
-      phone,
-      id_hs,
-      indicativo_telefono,
-      id_company_hs,
-    });
+    const phone = prosesingPhone(
+      `+${req.body.id}`.replaceAll(indicativo_telefono, "")
+    );
+    accessTokenCache.set(
+      "/api/callback/ave-chat/create-contact/pre_crearLead",
+      {
+        id_aveChat: req.body.id,
+        name: `${req.body.first_name} ${req.body.last_name}`,
+        phone,
+        id_hs,
+        indicativo_telefono,
+        id_company_hs,
+      }
+    );
     const userAve = await ave.crearLead({
       id_aveChat: req.body.id,
       name: `${req.body.first_name} ${req.body.last_name}`,
@@ -366,39 +371,47 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       indicativo_telefono,
       id_company_hs,
     });
-    accessTokenCache.set("/api/callback/ave-chat/create-contact/userAve", userAve);
+    accessTokenCache.set(
+      "/api/callback/ave-chat/create-contact/userAve",
+      userAve
+    );
     const id_empresa_ave = userAve?.data?.company?.idempresa;
     const id_user_ave = userAve?.data?.lead?.id;
     const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
     const idAssessor = userAve?.data?.lead?.idAssessor;
     const idlogistico = userAve?.data?.company?.idlogistico;
 
-    accessTokenCache.set("/api/callback/ave-chat/create-contact/pre", {id_user_ave,id_empresa_ave});
+    accessTokenCache.set("/api/callback/ave-chat/create-contact/pre", {
+      id_user_ave,
+      id_empresa_ave,
+    });
     if (!id_user_ave && !id_empresa_ave) {
       throw new Error("user ave not created");
     }
     const asesor_comercial = ASESORES.find((e) => e.id == idAssessor);
     const asesor_logistico = ASESORES.find((e) => e.id == idlogistico);
 
-
     const email_asesor_logistico = asesor_logistico?.dscorreo;
-    
+
     const email_asesor_comercial = asesor_comercial?.dscorreo;
 
-    accessTokenCache.set("/api/callback/ave-chat/create-contact/saveCustomFields", {
-      user_id: req.body.id,
-      obj: {
-        id_hs,
-        id_company_hs,
-        url_hs,
-        id_user_ave,
-        id_lead: id_user_ave,
-        url_ave_pre_register,
-        id_empresa_ave,
-        email_asesor_logistico,
-        email_asesor_comercial,
-      },
-    });
+    accessTokenCache.set(
+      "/api/callback/ave-chat/create-contact/saveCustomFields",
+      {
+        user_id: req.body.id,
+        obj: {
+          id_hs,
+          id_company_hs,
+          url_hs,
+          id_user_ave,
+          id_lead: id_user_ave,
+          url_ave_pre_register,
+          id_empresa_ave,
+          email_asesor_logistico,
+          email_asesor_comercial,
+        },
+      }
+    );
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
       user_id: req.body.id,
       obj: {
@@ -491,7 +504,6 @@ app.post("/api/ave-chat/create-contact", async (req, res) => {
   }
 });
 
-
 //Enpoint para obtener el numero actual de la cola de asignación de asesor comercial.
 app.get("/api/n_asesor_comercial", async (req, res) => {
   try {
@@ -508,7 +520,6 @@ app.get("/api/n_asesor_comercial", async (req, res) => {
     });
   }
 });
-
 
 //Enpoint para aumentar en 1 el numero actual de la cola de asignación de asesor comercial.
 app.post("/api/n_asesor_comercial", async (req, res) => {
@@ -564,7 +575,8 @@ app.post(
       // JHOANA ANDREA PINEDA MUÑOZ	ANALISTA SERVICIO AL CLIENTE	jhoana.pineda@aveonline.co
       // ALEJANDRA MURIEL MOLINA	ANALISTA SERVICIO AL CLIENTE	sc3@aveonline.co
 
-      const email_asesor_comercial = list_asesor_comercial?.[n_asesor_comercial - 1];
+      const email_asesor_comercial =
+        list_asesor_comercial?.[n_asesor_comercial - 1];
 
       const admin = admins.find((e) => e.email === email_asesor_comercial);
 
@@ -597,7 +609,6 @@ app.post(
     }
   }
 );
-
 
 //Enpoint para asignar asesor logistico con la cola de asignación.
 app.post(
@@ -652,12 +663,11 @@ app.post(
         success: false,
         message: "❌ Error al asiganar el Asesor.",
         error: error.message,
-        err:error
+        err: error,
       });
     }
   }
 );
-
 
 // Enpoint para asignar asesor logistico pasado por parametros.
 app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
@@ -693,7 +703,6 @@ app.post("/api/ave-chat/asignar-asesor-logistico", async (req, res) => {
     });
   }
 });
-
 
 //Enpoint para guardar el chat del usuario en hubspot tomando la variable **all_chat** y validando con **time_last_input** si x mensaje ya se guardo en hubspot.
 app.post("/api/ave-chat/save-all-chat", async (req, res) => {
@@ -783,7 +792,6 @@ app.post("/api/ave-chat/save-all-chat", async (req, res) => {
   }
 });
 
-
 //Enpoint para guardar variables personalizadas en un usuario.
 app.post("/api/ave-chat/change-custom-field", async (req, res) => {
   try {
@@ -814,7 +822,6 @@ app.post("/api/ave-chat/change-custom-field", async (req, res) => {
     });
   }
 });
-
 
 //Enpoint para enviar un mensaje a un usuario.
 app.post("/api/ave-chat/send-message", async (req, res) => {
@@ -847,7 +854,6 @@ app.post("/api/ave-chat/send-message", async (req, res) => {
     });
   }
 });
-
 
 //Enpoint que se ejecuta al enviar un mensaje a trabes de hubspot por medio de custon action "Avechat", este mensaje es almacenado y enviado al usuario por medio de avechat.
 app.post("/api/callback/hubspot/send-message", async (req, res) => {
@@ -898,18 +904,18 @@ app.post("/api/callback/hubspot/send-message", async (req, res) => {
       throw new Error("inputFields.message is required");
     }
     //         "objectType": "CONTACT"
-    let userHs
-    if(objectType == "CONTACT"){
-      userHs = await hubspot.getConctactById({ID:id_hs})
-    }else{
-      userHs = await hubspot.getCompanytById({ID:id_hs})
+    let userHs;
+    if (objectType == "CONTACT") {
+      userHs = await hubspot.getConctactById({ ID: id_hs });
+    } else {
+      userHs = await hubspot.getCompanytById({ ID: id_hs });
     }
 
-    if(!userHs){
+    if (!userHs) {
       throw new Error("object.objectId is invalid");
     }
     const prosesingPhone = (phone) => `${phone ?? ""}`.replace(/\D/g, "");
-    const user_id = prosesingPhone(userHs?.properties?.phone)
+    const user_id = prosesingPhone(userHs?.properties?.phone);
 
     if (!user_id) {
       throw new Error("object.objectId is invalid");
@@ -1067,7 +1073,7 @@ app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
     const asesorLogistico = ASESORES.find(
       (e) => e.hubspot == id_asesor_logistico_hs
     );
-    
+
     const asesorComercial = ASESORES.find(
       (e) => e.hubspot == id_asesor_comercial_hs
     );
@@ -1110,7 +1116,7 @@ app.post("/api/callback/ave-chat/change-nit", async (req, res) => {
       success: false,
       message: "❌ Error, Asignacion Incorrecta.",
       error: error.message,
-      err:error
+      err: error,
     });
   }
 });
@@ -1152,7 +1158,6 @@ app.post("/api/ave-chat/change-nit", async (req, res) => {
   }
 });
 
-
 //Enpoint que se ejecuta al enviar un tempate a trabes de hubspot por medio de custon action "Avechat Enviar Template", este mensaje es almacenado y enviado al usuario por medio de avechat campañas.
 app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
   try {
@@ -1169,18 +1174,17 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
       throw new Error("inputFields.template is required");
     }
 
-
-    let userHs
-    if(objectType == "CONTACT"){
-      userHs = await hubspot.getConctactById({ID:id_hs})
-    }else{
-      userHs = await hubspot.getCompanytById({ID:id_hs})
+    let userHs;
+    if (objectType == "CONTACT") {
+      userHs = await hubspot.getConctactById({ ID: id_hs });
+    } else {
+      userHs = await hubspot.getCompanytById({ ID: id_hs });
     }
-    if(!userHs){
+    if (!userHs) {
       throw new Error("object.objectId is invalid");
     }
     const prosesingPhone = (phone) => `${phone ?? ""}`.replace(/\D/g, "");
-    const user_id = prosesingPhone(userHs?.properties?.phone)
+    const user_id = prosesingPhone(userHs?.properties?.phone);
 
     if (!user_id) {
       throw new Error("phone is invalid");
@@ -1208,6 +1212,164 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
     });
   }
 });
+
+//Enpoint que se ejecuta desde avechat después de crear un nuevo usuario.
+// Esta función crea e contacto en **hubspot**, luego crear una empresa(con los mismo datos del usuario), luego crear o conecta con un **lead en ave** y asigna un asesor comercial y logístico en caso de que lo tenga en ave, termina guardando dichos datos en avechat
+app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
+  // "form[id]": "2c0203d",
+  // "form[name]": "Nuevo formulario",
+  // "fields[name][id]": "name",
+  // "fields[name][type]": "text",
+  // "fields[name][title]": "Nombre",
+  // "fields[name][value]": "asdasd",
+  // "fields[name][raw_value]": "asdasd",
+  // "fields[name][required]": "1",
+  // "fields[phone][id]": "phone",
+  // "fields[phone][type]": "tel",
+  // "fields[phone][title]": "Telefono",
+  // "fields[phone][value]": "3123213",
+  // "fields[phone][raw_value]": "3123213",
+  // "fields[phone][required]": "1",
+  // "fields[campana][id]": "campana",
+  // "fields[campana][type]": "hidden",
+  // "fields[campana][title]": "Id Campana",
+  // "fields[campana][value]": "1",
+  // "fields[campana][raw_value]": "1",
+  // "fields[campana][required]": "0"
+  accessTokenCache.set("/api/form-campana/ave-chat/create-contact", req.body);
+  try {
+    const data = {
+      id_avechat: req?.body?.["fields[phone][value]"]?.replaceAll("+", ""),
+      name: req?.body?.["fields[name][value]"],
+      phone: req?.body?.["fields[phone][value]"],
+      campana: req?.body?.["fields[campana][value]"],
+    };
+    const userAveChat = await aveChat.createUserIfNotExist({
+      id_avechat: data.id_avechat,
+      first_name: data.name,
+      last_name: "",
+      phone: data.phone,
+    });
+    if (!(userAveChat.isNew && userAveChat.create)) {
+      throw new Error("user exist");
+    }
+
+    const userHubspot = await hubspot.crearContact({
+      first_name: data?.name,
+      last_name: "",
+      phone: data?.phone,
+    });
+
+    accessTokenCache.set("create-contact-hubspot", userHubspot);
+    const id_hs = userHubspot?.id;
+    const companyHubspot = await hubspot.crearCompany({
+      id_hs,
+      name: data.name,
+      phone: data.phone,
+    });
+    accessTokenCache.set("create-company-hubspot", companyHubspot);
+    const id_company_hs = companyHubspot?.id;
+    const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
+    if (!id_hs) {
+      throw new Error("user hubspot not created");
+    }
+    accessTokenCache.set(
+      "/api/form-campana/ave-chat/create-contact/pre_crearLead",
+      {
+        id_aveChat: data.id_avechat,
+        name: data.name,
+        phone: data.phone,
+        id_hs,
+        indicativo_telefono: "+57",
+        id_company_hs,
+      }
+    );
+    const userAve = await ave.crearLead({
+      id_aveChat: data.id_avechat,
+      name: data.name,
+      phone: data.phone,
+      id_hs,
+      indicativo_telefono: "+57",
+      id_company_hs,
+    });
+    accessTokenCache.set(
+      "/api/form-campana/ave-chat/create-contact/userAve",
+      userAve
+    );
+    const id_empresa_ave = userAve?.data?.company?.idempresa;
+    const id_user_ave = userAve?.data?.lead?.id;
+    const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
+    const idAssessor = userAve?.data?.lead?.idAssessor;
+    const idlogistico = userAve?.data?.company?.idlogistico;
+
+    accessTokenCache.set("/api/form-campana/ave-chat/create-contact/pre", {
+      id_user_ave,
+      id_empresa_ave,
+    });
+    if (!id_user_ave && !id_empresa_ave) {
+      throw new Error("user ave not created");
+    }
+    const asesor_comercial = ASESORES.find((e) => e.id == idAssessor);
+    const asesor_logistico = ASESORES.find((e) => e.id == idlogistico);
+
+    const email_asesor_logistico = asesor_logistico?.dscorreo;
+
+    const email_asesor_comercial = asesor_comercial?.dscorreo;
+
+    accessTokenCache.set(
+      "/api/form-campana/ave-chat/create-contact/saveCustomFields",
+      {
+        user_id: data.id_avechat,
+        obj: {
+          id_hs,
+          id_company_hs,
+          url_hs,
+          id_user_ave,
+          id_lead: id_user_ave,
+          url_ave_pre_register,
+          id_empresa_ave,
+          email_asesor_logistico,
+          email_asesor_comercial,
+        },
+      }
+    );
+    const resultAveChatSaveFields = await aveChat.saveCustomFields({
+      user_id: data.id_avechat,
+      obj: {
+        id_hs,
+        id_company_hs,
+        url_hs,
+        id_user_ave,
+        id_lead: id_user_ave,
+        url_ave_pre_register,
+        id_empresa_ave,
+        email_asesor_logistico,
+        email_asesor_comercial,
+      },
+    });
+    accessTokenCache.set(
+      "create-contact-ave-chat-resultAveChatSaveFields",
+      resultAveChatSaveFields
+    );
+
+    return res.json({
+      success: true,
+      message: "✅ Contacto creado correctamente.",
+    });
+  } catch (error) {
+    accessTokenCache.set("/api/form-campana/ave-chat/create-contact/error", {
+      success: false,
+      message: "❌ Error al crear el contacto.",
+      error: error.message,
+    });
+    return res.status(500).json({
+      success: false,
+      message: "❌ Error al crear el contacto.",
+      error: error.message,
+    });
+  }
+});
+
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
 );

@@ -185,12 +185,14 @@ class AveChat {
           },
         });
         return {
+          isNew:true,
           create: true,
           resutCreate,
           resutCustonField,
         };
       }
       return {
+          isNew:false,
         create: true,
       };
     } catch (error) {
