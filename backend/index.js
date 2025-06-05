@@ -1244,10 +1244,10 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
     // });
   try {
     const data = {
-      id_avechat: "57"+req?.body?.["fields[phone][value]"]?.replace(/\D/g, ""),
-      name: req?.body?.["fields[name][value]"],
-      phone: req?.body?.["fields[phone][value]"].replace(/\D/g, ""),
-      campana: req?.body?.["fields[campana][value]"],
+      id_avechat: "57"+req?.body?.fields?.phone?.value?.replace(/\D/g, ""),
+      name: req?.body?.fields?.name?.value,
+      phone: req?.body?.fields?.phone?.value?.replace(/\D/g, ""),
+      campana: req?.body?.fields?.campana?.value,
     };
     const userAveChat = await aveChat.createUserIfNotExist({
       id_avechat: data.id_avechat,
