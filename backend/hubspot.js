@@ -25,12 +25,13 @@ class Hubspot {
     }
   }
 
-  async crearContact({ email, first_name, last_name, phone }) {
+  async crearContact({ email, first_name, last_name, phone,campana }) {
     const properties = {
       email,
       firstname: first_name,
       lastname: last_name,
       phone,
+      campana,
       company: "AveChat",
     };
     const data = {

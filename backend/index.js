@@ -1263,6 +1263,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       first_name: data?.name,
       last_name: "",
       phone: data?.phone,
+      campana:data?.campana
     });
 
     accessTokenCache.set("create-contact-hubspot", userHubspot);
@@ -1350,6 +1351,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
         id_empresa_ave,
         email_asesor_logistico,
         email_asesor_comercial,
+        campana:data?.campana
       },
     });
     accessTokenCache.set(
@@ -1357,7 +1359,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       resultAveChatSaveFields
     );
 
-    return res.json({
+    return res.status(200).json({
       success: true,
       message: "✅ Contacto creado correctamente.",
     });

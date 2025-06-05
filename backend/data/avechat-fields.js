@@ -1,4 +1,4 @@
-const AveChatFields =  [
+const AveChatFields = [
   {
     "id": "-12",
     "name": "Email",
@@ -8,6 +8,11 @@ const AveChatFields =  [
     "id": "-8",
     "name": "Phone Number",
     "type": "-1"
+  },
+  {
+    "id": "542829",
+    "name": "",
+    "type": "0"
   },
   {
     "id": "699738",
@@ -23,6 +28,11 @@ const AveChatFields =  [
     "id": "538010",
     "name": "asesor_asignacion",
     "type": "4"
+  },
+  {
+    "id": "395502",
+    "name": "campana",
+    "type": "0"
   },
   {
     "id": "794007",
