@@ -1237,10 +1237,10 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
   // "fields[campana][raw_value]": "1",
   // "fields[campana][required]": "0"
   accessTokenCache.set("/api/form-campana/ave-chat/create-contact", req.body);
-    return res.status(200).json({
-      success: true,
-      message: "Ok",
-    });
+    // return res.status(200).json({
+    //   success: true,
+    //   message: "Ok",
+    // });
   try {
     const data = {
       id_avechat: "57"+req?.body?.["fields[phone][value]"]?.replace(/\D/g, ""),
