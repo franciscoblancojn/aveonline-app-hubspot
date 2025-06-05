@@ -1236,7 +1236,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
   // "fields[campana][value]": "1",
   // "fields[campana][raw_value]": "1",
   // "fields[campana][required]": "0"
-  accessTokenCache.set("/api/form-campana/ave-chat/create-contact", req.body);
+  accessTokenCache.set("/api/form-campana/ave-chat/create-contact", req);
     return res.status(200).json({
       success: true,
       message: "Ok",
