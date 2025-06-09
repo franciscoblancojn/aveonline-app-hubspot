@@ -1217,26 +1217,12 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
 //Enpoint que se ejecuta desde avechat después de crear un nuevo usuario.
 // Esta función crea e contacto en **hubspot**, luego crear una empresa(con los mismo datos del usuario), luego crear o conecta con un **lead en ave** y asigna un asesor comercial y logístico en caso de que lo tenga en ave, termina guardando dichos datos en avechat
 app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
-  // "form[id]": "2c0203d",
-  // "form[name]": "Nuevo formulario",
-  // "fields[name][id]": "name",
-  // "fields[name][type]": "text",
-  // "fields[name][title]": "Nombre",
-  // "fields[name][value]": "asdasd",
-  // "fields[name][raw_value]": "asdasd",
-  // "fields[name][required]": "1",
-  // "fields[phone][id]": "phone",
-  // "fields[phone][type]": "tel",
-  // "fields[phone][title]": "Telefono",
-  // "fields[phone][value]": "3123213",
-  // "fields[phone][raw_value]": "3123213",
-  // "fields[phone][required]": "1",
-  // "fields[campana][id]": "campana",
-  // "fields[campana][type]": "hidden",
-  // "fields[campana][title]": "Id Campana",
-  // "fields[campana][value]": "1",
-  // "fields[campana][raw_value]": "1",
-  // "fields[campana][required]": "0"
+    //   {
+    //     "campana": "123",
+    //     "name": "asdas",
+    //     "phone": "3103557200",
+    //      "code":"+57"
+    // }
   accessTokenCache.set("/api/form-campana/ave-chat/create-contact", req.body);
     // return res.status(200).json({
     //   success: true,
@@ -1244,10 +1230,10 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
     // });
   try {
     const data = {
-      id_avechat: "57"+req?.body?.fields?.phone?.value?.replace(/\D/g, ""),
-      name: req?.body?.fields?.name?.value,
-      phone: req?.body?.fields?.phone?.value?.replace(/\D/g, ""),
-      campana: req?.body?.fields?.campana?.value,
+      id_avechat: `${req?.body?.code}${req?.body?.phone}`?.replace(/\D/g, ""),
+      name: req?.body?.name,
+      phone: req?.body?.phone?.replace(/\D/g, ""),
+      campana: req?.body?.campana,
     };
     const userAveChat = await aveChat.createUserIfNotExist({
       id_avechat: data.id_avechat,
