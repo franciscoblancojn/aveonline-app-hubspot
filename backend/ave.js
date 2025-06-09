@@ -21,7 +21,7 @@ class Ave {
     }
   }
 
-  async crearLead({ name, phone, id_hs,id_company_hs, id_aveChat,indicativo_telefono }) {
+  async crearLead({ name, phone, id_hs,id_company_hs, id_aveChat,indicativo_telefono ,campana}) {
     const result = await this.onRequest({
       url: `/onboarding/createLeadWhatsapp`,
       method: "POST",
@@ -32,6 +32,7 @@ class Ave {
         id_company_hs,
         id_keybe: id_aveChat,
         indicativo_telefono,
+        campana
       }),
     });
     return result;

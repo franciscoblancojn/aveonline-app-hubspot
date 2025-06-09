@@ -73,7 +73,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.urlencoded({ extended: true }));
 //================================//
 //   Running the OAuth 2.0 Flow   //
 //================================//
@@ -1217,22 +1217,23 @@ app.post("/api/callback/hubspot/send-message-template", async (req, res) => {
 //Enpoint que se ejecuta desde avechat después de crear un nuevo usuario.
 // Esta función crea e contacto en **hubspot**, luego crear una empresa(con los mismo datos del usuario), luego crear o conecta con un **lead en ave** y asigna un asesor comercial y logístico en caso de que lo tenga en ave, termina guardando dichos datos en avechat
 app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
-    //   {
-    //     "campana": "123",
-    //     "name": "asdas",
-    //     "phone": "3103557200",
-    //      "code":"+57"
-    // }
+  //   {
+  //     "campana": "123",
+  //     "name": "asdas",
+  //     "phone": "3103557200",
+  //      "code":"+57"
+  // }
   accessTokenCache.set("/api/form-campana/ave-chat/create-contact", req.body);
-    // return res.status(200).json({
-    //   success: true,
-    //   message: "Ok",
-    // });
+  // return res.status(200).json({
+  //   success: true,
+  //   message: "Ok",
+  // });
   try {
     const data = {
       id_avechat: `${req?.body?.code}${req?.body?.phone}`?.replace(/\D/g, ""),
       name: req?.body?.name,
       phone: req?.body?.phone?.replace(/\D/g, ""),
+      indicativo_telefono: req?.body?.code,
       campana: req?.body?.campana,
     };
     const userAveChat = await aveChat.createUserIfNotExist({
@@ -1249,7 +1250,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       first_name: data?.name,
       last_name: "",
       phone: data?.phone,
-      campana:data?.campana
+      campana: data?.campana,
     });
 
     accessTokenCache.set("create-contact-hubspot", userHubspot);
@@ -1272,7 +1273,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
         name: data.name,
         phone: data.phone,
         id_hs,
-        indicativo_telefono: "+57",
+        indicativo_telefono: data.indicativo_telefono,
         id_company_hs,
       }
     );
@@ -1281,8 +1282,9 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       name: data.name,
       phone: data.phone,
       id_hs,
-      indicativo_telefono: "+57",
+      indicativo_telefono: data.indicativo_telefono,
       id_company_hs,
+      campana:data?.campana
     });
     accessTokenCache.set(
       "/api/form-campana/ave-chat/create-contact/userAve",
@@ -1337,7 +1339,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
         id_empresa_ave,
         email_asesor_logistico,
         email_asesor_comercial,
-        campana:data?.campana
+        campana: data?.campana,
       },
     });
     accessTokenCache.set(
