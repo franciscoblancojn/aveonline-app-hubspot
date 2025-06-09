@@ -1356,6 +1356,9 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       success: false,
       message: "❌ Error al crear el contacto.",
       error: error.message,
+      data:{
+        userAve
+      }
     });
     return res.status(500).json({
       success: false,
