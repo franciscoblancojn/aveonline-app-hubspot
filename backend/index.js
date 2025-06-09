@@ -1350,15 +1350,15 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "✅ Contacto creado correctamente.",
+      data:{
+        userAve
+      }
     });
   } catch (error) {
     accessTokenCache.set("/api/form-campana/ave-chat/create-contact/error", {
       success: false,
       message: "❌ Error al crear el contacto.",
       error: error.message,
-      data:{
-        userAve
-      }
     });
     return res.status(500).json({
       success: false,
