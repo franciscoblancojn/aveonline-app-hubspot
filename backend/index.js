@@ -1284,7 +1284,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       id_hs,
       indicativo_telefono: data.indicativo_telefono,
       id_company_hs,
-      campana:data?.campana
+      id_campana:data?.campana
     });
     accessTokenCache.set(
       "/api/form-campana/ave-chat/create-contact/userAve",
