@@ -331,7 +331,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     const userHubspot = await hubspot.crearContact({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
-      phone: req.body.id,
+      phone: "+"+req.body.id,
     });
 
     accessTokenCache.set("create-contact-hubspot", userHubspot);
@@ -339,7 +339,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     const companyHubspot = await hubspot.crearCompany({
       id_hs,
       name: req?.body?.first_name,
-      phone: req?.body?.id,
+      phone: "+"+ req?.body?.id,
     });
     accessTokenCache.set("create-company-hubspot", companyHubspot);
     const id_company_hs = companyHubspot?.id;
