@@ -127,6 +127,29 @@ class Hubspot {
     }
     return result?.results?.[0];
   }
+  async getConctactByKeyValue({ key,value }) {
+    const data = {
+      limit: 1,
+      properties: [
+        "phone",
+        "hs_object_id"
+      ],
+      filterGroups: [
+        {
+          filters: [{ propertyName: key, value: value, operator: "EQ" }],
+        },
+      ],
+    };
+    const result = await this.onRequest({
+      url: `/contacts/search`,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    if(!result?.results?.[0]?.id){
+      throw new Error("contacts not found")
+    }
+    return result?.results?.[0];
+  }
   async getConctactById({ ID }) {
     const data = {
       limit: 1,
@@ -147,6 +170,29 @@ class Hubspot {
     });
     if(!result?.results?.[0]?.id){
       throw new Error("contacts not found")
+    }
+    return result?.results?.[0];
+  }
+  async getCompanyByKeyValue({ key,value }) {
+    const data = {
+      limit: 1,
+      properties: [
+        "phone",
+        "hs_object_id"
+      ],
+      filterGroups: [
+        {
+          filters: [{ propertyName: key, value: value, operator: "EQ" }],
+        },
+      ],
+    };
+    const result = await this.onRequest({
+      url: `/companies/search`,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    if(!result?.results?.[0]?.id){
+      throw new Error("companies not found")
     }
     return result?.results?.[0];
   }

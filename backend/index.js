@@ -328,19 +328,31 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
   // "subscribed": "1"
   accessTokenCache.set("/api/callback/ave-chat/create-contact", req.body);
   try {
-    const userHubspot = await hubspot.crearContact({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      phone: "+"+req.body.id,
+    let userHubspot = await hubspot.getConctactByKeyValue({
+      key: "phone",
+      value: "+" + req.body.id,
     });
+    if (!userHubspot?.id) {
+      userHubspot = await hubspot.crearContact({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        phone: "+" + req.body.id,
+      });
+    }
 
     accessTokenCache.set("create-contact-hubspot", userHubspot);
     const id_hs = userHubspot?.id;
-    const companyHubspot = await hubspot.crearCompany({
-      id_hs,
-      name: req?.body?.first_name,
-      phone: "+"+ req?.body?.id,
+    let companyHubspot = await hubspot.getCompanyByKeyValue({
+      key: "phone",
+      value: "+" + req.body.id,
     });
+    if (!companyHubspot?.id) {
+      companyHubspot = await hubspot.crearCompany({
+        id_hs,
+        name: req?.body?.first_name,
+        phone: "+" + req?.body?.id,
+      });
+    }
     accessTokenCache.set("create-company-hubspot", companyHubspot);
     const id_company_hs = companyHubspot?.id;
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
@@ -1284,7 +1296,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       id_hs,
       indicativo_telefono: data.indicativo_telefono,
       id_company_hs,
-      id_campana:data?.campana
+      id_campana: data?.campana,
     });
     accessTokenCache.set(
       "/api/form-campana/ave-chat/create-contact/userAve",
@@ -1350,9 +1362,9 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "✅ Contacto creado correctamente.",
-      data:{
-        userAve
-      }
+      data: {
+        userAve,
+      },
     });
   } catch (error) {
     accessTokenCache.set("/api/form-campana/ave-chat/create-contact/error", {
