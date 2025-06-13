@@ -145,9 +145,6 @@ class Hubspot {
       method: "POST",
       body: JSON.stringify(data),
     });
-    if(!result?.results?.[0]?.id){
-      throw new Error("contacts not found")
-    }
     return result?.results?.[0];
   }
   async getConctactById({ ID }) {
@@ -191,9 +188,6 @@ class Hubspot {
       method: "POST",
       body: JSON.stringify(data),
     });
-    if(!result?.results?.[0]?.id){
-      throw new Error("companies not found")
-    }
     return result?.results?.[0];
   }
   async getCompanytById({ ID }) {
