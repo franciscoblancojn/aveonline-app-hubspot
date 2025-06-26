@@ -1246,7 +1246,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       id_avechat: data.id_avechat,
       first_name: data.name,
       last_name: "",
-      phone: tel,
+      phone: data.phone,
     });
     if (!(userAveChat.isNew && userAveChat.create)) {
       throw new Error("user exist");
@@ -1264,7 +1264,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
     const companyHubspot = await hubspot.crearCompany({
       id_hs,
       name: data.name,
-      phone: data.phone,
+      phone: tel,
     });
     accessTokenCache.set("create-company-hubspot", companyHubspot);
     const id_company_hs = companyHubspot?.id;
