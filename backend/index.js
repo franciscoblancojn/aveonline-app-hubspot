@@ -1234,6 +1234,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
   //   message: "Ok",
   // });
   try {
+      const tel = `${req?.body?.code}${req?.body?.phone}`;
     const data = {
       id_avechat: `${req?.body?.code}${req?.body?.phone}`?.replace(/\D/g, ""),
       name: req?.body?.name,
@@ -1245,7 +1246,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       id_avechat: data.id_avechat,
       first_name: data.name,
       last_name: "",
-      phone: data.phone,
+      phone: tel,
     });
     if (!(userAveChat.isNew && userAveChat.create)) {
       throw new Error("user exist");
@@ -1254,7 +1255,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
     const userHubspot = await hubspot.crearContact({
       first_name: data?.name,
       last_name: "",
-      phone: data?.phone,
+      phone: tel,
       campana: data?.campana,
     });
 
