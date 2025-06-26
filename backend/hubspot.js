@@ -49,7 +49,6 @@ class Hubspot {
     const properties = {
       name,
       phone,
-      nombrecampana:campana,
     };
     const data = {
       properties,
