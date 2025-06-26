@@ -32,6 +32,7 @@ class Hubspot {
       lastname: last_name,
       phone,
       campana,
+      nombrecampana:campana,
       company: "AveChat",
     };
     const data = {
@@ -48,6 +49,7 @@ class Hubspot {
     const properties = {
       name,
       phone,
+      nombrecampana:campana,
     };
     const data = {
       properties,
