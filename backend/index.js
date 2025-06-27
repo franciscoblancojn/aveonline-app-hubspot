@@ -391,7 +391,7 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
       indicativo_telefono,
       id_company_hs,
     });
-    sCache(" ave.crearLead result",userAve);
+    sCache(" ave.crearLead result", userAve);
     const id_empresa_ave = userAve?.data?.company?.idempresa;
     const id_user_ave = userAve?.data?.lead?.id;
     const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
@@ -409,19 +409,19 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
     const email_asesor_comercial = asesor_comercial?.dscorreo;
 
     sCache(" aveChat.saveCustomFields body", {
-        user_id: req.body.id,
-        obj: {
-          id_hs,
-          id_company_hs,
-          url_hs,
-          id_user_ave,
-          id_lead: id_user_ave,
-          url_ave_pre_register,
-          id_empresa_ave,
-          email_asesor_logistico,
-          email_asesor_comercial,
-        },
-      });
+      user_id: req.body.id,
+      obj: {
+        id_hs,
+        id_company_hs,
+        url_hs,
+        id_user_ave,
+        id_lead: id_user_ave,
+        url_ave_pre_register,
+        id_empresa_ave,
+        email_asesor_logistico,
+        email_asesor_comercial,
+      },
+    });
     const resultAveChatSaveFields = await aveChat.saveCustomFields({
       user_id: req.body.id,
       obj: {
@@ -436,14 +436,14 @@ app.post("/api/callback/ave-chat/create-contact", async (req, res) => {
         email_asesor_comercial,
       },
     });
-    sCache(" aveChat.saveCustomFields result",resultAveChatSaveFields);
+    sCache(" aveChat.saveCustomFields result", resultAveChatSaveFields);
 
     return res.json({
       success: true,
       message: "✅ Contacto creado correctamente.",
     });
   } catch (error) {
-    sCache(" error",{
+    sCache(" error", {
       message: error.message,
       ...error,
     });
@@ -1228,13 +1228,19 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
   //     "phone": "3103557200",
   //      "code":"+57"
   // }
-  accessTokenCache.set("/api/form-campana/ave-chat/create-contact", req.body);
   // return res.status(200).json({
   //   success: true,
   //   message: "Ok",
   // });
+  const _cache = {};
+
+  const sCache = (key, d) => {
+    _cache[key] = d;
+    accessTokenCache.set("/api/form-campana/ave-chat/create-contact", _cache);
+  };
+  sCache("body", req.body);
   try {
-      const tel = `${req?.body?.code}${req?.body?.phone}`;
+    const tel = `${req?.body?.code}${req?.body?.phone}`;
     const data = {
       id_avechat: `${req?.body?.code}${req?.body?.phone}`?.replace(/\D/g, ""),
       name: req?.body?.name,
@@ -1251,39 +1257,42 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
     if (!(userAveChat.isNew && userAveChat.create)) {
       throw new Error("user exist");
     }
-
-    const userHubspot = await hubspot.crearContact({
-      first_name: data?.name,
-      last_name: "",
-      phone: tel,
-      campana: data?.campana,
+    let userHubspot = await hubspot.getConctactByKeyValue({
+      key: "phone",
+      value: tel,
     });
+    sCache("getConctactByKeyValue", req.userHubspot);
+    if (!userHubspot?.id) {
+      userHubspot = await hubspot.crearContact({
+        first_name: data?.name,
+        last_name: "",
+        phone: tel,
+        campana: data?.campana,
+      });
+      sCache("crearContact", req.userHubspot);
+    }
 
-    accessTokenCache.set("create-contact-hubspot", userHubspot);
     const id_hs = userHubspot?.id;
-    const companyHubspot = await hubspot.crearCompany({
-      id_hs,
-      name: data.name,
-      phone: tel,
+    let companyHubspot = await hubspot.getCompanyByKeyValue({
+      key: "phone",
+      value: tel,
     });
-    accessTokenCache.set("create-company-hubspot", companyHubspot);
+    sCache("getCompanyByKeyValue", req.companyHubspot);
+    if (!companyHubspot?.id) {
+      companyHubspot = await hubspot.crearCompany({
+        id_hs,
+        name: data.name,
+        phone: tel,
+        campana: data?.campana,
+      });
+      sCache("crearCompany", req.companyHubspot);
+    }
     const id_company_hs = companyHubspot?.id;
     const url_hs = `https://app.hubspot.com/contacts/47355542/contact/${id_hs}/`;
     if (!id_hs) {
       throw new Error("user hubspot not created");
     }
-    accessTokenCache.set(
-      "/api/form-campana/ave-chat/create-contact/pre_crearLead",
-      {
-        id_aveChat: data.id_avechat,
-        name: data.name,
-        phone: data.phone,
-        id_hs,
-        indicativo_telefono: data.indicativo_telefono,
-        id_company_hs,
-      }
-    );
-    const userAve = await ave.crearLead({
+    const dataCrearLead = {
       id_aveChat: data.id_avechat,
       name: data.name,
       phone: data.phone,
@@ -1291,21 +1300,16 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
       indicativo_telefono: data.indicativo_telefono,
       id_company_hs,
       id_campana: data?.campana,
-    });
-    accessTokenCache.set(
-      "/api/form-campana/ave-chat/create-contact/userAve",
-      userAve
-    );
+    };
+    sCache("dataCrearLead", dataCrearLead);
+    const userAve = await ave.crearLead(dataCrearLead);
+    sCache("userAve", userAve);
     const id_empresa_ave = userAve?.data?.company?.idempresa;
     const id_user_ave = userAve?.data?.lead?.id;
     const url_ave_pre_register = userAve?.data?.lead?.urlPreRegister;
     const idAssessor = userAve?.data?.lead?.idAssessor;
     const idlogistico = userAve?.data?.company?.idlogistico;
 
-    accessTokenCache.set("/api/form-campana/ave-chat/create-contact/pre", {
-      id_user_ave,
-      id_empresa_ave,
-    });
     if (!id_user_ave && !id_empresa_ave) {
       throw new Error("user ave not created");
     }
@@ -1316,24 +1320,7 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
 
     const email_asesor_comercial = asesor_comercial?.dscorreo;
 
-    accessTokenCache.set(
-      "/api/form-campana/ave-chat/create-contact/saveCustomFields",
-      {
-        user_id: data.id_avechat,
-        obj: {
-          id_hs,
-          id_company_hs,
-          url_hs,
-          id_user_ave,
-          id_lead: id_user_ave,
-          url_ave_pre_register,
-          id_empresa_ave,
-          email_asesor_logistico,
-          email_asesor_comercial,
-        },
-      }
-    );
-    const resultAveChatSaveFields = await aveChat.saveCustomFields({
+    const dataSaveCustomFields = {
       user_id: data.id_avechat,
       obj: {
         id_hs,
@@ -1347,11 +1334,12 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
         email_asesor_comercial,
         campana: data?.campana,
       },
-    });
-    accessTokenCache.set(
-      "create-contact-ave-chat-resultAveChatSaveFields",
-      resultAveChatSaveFields
+    };
+    sCache("dataSaveCustomFields", dataSaveCustomFields);
+    const resultAveChatSaveFields = await aveChat.saveCustomFields(
+      dataSaveCustomFields
     );
+    sCache("resultAveChatSaveFields", resultAveChatSaveFields);
 
     return res.status(200).json({
       success: true,
