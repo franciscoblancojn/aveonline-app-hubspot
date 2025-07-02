@@ -11,6 +11,7 @@ const NodeCache = require("node-cache");
 const API_KEY = process.env.API_KEY;
 const HOST = process.env.HOST;
 const TOKEN_AVECHAT = process.env.TOKEN_AVECHAT;
+const TOKEN_AVECHAT_LINEA_ESTANDARD = process.env.TOKEN_AVECHAT_LINEA_ESTANDARD;
 const TOKEN_AVECHAT_CAMPANA = process.env.TOKEN_AVECHAT_CAMPANA;
 const FLOW_ID = process.env.FLOW_ID;
 const FLOW_ID_CAMPANA = process.env.FLOW_ID_CAMPANA;
@@ -18,6 +19,7 @@ const FLOW_ID_CAMPANA = process.env.FLOW_ID_CAMPANA;
 class AppBase {
   hubspot;
   aveChat;
+  aveChatLineaEstandar;
   aveChatCampana;
   ave;
   csc;
@@ -28,6 +30,7 @@ class AppBase {
   constructor() {
     this.hubspot = new Hubspot(API_KEY);
     this.aveChat = new AveChat(TOKEN_AVECHAT);
+    this.aveChatLineaEstandar = new AveChat(TOKEN_AVECHAT_LINEA_ESTANDARD);
     this.aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA, {
       campana: true,
     });
