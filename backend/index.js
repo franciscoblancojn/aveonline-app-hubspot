@@ -10,6 +10,7 @@ const { CSC } = require("./csc.js");
 const { Count } = require("./count.js");
 const { fetch } = require("./fetch.js");
 const { ASESORES } = require("./dataAcesot.js");
+const { onLoadWebhook } = require("./webhook/_index.js");
 
 const app = express();
 
@@ -1361,6 +1362,13 @@ app.post("/api/form-campana/ave-chat/create-contact", async (req, res) => {
     });
   }
 });
+
+
+
+onLoadWebhook({app})
+
+
+
 
 app.listen(PORT, () =>
   console.log(`=== Starting your app on ${REDIRECT_URI} ===`)
