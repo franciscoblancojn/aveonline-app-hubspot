@@ -1,12 +1,13 @@
+const {db} = require("../../db");
 
   const onWebhookSendMessage = ({
-    sCache
+    sCache,
+    aveChatLineaEstandar
   }) => async (req, res) => {
     // {
     //   "guia": "1112016134910111",
     //   "pedido_id": "2222281115431432",
     //   "numeropedidoExterno": "00000",
-    //   "estado_id": 12,
     //   "nombre_estado": "Entregada",
     //   "fechacreacion": "2023-06-02 12:37:58",
     //   "fechanovedad": "2023-12-02 17:04:06",
@@ -42,6 +43,40 @@
     //       "agentId": 12152
     //   }
     // }
+
+
+    //     {
+    //   "guia": "valor_de_guia",
+    //   "pedido_id": "valor_de_pedido",
+    //   "numeropedidoExterno": "valor_de_numeropedidoexterno",
+    //   "estado_id": 123,
+    //   "nombre_estado": "nombre_del_estado",
+    //   "fechacreacion": "fecha_de_creacion",
+    //   "tiponovedad": "responsable_de_solucion",
+    //   "dataStandartLine": {
+    //     "type": "pending",
+    //     "firstName": "nombre_destinatario",
+    //     "companyName": "nombre_empresa",
+    //     "operatorName": "nombre_transportadora",
+    //     "guideNumber": "valor_de_guia",
+    //     "collectedValue": 50000,
+    //     "companyPhoneNumber": "telefono_empresa",
+    //     "guidePdf": null,
+    //     "clientAddress": "direccion_destinatario",
+    //     "clientPhoneNumber": "telefono_cliente",
+    //     "clientCity": "ciudad_destinatario",
+    //     "operatorLocationAddress": "direccion_destinatario",
+    //     "freightValue": 10000,
+    //     "bankName": null,
+    //     "bankAccount": null,
+    //     "bankAccountNumber": null,
+    //     "aveNoveltyName": "nombre_estado_novedad",
+    //     "agentId": 456,
+    //     "noveltyResponsible": "encargado_de_solucion"
+    //   }
+    // }
+    //   "estado_id": 12, if != 16  noveltyResponsible => 1 else validate noveltyResponsible
+    //     "noveltyResponsible":1(companyPhoneNumber),2(clientPhoneNumber),3(ambos)
     sCache("body", req.body);
     try {
       // tipo_pedido
@@ -66,10 +101,22 @@
       // tipo_cuenta
       // novedad_transportadora
       // novedad_homologada
+      await db.onCreateTable("ave_chat_linea_estandar_message", {
+        id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+        id_avechat: "TEXT",
+        message: "TEXT",
+      });
+      await db.onCreateRow("ave_chat_linea_estandar_message", {
+        id_avechat: "1",
+        message: "test",
+      });
+      const listMessage = await db.onGetRows("ave_chat_linea_estandar_message", {
+      });
       const respond = {
         success: true,
         message: "✅ Contacto creado correctamente.",
         data: {
+            listMessage
         },
       };
       sCache("respond", respond);

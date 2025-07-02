@@ -9,7 +9,7 @@ class AppWebhook extends AppBase {
     const sCache = this.sCache(path);
     app.post(path, onWebhookSendMessage({ 
         sCache ,
-        aveChat: this.aveChat,
+        aveChatLineaEstandar: this.aveChatLineaEstandar,
     }));
   }
 

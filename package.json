@@ -3,8 +3,8 @@
     "upload": "hs project upload",
     "dev": "hs project dev",
     "backend-start": "node backend/index.js",
-    "backend-loadFieldsAveChat":"bun ./backend/scripts/loadFieldsAveChat.ts",
-    "backend-loadCustomActionAveChat":"bun ./backend/hubspot_custom_action/scripts/loadCustomActionAveChat.ts",
+    "backend-loadFieldsAveChat": "bun ./backend/scripts/loadFieldsAveChat.ts",
+    "backend-loadCustomActionAveChat": "bun ./backend/hubspot_custom_action/scripts/loadCustomActionAveChat.ts",
     "pm2-start": "pm2 start backend/index.js --name backend-start",
     "pm2-restart": "pm2 restart backend-start && pm2 save",
     "pull": "git pull && npm run pm2-restart && pm2 list"
@@ -19,6 +19,7 @@
     "node-fetch": "^3.3.2",
     "open": "^6.4.0",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.5",
+    "sqlite3": "^5.1.7"
   }
 }
