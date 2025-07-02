@@ -1,9 +1,9 @@
-const {db} = require("../../db");
+const {cola} = require("../../cola");
+const { db } = require("../../db");
 
-  const onWebhookSendMessage = ({
-    sCache,
-    aveChatLineaEstandar
-  }) => async (req, res) => {
+const onWebhookSendMessage =
+  ({ sCache, aveChatLineaEstandar }) =>
+  async (req, res) => {
     // {
     //   "guia": "1112016134910111",
     //   "pedido_id": "2222281115431432",
@@ -43,7 +43,6 @@ const {db} = require("../../db");
     //       "agentId": 12152
     //   }
     // }
-
 
     //     {
     //   "guia": "valor_de_guia",
@@ -101,22 +100,30 @@ const {db} = require("../../db");
       // tipo_cuenta
       // novedad_transportadora
       // novedad_homologada
-      await db.onCreateTable("ave_chat_linea_estandar_message", {
-        id: "INTEGER PRIMARY KEY AUTOINCREMENT",
-        id_avechat: "TEXT",
-        message: "TEXT",
-      });
-      await db.onCreateRow("ave_chat_linea_estandar_message", {
-        id_avechat: "1",
-        message: "test",
-      });
-      const listMessage = await db.onGetRows("ave_chat_linea_estandar_message", {
-      });
+      let listMessage = undefined;
+      if (req.body.get) {
+        listMessage = await db.onGetRows("ave_chat_linea_estandar_message", {});
+      } else {
+        for (let i = 0; i < 111; i++) {
+          cola.schedule(async () => {
+            await db.onCreateTable("ave_chat_linea_estandar_message", {
+              id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+              id_avechat: "TEXT",
+              message: "TEXT",
+            });
+            await db.onCreateRow("ave_chat_linea_estandar_message", {
+              id_avechat: `${i}`,
+              message: "test",
+            });
+          });
+        }
+      }
+
       const respond = {
         success: true,
         message: "✅ Contacto creado correctamente.",
         data: {
-            listMessage
+          listMessage,
         },
       };
       sCache("respond", respond);
@@ -133,6 +140,5 @@ const {db} = require("../../db");
   };
 
 module.exports = {
- onWebhookSendMessage
-
+  onWebhookSendMessage,
 };
