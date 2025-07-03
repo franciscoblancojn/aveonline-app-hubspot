@@ -8,6 +8,7 @@ const { fetch } = require("../fetch.js");
 const { ASESORES } = require("../dataAcesot.js");
 const NodeCache = require("node-cache");
 const { cola } = require("../cola/index.js");
+const { db } = require("../db");
 
 const API_KEY = process.env.API_KEY;
 const HOST = process.env.HOST;
@@ -27,13 +28,13 @@ class AppBase {
   count;
   ASESORES;
   accessTokenCache;
-    _cache = {};
+  _cache = {};
   constructor() {
     this.hubspot = new Hubspot(API_KEY);
     this.aveChat = new AveChat(TOKEN_AVECHAT);
-    this.aveChatLineaEstandar = new AveChat(TOKEN_AVECHAT_LINEA_ESTANDARD,{
-      sendTemplate:true,
-      cola:true
+    this.aveChatLineaEstandar = new AveChat(TOKEN_AVECHAT_LINEA_ESTANDARD, {
+      sendTemplate: true,
+      cola: true,
     });
     this.aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA, {
       campana: true,
@@ -46,10 +47,34 @@ class AppBase {
   }
   prosesingPhone = (phone) => `${phone ?? ""}`.replace(/\D/g, "");
   fetch = fetch;
-  sCache = (key_kache)=> (key, d) => {
-    this._cache[key_kache] ??= {}
+  sCache = (key_kache) => (key, d) => {
+    this._cache[key_kache] ??= {};
     this._cache[key_kache][key] = d;
     this.accessTokenCache.set(key_kache, this._cache[key_kache][key]);
+  };
+
+  ifExistAvechat = (table) => async (id_avechat_) => {
+    if (!id_avechat_) return false;
+    const id_avechat = this.prosesingPhone(id_avechat_);
+    await db.onCreateTable("ave_chat_" + table, {
+      id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+      id_avechat: "TEXT",
+    });
+    const items = await db.onGetRows("ave_chat_" + table, {
+      id_avechat,
+    });
+    return items.length > 0;
+  };
+  onCreateUserAvechatIfNotExist = (table) => async (id_avechat_, onCreate) => {
+    if (!id_avechat_) return false;
+    const id_avechat = this.prosesingPhone(id_avechat_);
+    const userExit = await this.ifExistAvechat(table)(id_avechat);
+    if(!userExit){
+      await onCreate(id_avechat);
+      await db.onCreateRow("ave_chat_" + table, {
+        id_avechat,
+      });
+    }
   };
 }
 

@@ -11,6 +11,9 @@ class AppWebhook extends AppBase {
         sCache ,
         aveChatLineaEstandar: this.aveChatLineaEstandar,
         prosesingPhone: this.prosesingPhone,
+        ifExistAvechat: this.ifExistAvechat("linea_estandar"),
+        onCreateUserAvechatIfNotExist: this.onCreateUserAvechatIfNotExist("linea_estandar"),
+        createUser:this.aveChatLineaEstandar.createUser.bind(this.aveChatLineaEstandar)
     }));
   }
 

@@ -2,7 +2,7 @@ const {cola} = require("../../cola");
 const { db } = require("../../db");
 
 const onWebhookSendMessage =
-  ({ sCache, aveChatLineaEstandar,prosesingPhone }) =>
+  ({ sCache, aveChatLineaEstandar,prosesingPhone,ifExistAvechat,onCreateUserAvechatIfNotExist,createUser }) =>
   async (req, res) => {
     // {
     //   "guia": "1112016134910111",
@@ -105,20 +105,37 @@ const onWebhookSendMessage =
 
       const id_avechats =[]
 
-      if(req.body.estado_id && req.body.estado_id !== 16) {
+      if(req.body.estado_id != undefined && req.body.estado_id !== 16) {
         dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
       }
       const noveltyResponsible = dataStandartLine.noveltyResponsible ?? 1; // default to companyPhoneNumber
 
       if(noveltyResponsible === 1 || noveltyResponsible === 3) {
-        id_avechats.push(prosesingPhone("+57"+dataStandartLine.companyPhoneNumber));
+        id_avechats.push({
+          id_avechat: prosesingPhone("+57"+dataStandartLine.companyPhoneNumber),
+          first_name: dataStandartLine.companyName ?? "User",
+          last_name:"",
+        });
       }
       if(noveltyResponsible === 2 || noveltyResponsible === 3) {
-        id_avechats.push(prosesingPhone("+57"+dataStandartLine.clientPhoneNumber));
+        id_avechats.push({
+          id_avechat: prosesingPhone("+57"+dataStandartLine.clientPhoneNumber),
+          first_name: dataStandartLine.firstName ?? "User",
+          last_name:"",
+        });
       }
 
       for (let i = 0; i < id_avechats.length; i++) {
-        const id_avechat = id_avechats[i];
+        const {id_avechat,first_name,last_name} = id_avechats[i];
+        // const n = await ifExistAvechat(id_avechat);
+        // return res.status(200).json({n});
+        await onCreateUserAvechatIfNotExist(id_avechat, async () => {
+          await createUser({
+            phone:id_avechat, 
+            first_name, 
+            last_name, 
+          });
+        });
         aveChatLineaEstandar.saveCustomFields({
           user_id:id_avechat,
           obj:{
