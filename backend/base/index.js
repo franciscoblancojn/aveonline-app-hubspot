@@ -7,6 +7,7 @@ const { Count } = require("../count.js");
 const { fetch } = require("../fetch.js");
 const { ASESORES } = require("../dataAcesot.js");
 const NodeCache = require("node-cache");
+const { cola } = require("../cola/index.js");
 
 const API_KEY = process.env.API_KEY;
 const HOST = process.env.HOST;
@@ -30,7 +31,10 @@ class AppBase {
   constructor() {
     this.hubspot = new Hubspot(API_KEY);
     this.aveChat = new AveChat(TOKEN_AVECHAT);
-    this.aveChatLineaEstandar = new AveChat(TOKEN_AVECHAT_LINEA_ESTANDARD);
+    this.aveChatLineaEstandar = new AveChat(TOKEN_AVECHAT_LINEA_ESTANDARD,{
+      sendTemplate:true,
+      cola:true
+    });
     this.aveChatCampana = new AveChat(TOKEN_AVECHAT_CAMPANA, {
       campana: true,
     });

@@ -1,33 +1,49 @@
+const { cola } = require("./cola/index.js");
 const { AveChatAdmin } = require("./data/avechat-Admin.js");
-const { AveChatFields, AveChatFiedsCampana } = require("./data/avechat-fields.js");
+const {
+  AveChatFields,
+  AveChatFiedsCampana,
+  AveChatFiedsSendTemplate,
+} = require("./data/avechat-fields.js");
 const { fetch } = require("./fetch.js");
 
 class AveChat {
   urlApi = "https://chat.aveonline.co/api/";
   token = "";
   campana = false;
+  sendTemplate = false;
+  cola = false;
 
-  constructor(token,options = {}) {
-    const { campana = false } = options;
+  constructor(token, options = {}) {
+    const { campana = false, sendTemplate = false, cola = false } = options;
     this.token = token;
     this.campana = campana;
+    this.sendTemplate = sendTemplate;
+    this.cola = cola;
   }
   async onRequest({ body = undefined, method = "GET", url }) {
-    try {
-      const respond = await fetch(`${this.urlApi}${url}`, {
-        headers: {
-          accept: "application/json",
-          "X-ACCESS-TOKEN": this.token,
-        },
-        body,
-        method,
-      });
-      const result = await respond.json();
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
+    const f = async () => {
+      try {
+        const respond = await fetch(`${this.urlApi}${url}`, {
+          headers: {
+            accept: "application/json",
+            "X-ACCESS-TOKEN": this.token,
+          },
+          body,
+          method,
+        });
+        const result = await respond.json();
+        return result;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    };
+    if(this.cola) {
+      cola.schedule(f)
+      return "cola";
     }
+    return await f();
   }
 
   async getIdCustomFieldApi() {
@@ -37,14 +53,20 @@ class AveChat {
     return result;
   }
   async getIdCustomField(key) {
-    const id = (this.campana ? AveChatFiedsCampana : AveChatFields).find((e) => e.name == key).id;
+    const id = (
+      this.campana
+        ? AveChatFiedsCampana
+        : this?.sendTemplate
+        ? AveChatFiedsSendTemplate
+        : AveChatFields
+    ).find((e) => e.name == key).id;
 
     return id;
   }
   async setCustomField({ key, value, user_id }) {
     const id = await this.getIdCustomField(key);
     // console.log({ id, key, value ,user_id});
-    
+
     const result = await this.onRequest({
       url: `/users/${user_id}/custom_fields/${id}`,
       method: "POST",
@@ -124,7 +146,7 @@ class AveChat {
     });
     return {
       ...result,
-      saveCustomFields
+      saveCustomFields,
     };
   }
   async getUsersByCustomField({ key, value }) {
@@ -185,14 +207,14 @@ class AveChat {
           },
         });
         return {
-          isNew:true,
+          isNew: true,
           create: true,
           resutCreate,
           resutCustonField,
         };
       }
       return {
-          isNew:false,
+        isNew: false,
         create: true,
       };
     } catch (error) {
@@ -224,7 +246,7 @@ class AveChat {
     return {
       ...result,
       scf,
-      user_id
+      user_id,
     };
   }
 }

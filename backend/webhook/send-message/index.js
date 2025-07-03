@@ -117,30 +117,40 @@ const onWebhookSendMessage =
         id_avechats.push(prosesingPhone("+57"+dataStandartLine.clientPhoneNumber));
       }
 
-      let listMessage = undefined;
-      if (req.body.get) {
-        listMessage = await db.onGetRows("ave_chat_linea_estandar_message", {});
-      } else {
-        for (let i = 0; i < 111; i++) {
-          cola.schedule(async () => {
-            await db.onCreateTable("ave_chat_linea_estandar_message", {
-              id: "INTEGER PRIMARY KEY AUTOINCREMENT",
-              id_avechat: "TEXT",
-              message: "TEXT",
-            });
-            await db.onCreateRow("ave_chat_linea_estandar_message", {
-              id_avechat: `${i}`,
-              message: "test",
-            });
-          });
-        }
+      for (let i = 0; i < id_avechats.length; i++) {
+        const id_avechat = id_avechats[i];
+        aveChatLineaEstandar.saveCustomFields({
+          user_id:id_avechat,
+          obj:{
+            sendTemplate:"template1"
+          }
+        })
       }
+
+      // let listMessage = undefined;
+      // if (req.body.get) {
+      //   listMessage = await db.onGetRows("ave_chat_linea_estandar_message", {});
+      // } else {
+      //   for (let i = 0; i < 111; i++) {
+      //     cola.schedule(async () => {
+      //       await db.onCreateTable("ave_chat_linea_estandar_message", {
+      //         id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+      //         id_avechat: "TEXT",
+      //         message: "TEXT",
+      //       });
+      //       await db.onCreateRow("ave_chat_linea_estandar_message", {
+      //         id_avechat: `${i}`,
+      //         message: "test",
+      //       });
+      //     });
+      //   }
+      // }
 
       const respond = {
         success: true,
         message: "✅ Contacto creado correctamente.",
         data: {
-          listMessage,
+          // listMessage,
         },
       };
       sCache("respond", respond);

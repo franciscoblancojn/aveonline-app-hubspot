@@ -478,7 +478,172 @@ const AveChatFiedsCampana = [
     "type": "0"
   }
 ]
+
+
+const AveChatFiedsSendTemplate = [
+  {
+    "id": "-12",
+    "name": "Email",
+    "type": "-1"
+  },
+  {
+    "id": "-8",
+    "name": "Phone Number",
+    "type": "-1"
+  },
+  {
+    "id": "699738",
+    "name": "adelanto",
+    "type": "0"
+  },
+  {
+    "id": "658887",
+    "name": "banco_comercio",
+    "type": "0"
+  },
+  {
+    "id": "244484",
+    "name": "destino",
+    "type": "0"
+  },
+  {
+    "id": "608104",
+    "name": "direccion",
+    "type": "0"
+  },
+  {
+    "id": "940145",
+    "name": "direccion_oficina_trasnportadora",
+    "type": "0"
+  },
+  {
+    "id": "327957",
+    "name": "estado",
+    "type": "0"
+  },
+  {
+    "id": "27068",
+    "name": "guia",
+    "type": "0"
+  },
+  {
+    "id": "635826",
+    "name": "ia_reputation",
+    "type": "0"
+  },
+  {
+    "id": "941790",
+    "name": "ia_suggested_direccion",
+    "type": "0"
+  },
+  {
+    "id": "472919",
+    "name": "imagen",
+    "type": "0"
+  },
+  {
+    "id": "828501",
+    "name": "link_editar_pedido",
+    "type": "0"
+  },
+  {
+    "id": "452406",
+    "name": "motivo",
+    "type": "0"
+  },
+  {
+    "id": "250033",
+    "name": "nota",
+    "type": "0"
+  },
+  {
+    "id": "121156",
+    "name": "novedad_homologada",
+    "type": "0"
+  },
+  {
+    "id": "901011",
+    "name": "novedad_transportadora",
+    "type": "0"
+  },
+  {
+    "id": "973826",
+    "name": "numero_cuenta",
+    "type": "0"
+  },
+  {
+    "id": "533910",
+    "name": "pedido",
+    "type": "0"
+  },
+  {
+    "id": "910673",
+    "name": "pedido_recolectado_oficina",
+    "type": "0"
+  },
+  {
+    "id": "610369",
+    "name": "productos",
+    "type": "0"
+  },
+  {
+    "id": "857975",
+    "name": "sendTemplate",
+    "type": "0"
+  },
+  {
+    "id": "137447",
+    "name": "telefono_del_comercio",
+    "type": "0"
+  },
+  {
+    "id": "204468",
+    "name": "tienda",
+    "type": "0"
+  },
+  {
+    "id": "545293",
+    "name": "tipo_cuenta",
+    "type": "0"
+  },
+  {
+    "id": "232750",
+    "name": "tipo_pedido",
+    "type": "0"
+  },
+  {
+    "id": "358929",
+    "name": "token",
+    "type": "0"
+  },
+  {
+    "id": "655268",
+    "name": "token_edicion",
+    "type": "0"
+  },
+  {
+    "id": "476100",
+    "name": "token_mim",
+    "type": "0"
+  },
+  {
+    "id": "107154",
+    "name": "transportadora",
+    "type": "0"
+  },
+  {
+    "id": "433559",
+    "name": "url_pdf_guia",
+    "type": "0"
+  },
+  {
+    "id": "274179",
+    "name": "valor",
+    "type": "0"
+  }
+]
 module.exports = {
   AveChatFields,
-  AveChatFiedsCampana
+  AveChatFiedsCampana,
+  AveChatFiedsSendTemplate
 };
