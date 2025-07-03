@@ -2,7 +2,7 @@ const {cola} = require("../../cola");
 const { db } = require("../../db");
 
 const onWebhookSendMessage =
-  ({ sCache, aveChatLineaEstandar }) =>
+  ({ sCache, aveChatLineaEstandar,prosesingPhone }) =>
   async (req, res) => {
     // {
     //   "guia": "1112016134910111",
@@ -100,6 +100,23 @@ const onWebhookSendMessage =
       // tipo_cuenta
       // novedad_transportadora
       // novedad_homologada
+
+      const { dataStandartLine } = req.body;
+
+      const id_avechats =[]
+
+      if(req.body.estado_id && req.body.estado_id !== 16) {
+        dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
+      }
+      const noveltyResponsible = dataStandartLine.noveltyResponsible ?? 1; // default to companyPhoneNumber
+
+      if(noveltyResponsible === 1 || noveltyResponsible === 3) {
+        id_avechats.push(prosesingPhone("+57"+dataStandartLine.companyPhoneNumber));
+      }
+      if(noveltyResponsible === 2 || noveltyResponsible === 3) {
+        id_avechats.push(prosesingPhone("+57"+dataStandartLine.clientPhoneNumber));
+      }
+
       let listMessage = undefined;
       if (req.body.get) {
         listMessage = await db.onGetRows("ave_chat_linea_estandar_message", {});

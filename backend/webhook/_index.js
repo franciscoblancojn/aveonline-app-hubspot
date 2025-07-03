@@ -10,6 +10,7 @@ class AppWebhook extends AppBase {
     app.post(path, onWebhookSendMessage({ 
         sCache ,
         aveChatLineaEstandar: this.aveChatLineaEstandar,
+        prosesingPhone: this.prosesingPhone,
     }));
   }
 
