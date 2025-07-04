@@ -86,7 +86,8 @@ const onWebhookSendMessage =
     // }
     //   "estado_id": 12, if != 16  noveltyResponsible => 1 else validate noveltyResponsible
     //     "noveltyResponsible":1(companyPhoneNumber),2(clientPhoneNumber),3(ambos)
-    sCache("body", req.body);
+    const body = req.body
+    sCache("body", body);
     try {
       //tipo_pedido
       //tienda
@@ -141,11 +142,11 @@ const onWebhookSendMessage =
         },
       };
 
-      const { dataStandartLine } = req.body;
+      const { dataStandartLine } = body;
 
       const id_avechats = [];
 
-      if (req.body.estado_id != undefined && req.body.estado_id !== 16) {
+      if (body.estado_id != undefined && body.estado_id !== 16) {
         dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
       }
       const noveltyResponsible = dataStandartLine.noveltyResponsible ?? 1; // default to companyPhoneNumber
@@ -157,6 +158,7 @@ const onWebhookSendMessage =
           ),
           first_name: dataStandartLine.companyName ?? "User",
           last_name: "",
+          address: dataStandartLine.operatorLocationAddress 
         });
       }
       if (noveltyResponsible === 2 || noveltyResponsible === 3) {
@@ -166,23 +168,28 @@ const onWebhookSendMessage =
           ),
           first_name: dataStandartLine.firstName ?? "User",
           last_name: "",
+          address: dataStandartLine.clientAddress 
         });
       }
 
       for (let i = 0; i < id_avechats.length; i++) {
-        const { id_avechat, first_name, last_name } = id_avechats[i];
+        const { id_avechat, first_name, last_name ,address} = id_avechats[i];
         // const n = await ifExistAvechat(id_avechat);
         // return res.status(200).json({n});
         const sendTemplate = swFlow[`${req?.body?.estado_id ?? "-1"}`]?.name;
+        if(!sendTemplate){
+          throw "estado_id invalid"
+        }
         const data = {
-          //tipo_pedido
-          //tienda
-          //transportadora
-          //guia
-          //telefono_del_comercio
-          //url_pdf_guia
-          //valor
-          //direccion
+          tipo_pedido:dataStandartLine.type,
+          tienda:dataStandartLine.companyName,
+          transportadora:dataStandartLine.operatorName ,
+          guia:body.guia,
+          telefono_del_comercio:dataStandartLine.companyPhoneNumber,
+          url_pdf_guia:dataStandartLine.guidePdf,
+          valor:dataStandartLine.freightValue,
+          direccion:address,
+          //PENDING:
           //productos
           //novedad_homologada
         };
@@ -201,7 +208,7 @@ const onWebhookSendMessage =
         for (let i = 0; i < keysObj.length; i++) {
           const key = keysObj[i];
           const value = data[key];
-          if (value != user?.data?.[key]) {
+          if (value!=undefined && value != user?.data?.[key]) {
             aveChatLineaEstandar.saveCustomField({
               user_id: id_avechat,
               key,
