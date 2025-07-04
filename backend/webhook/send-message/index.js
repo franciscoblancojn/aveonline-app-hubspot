@@ -1,8 +1,18 @@
-const {cola} = require("../../cola");
+const { cola } = require("../../cola");
 const { db } = require("../../db");
 
 const onWebhookSendMessage =
-  ({ sCache, aveChatLineaEstandar,prosesingPhone,ifExistAvechat,onCreateUserAvechatIfNotExist,createUser }) =>
+  ({
+    sCache,
+    aveChatLineaEstandar,
+    prosesingPhone,
+    ifExistAvechat,
+    onCreateUserAvechatIfNotExist,
+    createUser,
+    onGetUser,
+    onCreateUser,
+    onUpdateUser,
+  }) =>
   async (req, res) => {
     // {
     //   "guia": "1112016134910111",
@@ -78,90 +88,134 @@ const onWebhookSendMessage =
     //     "noveltyResponsible":1(companyPhoneNumber),2(clientPhoneNumber),3(ambos)
     sCache("body", req.body);
     try {
-      // tipo_pedido
-      // first_name
-      // tienda
-      // transportadora
-      // guia
-      // valor
-      // telefono_del_comercio
-      // url_pdf_guia
-      // direccion
-      // destino
-      // ia_repitation
-      // productos
-      // token_edicion
-      // imagen
-      // direccion_oficina_trasnportadora
-      // ia_suggested_direccion
-      // adelanto
-      // banco_comercio
-      // numero_cuenta
-      // tipo_cuenta
-      // novedad_transportadora
-      // novedad_homologada
+      //tipo_pedido
+      //tienda
+      //transportadora
+      //guia
+      //telefono_del_comercio
+      //url_pdf_guia
+      //valor
+      //direccion
+      //productos
+      //novedad_homologada
+      const swFlow = {
+        "0*1*2": {
+          id: 1742399439329,
+          name: "ave_tradicional_guia_generada",
+        },
+        10003: {
+          id: 1742326976324,
+          name: "pedido_en_manos_de_trasportadora",
+        },
+        "12,10017": {
+          id: 1742334680842,
+          name: "pedido_entregado_ave_tradicional",
+        },
+        10005: {
+          id: 1742323154201,
+          name: "reparto_pedido",
+        },
+        2: {
+          id: 1711404694846,
+          name: "guia_pedido",
+        },
+        10003: {
+          id: 1711404694846,
+          name: "CRM_pedido_en_manos_trasportadora",
+        },
+        10005: {
+          id: 1711450461431,
+          name: "reparto_pedido",
+        },
+        "12,10017": {
+          id: 1738236609877,
+          name: "entregado_pedido",
+        },
+        "?1": {
+          id: 1745084674287,
+          name: "pedido_en_novedad_con_gestion",
+        },
+        "?2": {
+          id: 1745083529015,
+          name: "pedido_en_novedad_operativa_sin_gestion",
+        },
+      };
 
       const { dataStandartLine } = req.body;
 
-      const id_avechats =[]
+      const id_avechats = [];
 
-      if(req.body.estado_id != undefined && req.body.estado_id !== 16) {
+      if (req.body.estado_id != undefined && req.body.estado_id !== 16) {
         dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
       }
       const noveltyResponsible = dataStandartLine.noveltyResponsible ?? 1; // default to companyPhoneNumber
 
-      if(noveltyResponsible === 1 || noveltyResponsible === 3) {
+      if (noveltyResponsible === 1 || noveltyResponsible === 3) {
         id_avechats.push({
-          id_avechat: prosesingPhone("+57"+dataStandartLine.companyPhoneNumber),
+          id_avechat: prosesingPhone(
+            "+57" + dataStandartLine.companyPhoneNumber
+          ),
           first_name: dataStandartLine.companyName ?? "User",
-          last_name:"",
+          last_name: "",
         });
       }
-      if(noveltyResponsible === 2 || noveltyResponsible === 3) {
+      if (noveltyResponsible === 2 || noveltyResponsible === 3) {
         id_avechats.push({
-          id_avechat: prosesingPhone("+57"+dataStandartLine.clientPhoneNumber),
+          id_avechat: prosesingPhone(
+            "+57" + dataStandartLine.clientPhoneNumber
+          ),
           first_name: dataStandartLine.firstName ?? "User",
-          last_name:"",
+          last_name: "",
         });
       }
 
       for (let i = 0; i < id_avechats.length; i++) {
-        const {id_avechat,first_name,last_name} = id_avechats[i];
+        const { id_avechat, first_name, last_name } = id_avechats[i];
         // const n = await ifExistAvechat(id_avechat);
         // return res.status(200).json({n});
-        await onCreateUserAvechatIfNotExist(id_avechat, async () => {
+        const sendTemplate = swFlow[`${req?.body?.estado_id ?? "-1"}`]?.name;
+        const data = {
+          //tipo_pedido
+          //tienda
+          //transportadora
+          //guia
+          //telefono_del_comercio
+          //url_pdf_guia
+          //valor
+          //direccion
+          //productos
+          //novedad_homologada
+        };
+        let user = await onGetUser(id_avechat);
+        if (!user) {
           await createUser({
-            phone:id_avechat, 
-            first_name, 
-            last_name, 
+            phone: id_avechat,
+            first_name,
+            last_name,
+            cola: false,
           });
-        });
-        aveChatLineaEstandar.saveCustomFields({
-          user_id:id_avechat,
-          obj:{
-            sendTemplate:"template1"
+          await onCreateUser(id_avechat, data);
+          user = await onGetUser(id_avechat);
+        }
+        const keysObj = Object.keys(data);
+        for (let i = 0; i < keysObj.length; i++) {
+          const key = keysObj[i];
+          const value = data[key];
+          if (value != user?.data?.[key]) {
+            aveChatLineaEstandar.saveCustomField({
+              user_id: id_avechat,
+              key,
+              value,
+            });
           }
-        })
+        }
+        aveChatLineaEstandar.saveCustomField({
+          user_id: id_avechat,
+          key: "sendTemplate",
+          value: sendTemplate,
+        });
+        await onCreateUser(id_avechat, data);
       }
-
-      // let listMessage = undefined;
-      // if (req.body.get) {
-      //   listMessage = await db.onGetRows("ave_chat_linea_estandar_message", {});
-      // } else {
-      //   for (let i = 0; i < 111; i++) {
-      //     cola.schedule(async () => {
-      //       await db.onCreateTable("ave_chat_linea_estandar_message", {
-      //         id: "INTEGER PRIMARY KEY AUTOINCREMENT",
-      //         id_avechat: "TEXT",
-      //         message: "TEXT",
-      //       });
-      //       await db.onCreateRow("ave_chat_linea_estandar_message", {
-      //         id_avechat: `${i}`,
-      //         message: "test",
-      //       });
-      //     });
-      //   }
-      // }
 
       const respond = {
         success: true,

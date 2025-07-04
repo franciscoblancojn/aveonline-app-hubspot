@@ -23,7 +23,9 @@ class DB {
   onCreateRow(tableName, row) {
     return new Promise((resolve, reject) => {
       const columns = Object.keys(row).join(", ");
-      const placeholders = Object.keys(row).map(() => "?").join(", ");
+      const placeholders = Object.keys(row)
+        .map(() => "?")
+        .join(", ");
       const sql = `INSERT INTO ${tableName} (${columns}) VALUES (${placeholders})`;
       this.db.run(sql, Object.values(row), function (err) {
         if (err) {
@@ -39,12 +41,35 @@ class DB {
       const whereClause = Object.keys(where)
         .map((key) => `${key} = ?`)
         .join(" AND ");
-      const sql = `SELECT * FROM ${tableName}${whereClause ? " WHERE " + whereClause : ""}`;
+      const sql = `SELECT * FROM ${tableName}${
+        whereClause ? " WHERE " + whereClause : ""
+      }`;
       this.db.all(sql, Object.values(where), (err, rows) => {
         if (err) {
           reject(err);
         } else {
           resolve(rows);
+        }
+      });
+    });
+  }
+  onUpdateRow(tableName, updates, where) {
+    return new Promise((resolve, reject) => {
+      const setClause = Object.keys(updates)
+        .map((key) => `${key} = ?`)
+        .join(", ");
+      const whereClause = Object.keys(where)
+        .map((key) => `${key} = ?`)
+        .join(" AND ");
+
+      const sql = `UPDATE ${tableName} SET ${setClause} WHERE ${whereClause}`;
+      const values = [...Object.values(updates), ...Object.values(where)];
+
+      this.db.run(sql, values, function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this.changes); // número de filas afectadas
         }
       });
     });

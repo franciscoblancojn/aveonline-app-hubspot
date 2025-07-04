@@ -59,6 +59,7 @@ class AppBase {
     await db.onCreateTable("ave_chat_" + table, {
       id: "INTEGER PRIMARY KEY AUTOINCREMENT",
       id_avechat: "TEXT",
+      data: "TEXT DEFAULT NULL",
     });
     const items = await db.onGetRows("ave_chat_" + table, {
       id_avechat,
@@ -69,13 +70,55 @@ class AppBase {
     if (!id_avechat_) return false;
     const id_avechat = this.prosesingPhone(id_avechat_);
     const userExit = await this.ifExistAvechat(table)(id_avechat);
-    if(!userExit){
+    if (!userExit) {
       await onCreate(id_avechat);
       await db.onCreateRow("ave_chat_" + table, {
         id_avechat,
       });
     }
   };
+  onGetUser = (table) => async (id_avechat_) => {
+    if (!id_avechat_) return false;
+    const id_avechat = this.prosesingPhone(id_avechat_);
+    await db.onCreateTable("ave_chat_" + table, {
+      id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+      id_avechat: "TEXT",
+      data: "TEXT DEFAULT NULL",
+    });
+    const items = await db.onGetRows("ave_chat_" + table, {
+      id_avechat,
+    });
+    const user = items?.[0];
+    if (user) {
+      user.data = JSON.parse(user.data ?? "{}");
+    }
+    return user;
+  };
+  onCreateUser =
+    (table) =>
+    async (id_avechat_, data = {}) => {
+      if (!id_avechat_) return false;
+      const id_avechat = this.prosesingPhone(id_avechat_);
+      await db.onCreateRow("ave_chat_" + table, {
+        id_avechat,
+        data: JSON.stringify(data),
+      });
+    };
+  onUpdateUser =
+    (table) =>
+    async (id_avechat_, data = {}) => {
+      if (!id_avechat_) return false;
+      const id_avechat = this.prosesingPhone(id_avechat_);
+      await db.onUpdateRow(
+        "ave_chat_" + table,
+        {
+          data: JSON.stringify(data),
+        },
+        {
+          id_avechat,
+        }
+      );
+    };
 }
 
 module.exports = {

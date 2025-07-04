@@ -21,7 +21,7 @@ class AveChat {
     this.sendTemplate = sendTemplate;
     this.cola = cola;
   }
-  async onRequest({ body = undefined, method = "GET", url }) {
+  async onRequest({ cola = true, body = undefined, method = "GET", url }) {
     const f = async () => {
       try {
         const respond = await fetch(`${this.urlApi}${url}`, {
@@ -39,8 +39,8 @@ class AveChat {
         throw error;
       }
     };
-    if(this.cola) {
-      cola.schedule(f)
+    if (this.cola && cola) {
+      cola.schedule(f);
       return "cola";
     }
     return await f();
@@ -87,6 +87,25 @@ class AveChat {
   //     })
   //   );
   // }
+  async saveCustomField({ user_id, key, value }) {
+    const result = await this.setCustomField({
+      user_id,
+      key,
+      value,
+    });
+    // console.log({result,key,value,user_id});
+
+    if (
+      result?.error?.message ==
+      "Your account exceeded the limit of 100 requests per 60 seconds"
+    ) {
+      this.setCustomField({
+        user_id,
+        key,
+        value,
+      });
+    }
+  }
   async saveCustomFields({ user_id, obj }) {
     const listResult = [];
     const listkey = Object.keys(obj);
@@ -117,8 +136,9 @@ class AveChat {
     }
     return listResult;
   }
-  async createUser({ phone, first_name, last_name, gender }) {
+  async createUser({ phone, first_name, last_name, gender, cola }) {
     const result = await this.onRequest({
+      cola,
       url: `/users`,
       method: "POST",
       body: JSON.stringify({
