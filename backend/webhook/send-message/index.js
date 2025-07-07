@@ -204,13 +204,15 @@ const onWebhookSendMessage =
             last_name,
             cola: false,
           });
-          await onCreateUser(id_avechat, data);
+          await onCreateUser(id_avechat, {});
           user = await onGetUser(id_avechat);
         }
         const keysObj = Object.keys(data);
         for (let i = 0; i < keysObj.length; i++) {
           const key = keysObj[i];
           const value = data[key];
+          console.log({key,value,user});
+          
           if (value!=undefined && value != user?.data?.[key]) {
             aveChatLineaEstandar.saveCustomField({
               user_id: id_avechat,
@@ -224,7 +226,7 @@ const onWebhookSendMessage =
           key: "sendTemplate",
           value: sendTemplate,
         });
-        await onCreateUser(id_avechat, data);
+        await onUpdateUser(id_avechat, data);
       }
 
       const respond = {
