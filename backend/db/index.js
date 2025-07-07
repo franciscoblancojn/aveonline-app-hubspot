@@ -1,9 +1,10 @@
+require("dotenv").config();
 const sqlite3 = require("sqlite3").verbose();
 
 class DB {
   db;
   constructor() {
-    this.db = new sqlite3.Database("./db.sqlite");
+    this.db = new sqlite3.Database(`./sqlite/${process.env.DB_NAME}.sqlite`);
   }
   onCreateTable(tableName, columns) {
     return new Promise((resolve, reject) => {

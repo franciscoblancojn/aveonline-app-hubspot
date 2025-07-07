@@ -109,3 +109,5 @@ hubspot.config.yml
 .env
 package-lock.json
 bun.lockb
+
+sqlite/*.sqlite
