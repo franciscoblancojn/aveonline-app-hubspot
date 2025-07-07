@@ -151,6 +151,12 @@ const onWebhookSendMessage =
       }
       const noveltyResponsible = dataStandartLine.noveltyResponsible ?? 1; // default to companyPhoneNumber
 
+      //SET PHONES
+      //PENDING: remove
+      dataStandartLine.companyPhoneNumber = "3103557200"
+      dataStandartLine.clientPhoneNumber = "3103557200"
+
+
       if (noveltyResponsible === 1 || noveltyResponsible === 3) {
         id_avechats.push({
           id_avechat: prosesingPhone(
@@ -211,7 +217,6 @@ const onWebhookSendMessage =
         for (let i = 0; i < keysObj.length; i++) {
           const key = keysObj[i];
           const value = data[key];
-          console.log({key,value,user});
           
           if (value!=undefined && value != user?.data?.[key]) {
             aveChatLineaEstandar.saveCustomField({
