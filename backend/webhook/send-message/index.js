@@ -86,7 +86,7 @@ const onWebhookSendMessage =
     // }
     //   "estado_id": 12, if != 16  noveltyResponsible => 1 else validate noveltyResponsible
     //     "noveltyResponsible":1(companyPhoneNumber),2(clientPhoneNumber),3(ambos)
-    const body = req.body
+    const body = req.body;
     sCache("body", body);
     try {
       //tipo_pedido
@@ -100,62 +100,90 @@ const onWebhookSendMessage =
       //productos
       //novedad_homologada
       const swFlow = {
-        "0*1*2": {
-          id: 1742399439329,
-          name: "ave_tradicional_guia_generada",
+        tradicional: {
+          0: {
+            id: 1742399439329,
+            name: "ave_tradicional_guia_generada",
+          },
+          1: {
+            id: 1742399439329,
+            name: "ave_tradicional_guia_generada",
+          },
+          2: {
+            id: 1742399439329,
+            name: "ave_tradicional_guia_generada",
+          },
+          10003: {
+            id: 1742326976324,
+            name: "pedido_en_manos_de_trasportadora",
+          },
+          10005: {
+            id: 1742323154201,
+            name: "reparto_pedido",
+          },
+          12: {
+            id: 1742334680842,
+            name: "pedido_entregado_ave_tradicional",
+          },
+          10017: {
+            id: 1742334680842,
+            name: "pedido_entregado_ave_tradicional",
+          },
         },
-        10003: {
-          id: 1742326976324,
-          name: "pedido_en_manos_de_trasportadora",
-        },
-        "12,10017": {
-          id: 1742334680842,
-          name: "pedido_entregado_ave_tradicional",
-        },
-        10005: {
-          id: 1742323154201,
-          name: "reparto_pedido",
-        },
-        2: {
-          id: 1711404694846,
-          name: "guia_pedido",
-        },
-        10003: {
-          id: 1711404694846,
-          name: "CRM_pedido_en_manos_trasportadora",
-        },
-        10005: {
-          id: 1711450461431,
-          name: "reparto_pedido",
-        },
-        "12,10017": {
-          id: 1738236609877,
-          name: "entregado_pedido",
-        },
-        "?1": {
-          id: 1745084674287,
-          name: "pedido_en_novedad_con_gestion",
-        },
-        "?2": {
-          id: 1745083529015,
-          name: "pedido_en_novedad_operativa_sin_gestion",
+        crm: {
+          2: {
+            id: 1711404694846,
+            name: "guia_pedido",
+          },
+          10003: {
+            id: 1711404694846,
+            name: "CRM_pedido_en_manos_trasportadora",
+          },
+          10005: {
+            id: 1711450461431,
+            name: "reparto_pedido",
+          },
+          12: {
+            id: 1738236609877,
+            name: "entregado_pedido",
+          },
+          10017: {
+            id: 1738236609877,
+            name: "entregado_pedido",
+          },
+          "?1": {
+            id: 1745084674287,
+            name: "pedido_en_novedad_con_gestion",
+          },
+          "?2": {
+            id: 1745083529015,
+            name: "pedido_en_novedad_operativa_sin_gestion",
+          },
         },
       };
+      let estado_id = `${req?.body?.estado_id ?? "-1"}`;
+      const type =
+        !body.pedido_id && !body.numeropedidoExterno ? "tradicional" : "crm";
 
       const { dataStandartLine } = body;
 
       const id_avechats = [];
 
-      if (body.estado_id != undefined && body.estado_id !== 16) {
+      if (estado_id != "-1" && estado_id !== "16") {
         dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
       }
+
+      const sendTemplate = swFlow?.[type]?.[estado_id]?.name;
+      if (!sendTemplate) {
+        throw "estado_id invalid";
+      }
+
       const noveltyResponsible = dataStandartLine.noveltyResponsible ?? 1; // default to companyPhoneNumber
 
       //SET PHONES
       //PENDING: remove
-      dataStandartLine.companyPhoneNumber = "3103557200"
-      dataStandartLine.clientPhoneNumber = "3103557200"
-
+      dataStandartLine.companyPhoneNumber = "3103557200";
+      dataStandartLine.clientPhoneNumber = "3103557200";
 
       if (noveltyResponsible === 1 || noveltyResponsible === 3) {
         id_avechats.push({
@@ -164,7 +192,7 @@ const onWebhookSendMessage =
           ),
           first_name: dataStandartLine.companyName ?? "User",
           last_name: "",
-          address: dataStandartLine.operatorLocationAddress 
+          address: dataStandartLine.operatorLocationAddress,
         });
       }
       if (noveltyResponsible === 2 || noveltyResponsible === 3) {
@@ -174,30 +202,26 @@ const onWebhookSendMessage =
           ),
           first_name: dataStandartLine.firstName ?? "User",
           last_name: "",
-          address: dataStandartLine.clientAddress 
+          address: dataStandartLine.clientAddress,
         });
       }
 
       for (let i = 0; i < id_avechats.length; i++) {
-        const { id_avechat, first_name, last_name ,address} = id_avechats[i];
-        if(id_avechat.length < 12){
+        const { id_avechat, first_name, last_name, address } = id_avechats[i];
+        if (id_avechat.length < 12) {
           continue;
         }
         // const n = await ifExistAvechat(id_avechat);
         // return res.status(200).json({n});
-        const sendTemplate = swFlow[`${req?.body?.estado_id ?? "-1"}`]?.name;
-        if(!sendTemplate){
-          throw "estado_id invalid"
-        }
         const data = {
-          tipo_pedido:dataStandartLine.type,
-          tienda:dataStandartLine.companyName,
-          transportadora:dataStandartLine.operatorName ,
-          guia:body.guia,
-          telefono_del_comercio:dataStandartLine.companyPhoneNumber,
-          url_pdf_guia:dataStandartLine.guidePdf,
-          valor:dataStandartLine.freightValue,
-          direccion:address,
+          tipo_pedido: dataStandartLine.type,
+          tienda: dataStandartLine.companyName,
+          transportadora: dataStandartLine.operatorName,
+          guia: body.guia,
+          telefono_del_comercio: dataStandartLine.companyPhoneNumber,
+          url_pdf_guia: dataStandartLine.guidePdf,
+          valor: dataStandartLine.freightValue,
+          direccion: address,
           //PENDING:
           //productos
           //novedad_homologada
@@ -217,8 +241,8 @@ const onWebhookSendMessage =
         for (let i = 0; i < keysObj.length; i++) {
           const key = keysObj[i];
           const value = data[key];
-          
-          if (value!=undefined && value != user?.data?.[key]) {
+
+          if (value != undefined && value != user?.data?.[key]) {
             aveChatLineaEstandar.saveCustomField({
               user_id: id_avechat,
               key,
@@ -226,6 +250,8 @@ const onWebhookSendMessage =
             });
           }
         }
+        // console.log("sendTemplate", sendTemplate);
+
         aveChatLineaEstandar.saveCustomField({
           user_id: id_avechat,
           key: "sendTemplate",
@@ -246,8 +272,8 @@ const onWebhookSendMessage =
     } catch (error) {
       const err = {
         success: false,
-        message: "❌ Error al crear el contacto.",
-        error: error.message,
+        message: error.message ?? error ?? "❌ Error al enviar el message.",
+        error: error,
       };
       sCache("error", err);
       return res.status(500).json(err);
