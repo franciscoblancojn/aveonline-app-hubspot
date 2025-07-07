@@ -174,6 +174,9 @@ const onWebhookSendMessage =
 
       for (let i = 0; i < id_avechats.length; i++) {
         const { id_avechat, first_name, last_name ,address} = id_avechats[i];
+        if(id_avechat.length < 12){
+          continue;
+        }
         // const n = await ifExistAvechat(id_avechat);
         // return res.status(200).json({n});
         const sendTemplate = swFlow[`${req?.body?.estado_id ?? "-1"}`]?.name;

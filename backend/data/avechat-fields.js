@@ -480,7 +480,7 @@ const AveChatFiedsCampana = [
 ]
 
 
-const AveChatFiedsSendTemplate = [
+const AveChatFiedsSendTemplate =[
   {
     "id": "-12",
     "name": "Email",

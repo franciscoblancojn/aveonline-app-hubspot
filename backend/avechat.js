@@ -21,7 +21,7 @@ class AveChat {
     this.sendTemplate = sendTemplate;
     this.cola = cola;
   }
-  async onRequest({ cola = true, body = undefined, method = "GET", url }) {
+  async onRequest({ swcola = true, body = undefined, method = "GET", url }) {
     const f = async () => {
       try {
         const respond = await fetch(`${this.urlApi}${url}`, {
@@ -39,7 +39,7 @@ class AveChat {
         throw error;
       }
     };
-    if (this.cola && cola) {
+    if (this.cola && swcola) {
       cola.schedule(f);
       return "cola";
     }
@@ -56,9 +56,9 @@ class AveChat {
     const id = (
       this.campana
         ? AveChatFiedsCampana
-        : this?.sendTemplate
+        : (this?.sendTemplate
         ? AveChatFiedsSendTemplate
-        : AveChatFields
+        : AveChatFields)
     ).find((e) => e.name == key).id;
 
     return id;
@@ -138,7 +138,7 @@ class AveChat {
   }
   async createUser({ phone, first_name, last_name, gender, cola }) {
     const result = await this.onRequest({
-      cola,
+      swcola:cola,
       url: `/users`,
       method: "POST",
       body: JSON.stringify({
