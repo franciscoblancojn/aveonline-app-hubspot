@@ -222,9 +222,8 @@ const onWebhookSendMessage =
           url_pdf_guia: dataStandartLine.guidePdf,
           valor: dataStandartLine.freightValue,
           direccion: address,
-          novedad_homologada:dataStandartLine?.aveNoveltyName
-          //PENDING:
-          //productos
+          novedad_homologada:dataStandartLine?.aveNoveltyName,
+          productos:dataStandartLine?.products
         };
         let user = await onGetUser(id_avechat);
         if (!user) {
@@ -262,7 +261,7 @@ const onWebhookSendMessage =
 
       const respond = {
         success: true,
-        message: "✅ Contacto creado correctamente.",
+        message: "✅ Mensaje Enviado correctamente.",
         data: {
           // listMessage,
         },
