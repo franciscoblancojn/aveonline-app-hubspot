@@ -165,9 +165,23 @@ const onWebhookSendMessage =
             name: "pedido_en_novedad_operativa_sin_gestion",
           },
         },
+        novedades:{
+          "SC": {
+            id: 1745084674287,
+            name: "pedido_en_novedad_con_gestion",
+          },
+          "CL": {
+            id: 1745084674287,
+            name: "pedido_en_novedad_con_gestion",
+          },
+          "OP": {
+            id: 1745083529015,
+            name: "pedido_en_novedad_operativa_sin_gestion",
+          },
+        }
       };
       let estado_id = `${req?.body?.estado_id ?? "-1"}`;
-      const type =
+      let type =
         !body.pedido_id && !body.numeropedidoExterno ? "tradicional" : "crm";
 
       const { dataStandartLine } = body;
@@ -177,7 +191,12 @@ const onWebhookSendMessage =
       if (estado_id != "-1" && estado_id !== "16") {
         // dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
       }
-
+      if(estado_id=="16"){
+        type="novedades"
+        estado_id=body?.tiponovedad ?? "-1"
+      }
+      console.log({estado_id,type});
+      
       const sendTemplate = swFlow?.[type]?.[estado_id]?.name;
       if (!sendTemplate) {
         throw "estado_id invalid";
