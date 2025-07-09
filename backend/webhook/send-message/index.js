@@ -195,7 +195,6 @@ const onWebhookSendMessage =
         type="novedades"
         estado_id=body?.tiponovedad ?? "-1"
       }
-      console.log({estado_id,type});
       
       const sendTemplate = swFlow?.[type]?.[estado_id]?.name;
       if (!sendTemplate) {
