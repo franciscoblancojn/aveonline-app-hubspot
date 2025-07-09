@@ -182,7 +182,7 @@ const onWebhookSendMessage =
 
       //SET PHONES
       //PENDING: remove
-      dataStandartLine.companyPhoneNumber = "3103557200";
+      dataStandartLine.companyPhoneNumber = "3183558548";
       dataStandartLine.clientPhoneNumber = "3103557200";
 
       if (noveltyResponsible === 1 || noveltyResponsible === 3) {
