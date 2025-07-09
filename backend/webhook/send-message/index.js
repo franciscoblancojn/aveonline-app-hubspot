@@ -170,7 +170,7 @@ const onWebhookSendMessage =
       const id_avechats = [];
 
       if (estado_id != "-1" && estado_id !== "16") {
-        dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
+        // dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
       }
 
       const sendTemplate = swFlow?.[type]?.[estado_id]?.name;
