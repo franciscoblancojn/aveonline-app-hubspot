@@ -227,6 +227,15 @@ const onWebhookSendMessage =
           last_name: "",
           address: dataStandartLine.clientAddress,
         });
+        //PENDING: remive
+        id_avechats.push({
+          id_avechat: prosesingPhone(
+            "+57" + dataStandartLine.companyPhoneNumber
+          ),
+          first_name: dataStandartLine.firstName ?? "User",
+          last_name: "",
+          address: dataStandartLine.clientAddress,
+        });
       }
 
       for (let i = 0; i < id_avechats.length; i++) {
