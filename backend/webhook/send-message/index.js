@@ -3,7 +3,7 @@ const { db } = require("../../db");
 
 const onWebhookSendMessage =
   ({
-    sCache,
+    setCache,
     aveChatLineaEstandar,
     prosesingPhone,
     ifExistAvechat,
@@ -12,6 +12,7 @@ const onWebhookSendMessage =
     onGetUser,
     onCreateUser,
     onUpdateUser,
+    onCreateLog,
   }) =>
   async (req, res) => {
     // {
@@ -87,7 +88,11 @@ const onWebhookSendMessage =
     //   "estado_id": 12, if != 16  noveltyResponsible => 1 else validate noveltyResponsible
     //     "noveltyResponsible":1(companyPhoneNumber),2(clientPhoneNumber),3(ambos)
     const body = req.body;
-    sCache("body", body);
+    setCache("body", body);
+    // onCreateLog({
+    //   key:"onWebhookSendMessage",
+    //   data:body
+    // })
     try {
       //tipo_pedido
       //tienda
@@ -222,10 +227,13 @@ const onWebhookSendMessage =
           url_pdf_guia: dataStandartLine.guidePdf,
           valor: dataStandartLine.freightValue,
           direccion: address,
-          novedad_homologada:dataStandartLine?.aveNoveltyName,
-          productos:dataStandartLine?.products
+          novedad_homologada: dataStandartLine?.aveNoveltyName,
+          productos: dataStandartLine?.products,
         };
+        // setCache("id_avechat_" + i, id_avechat);
+        setCache("data_" + i, {id_avechat,...data});
         let user = await onGetUser(id_avechat);
+        // setCache("user_" + i, user);
         if (!user) {
           await createUser({
             phone: id_avechat,
@@ -266,7 +274,7 @@ const onWebhookSendMessage =
           // listMessage,
         },
       };
-      sCache("respond", respond);
+      setCache("respond", respond);
       return res.status(200).json(respond);
     } catch (error) {
       const err = {
@@ -274,7 +282,7 @@ const onWebhookSendMessage =
         message: error.message ?? error ?? "❌ Error al enviar el message.",
         error: error,
       };
-      sCache("error", err);
+      setCache("error", err);
       return res.status(500).json(err);
     }
   };

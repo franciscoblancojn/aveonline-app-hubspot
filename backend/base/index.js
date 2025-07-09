@@ -47,10 +47,14 @@ class AppBase {
   }
   prosesingPhone = (phone) => `${phone ?? ""}`.replace(/\D/g, "");
   fetch = fetch;
-  sCache = (key_kache) => (key, d) => {
+  setCache = (key_kache) => (key, d) => {
     this._cache[key_kache] ??= {};
     this._cache[key_kache][key] = d;
-    this.accessTokenCache.set(key_kache, this._cache[key_kache][key]);
+    this.accessTokenCache.set(key_kache, this._cache[key_kache]);
+  };
+  getCache = (key_kache) => {
+    const cachedData = this.accessTokenCache.get(key_kache ?? "cache");
+    return cachedData;
   };
 
   ifExistAvechat = (table) => async (id_avechat_) => {
@@ -90,7 +94,12 @@ class AppBase {
     });
     const user = items?.[0];
     if (user) {
-      user.data = JSON.parse(user.data ?? "{}");
+      try {
+        user.data ??= "{}";
+        user.data = JSON.parse(user.data ?? "{}");
+      } catch (error) {
+        user.data = {};
+      }
     }
     return user;
   };
@@ -119,6 +128,26 @@ class AppBase {
         }
       );
     };
+
+  onGetLog = async ({ key, limit, offset }) => {
+    await db.onCreateTable("ave_chat_log", {
+      id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+      key: "TEXT DEFAULT NULL",
+      data: "TEXT DEFAULT NULL",
+    });
+    const items = await db.onGetRows("ave_chat_log", {
+      key,
+      limit,
+      offset,
+    });
+    return items;
+  };
+  onCreateLog = async (key, data = {}) => {
+    await db.onCreateRow("ave_chat_log", {
+      key,
+      data: JSON.stringify(data),
+    });
+  };
 }
 
 module.exports = {

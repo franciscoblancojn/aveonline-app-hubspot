@@ -42,10 +42,14 @@ class DB {
       const whereClause = Object.keys(where)
         .map((key) => `${key} = ?`)
         .join(" AND ");
-      const sql = `SELECT * FROM ${tableName}${
-        whereClause ? " WHERE " + whereClause : ""
-      }`;
-      this.db.all(sql, Object.values(where), (err, rows) => {
+      const sqlWhere = whereClause ? ` WHERE ${whereClause}` : "";
+      const sqlLimit = where.limit ? ` LIMIT ${where.limit}` : "";
+      const sqlOffset = where.offset ? ` OFFSET ${where.offset}` : "";
+      const sql = `SELECT * FROM ${tableName}${sqlWhere}${sqlLimit}${sqlOffset}`;
+      
+      const values = [...Object.values(where)];
+      
+      this.db.all(sql,values, (err, rows) => {
         if (err) {
           reject(err);
         } else {
