@@ -207,7 +207,8 @@ const onWebhookSendMessage =
           ),
           first_name: dataStandartLine.companyName ?? "User",
           last_name: "",
-          address: dataStandartLine.operatorLocationAddress,
+          address: dataStandartLine.clientCity,
+          address2:dataStandartLine.operatorLocationAddress
         });
       }
       if (noveltyResponsible === 2 || noveltyResponsible === 3) {
@@ -217,7 +218,8 @@ const onWebhookSendMessage =
           ),
           first_name: dataStandartLine.firstName ?? "User",
           last_name: "",
-          address: dataStandartLine.clientAddress,
+          address: dataStandartLine.clientCity,
+          address2:dataStandartLine.clientAddress
         });
         //PENDING: remive
         id_avechats.push({
@@ -226,12 +228,13 @@ const onWebhookSendMessage =
           ),
           first_name: dataStandartLine.firstName ?? "User",
           last_name: "",
-          address: dataStandartLine.clientAddress,
+          address: dataStandartLine.clientCity,
+          address2:dataStandartLine.clientAddress
         });
       }
 
       for (let i = 0; i < id_avechats.length; i++) {
-        const { id_avechat, first_name, last_name, address } = id_avechats[i];
+        const { id_avechat, first_name, last_name, address,address2 } = id_avechats[i];
         if (id_avechat.length < 12) {
           continue;
         }
@@ -246,6 +249,7 @@ const onWebhookSendMessage =
           url_pdf_guia: dataStandartLine.guidePdf,
           valor: dataStandartLine.freightValue,
           direccion: address,
+          destino:address2,
           novedad_homologada: dataStandartLine?.aveNoveltyName,
           productos: dataStandartLine?.products,
         };
