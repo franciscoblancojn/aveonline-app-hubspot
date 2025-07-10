@@ -156,14 +156,6 @@ const onWebhookSendMessage =
             id: 1738236609877,
             name: "entregado_pedido",
           },
-          "?1": {
-            id: 1745084674287,
-            name: "pedido_en_novedad_con_gestion",
-          },
-          "?2": {
-            id: 1745083529015,
-            name: "pedido_en_novedad_operativa_sin_gestion",
-          },
         },
         novedades:{
           "SC": {
