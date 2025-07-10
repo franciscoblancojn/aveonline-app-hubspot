@@ -272,13 +272,13 @@ const onWebhookSendMessage =
           const key = keysObj[i];
           const value = data[key];
 
-          if (value != undefined && value != user?.data?.[key]) {
+          // if (value != undefined && value != user?.data?.[key]) {
             aveChatLineaEstandar.saveCustomField({
               user_id: id_avechat,
               key,
               value,
             });
-          }
+          // }
         }
         // console.log("sendTemplate", sendTemplate);
 
