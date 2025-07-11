@@ -247,7 +247,7 @@ const onWebhookSendMessage =
           guia: body.guia,
           telefono_del_comercio: dataStandartLine.companyPhoneNumber,
           url_pdf_guia: dataStandartLine.guidePdf,
-          valor: dataStandartLine.freightValue,
+          valor: dataStandartLine.collectedValue,
           direccion: address,
           destino:address2,
           novedad_homologada: dataStandartLine?.aveNoveltyName,
