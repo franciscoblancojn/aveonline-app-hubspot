@@ -2,12 +2,15 @@
 const fs = require("fs");
 const path = require("path");
 
-const logFile = path.join(__dirname, "logs", "requests.log");
+function log(req, res, next) {
+  const guia = req?.body?.guia 
+  const logFile = path.join(
+    __dirname + req.originalUrl ,
+    (guia ? `/${guia}` : ""),
+    "logs.log"
+  );
+  fs.mkdirSync(path.dirname(logFile), { recursive: true });
 
-// Asegura que la carpeta de logs exista
-fs.mkdirSync(path.dirname(logFile), { recursive: true });
-
-function logRequest(req, res, next) {
   const logData = {
     time: new Date().toISOString(),
     ip: req.ip,
@@ -16,11 +19,10 @@ function logRequest(req, res, next) {
     query: req.query,
     body: req.body,
   };
-
   const line = JSON.stringify(logData) + "\n";
 
   // Log en consola
-//   console.log(`[${logData.time}] ${logData.method} ${logData.path}`);
+  //   console.log(`[${logData.time}] ${logData.method} ${logData.path}`);
 
   // Log en archivo
   fs.appendFile(logFile, line, (err) => {
@@ -30,4 +32,4 @@ function logRequest(req, res, next) {
   next();
 }
 
-module.exports = logRequest;
+module.exports = { log };

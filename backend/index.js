@@ -11,6 +11,7 @@ const { Count } = require("./count.js");
 const { fetch } = require("./fetch.js");
 const { ASESORES } = require("./dataAcesot.js");
 const { onLoadWebhook } = require("./webhook/_index.js");
+const { log } = require("./log/index.js");
 
 const app = express();
 
@@ -75,6 +76,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(log);
 //================================//
 //   Running the OAuth 2.0 Flow   //
 //================================//
