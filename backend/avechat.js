@@ -55,6 +55,7 @@ class AveChat {
           result?.error?.message ==
             "Your account exceeded the limit of 100 requests per 60 seconds"
         ) {
+          await new Promise((r) => setTimeout(r,40000 ));
           return this.onRequest({
             _await,
             swcola,

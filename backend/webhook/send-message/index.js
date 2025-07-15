@@ -16,7 +16,7 @@ const onWebhookSendMessage =
     onCreateLog,
   }) =>
   async (req, res) => {
-    throw "disabled"
+    // throw "disabled"
     // {
     //   "guia": "1112016134910111",
     //   "pedido_id": "2222281115431432",
@@ -224,15 +224,15 @@ const onWebhookSendMessage =
           address2: dataStandartLine.clientAddress,
         });
         //PENDING: remive
-        id_avechats.push({
-          id_avechat: prosesingPhone(
-            "+57" + dataStandartLine.companyPhoneNumber
-          ),
-          first_name: dataStandartLine.firstName ?? "User",
-          last_name: "",
-          address: dataStandartLine.clientCity,
-          address2: dataStandartLine.clientAddress,
-        });
+        // id_avechats.push({
+        //   id_avechat: prosesingPhone(
+        //     "+57" + dataStandartLine.companyPhoneNumber
+        //   ),
+        //   first_name: dataStandartLine.firstName ?? "User",
+        //   last_name: "",
+        //   address: dataStandartLine.clientCity,
+        //   address2: dataStandartLine.clientAddress,
+        // });
       }
 
       for (let i = 0; i < id_avechats.length; i++) {
@@ -275,23 +275,22 @@ const onWebhookSendMessage =
           const key = keysObj[i];
           const value = data[key];
 
-          // if (value != undefined && value != user?.data?.[key]) {
-          aveChatLineaEstandar.saveCustomField({
-            user_id: id_avechat,
-            key,
-            value,
-            callBack: (result) => {
-              
-              logCustom("/result/webhook/send-message/" + body?.guia, {
-                result,
-                user_id: id_avechat,
-                key,
-                value,
-              });
-            },
-          });
+          if (value != undefined) {
+            aveChatLineaEstandar.saveCustomField({
+              user_id: id_avechat,
+              key,
+              value,
+              callBack: (result) => {
+                logCustom("/result/webhook/send-message/" + body?.guia, {
+                  result,
+                  user_id: id_avechat,
+                  key,
+                  value,
+                });
+              },
+            });
+          }
         }
-        // }
         // console.log("sendTemplate", sendTemplate);
 
         aveChatLineaEstandar.saveCustomField({
