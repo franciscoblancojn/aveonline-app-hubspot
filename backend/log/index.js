@@ -31,5 +31,28 @@ function log(req, res, next) {
 
   next();
 }
+function logCustom(url,data) {
+  const logFile = path.join(
+    __dirname + url,
+    "logs.log"
+  );
+  fs.mkdirSync(path.dirname(logFile), { recursive: true });
 
-module.exports = { log };
+  const logData = {
+    time: new Date().toISOString(),
+    data
+  };
+  const line = JSON.stringify(logData) + "\n";
+  console.log(line);
+  
+  // Log en consola
+  //   console.log(`[${logData.time}] ${logData.method} ${logData.path}`);
+
+  // Log en archivo
+  fs.appendFile(logFile, line, (err) => {
+    if (err) console.error("Error al escribir log:", err);
+  });
+
+}
+
+module.exports = { log ,logCustom};

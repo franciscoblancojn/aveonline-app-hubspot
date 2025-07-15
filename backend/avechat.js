@@ -27,6 +27,7 @@ class AveChat {
     body = undefined,
     method = "GET",
     url,
+    callBack,
   }) {
     const f = async () => {
       try {
@@ -43,6 +44,11 @@ class AveChat {
           method,
         });
         const result = await respond.json();
+        console.log({
+          result,
+          cola: this.cola,
+          swcola,
+        });
         if (
           this.cola &&
           swcola &&
@@ -60,6 +66,9 @@ class AveChat {
         // if (_await) {
         //   await new Promise((r) => setTimeout(r, timeAwait));
         // }
+        if (callBack) {
+          callBack(result);
+        }
         return result;
       } catch (error) {
         console.error(error);
@@ -90,7 +99,7 @@ class AveChat {
 
     return id;
   }
-  async setCustomField({ key, value, user_id, _await = false }) {
+  async setCustomField({ key, value, user_id, _await = false, callBack }) {
     const id = await this.getIdCustomField(key);
     // console.log("setCustomField",{ id, key, value ,user_id});
 
@@ -101,6 +110,7 @@ class AveChat {
       body: new URLSearchParams({
         value: value,
       }),
+      callBack,
     });
     return result;
   }
@@ -115,12 +125,13 @@ class AveChat {
   //     })
   //   );
   // }
-  async saveCustomField({ user_id, key, value, _await = false }) {
+  async saveCustomField({ user_id, key, value, _await = false, callBack }) {
     const result = await this.setCustomField({
       user_id,
       key,
       value,
       _await,
+      callBack,
     });
     // console.log({result,key,value,user_id});
 

@@ -1,5 +1,6 @@
 const { cola } = require("../../cola");
 const { db } = require("../../db");
+const { logCustom } = require("../../log");
 
 const onWebhookSendMessage =
   ({
@@ -15,6 +16,7 @@ const onWebhookSendMessage =
     onCreateLog,
   }) =>
   async (req, res) => {
+    throw "disabled"
     // {
     //   "guia": "1112016134910111",
     //   "pedido_id": "2222281115431432",
@@ -157,20 +159,20 @@ const onWebhookSendMessage =
             name: "entregado_pedido",
           },
         },
-        novedades:{
-          "SC": {
+        novedades: {
+          SC: {
             id: 1745084674287,
             name: "pedido_en_novedad_con_gestion",
           },
-          "CL": {
+          CL: {
             id: 1745084674287,
             name: "pedido_en_novedad_con_gestion",
           },
-          "OP": {
+          OP: {
             id: 1745083529015,
             name: "pedido_en_novedad_operativa_sin_gestion",
           },
-        }
+        },
       };
       let estado_id = `${req?.body?.estado_id ?? "-1"}`;
       let type =
@@ -183,11 +185,11 @@ const onWebhookSendMessage =
       if (estado_id != "-1" && estado_id !== "16") {
         // dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
       }
-      if(estado_id=="16"){
-        type="novedades"
-        estado_id=body?.tiponovedad ?? "-1"
+      if (estado_id == "16") {
+        type = "novedades";
+        estado_id = body?.tiponovedad ?? "-1";
       }
-      
+
       const sendTemplate = swFlow?.[type]?.[estado_id]?.name;
       if (!sendTemplate) {
         throw "estado_id invalid";
@@ -208,7 +210,7 @@ const onWebhookSendMessage =
           first_name: dataStandartLine.companyName ?? "User",
           last_name: "",
           address: dataStandartLine.clientCity,
-          address2:dataStandartLine.operatorLocationAddress
+          address2: dataStandartLine.operatorLocationAddress,
         });
       }
       if (noveltyResponsible === 2 || noveltyResponsible === 3) {
@@ -219,7 +221,7 @@ const onWebhookSendMessage =
           first_name: dataStandartLine.firstName ?? "User",
           last_name: "",
           address: dataStandartLine.clientCity,
-          address2:dataStandartLine.clientAddress
+          address2: dataStandartLine.clientAddress,
         });
         //PENDING: remive
         id_avechats.push({
@@ -229,12 +231,13 @@ const onWebhookSendMessage =
           first_name: dataStandartLine.firstName ?? "User",
           last_name: "",
           address: dataStandartLine.clientCity,
-          address2:dataStandartLine.clientAddress
+          address2: dataStandartLine.clientAddress,
         });
       }
 
       for (let i = 0; i < id_avechats.length; i++) {
-        const { id_avechat, first_name, last_name, address,address2 } = id_avechats[i];
+        const { id_avechat, first_name, last_name, address, address2 } =
+          id_avechats[i];
         if (id_avechat.length < 12) {
           continue;
         }
@@ -249,12 +252,12 @@ const onWebhookSendMessage =
           url_pdf_guia: dataStandartLine.guidePdf,
           valor: dataStandartLine.collectedValue,
           direccion: address,
-          destino:address2,
+          destino: address2,
           novedad_homologada: dataStandartLine?.aveNoveltyName,
           productos: dataStandartLine?.products,
         };
         // setCache("id_avechat_" + i, id_avechat);
-        setCache("data_" + i, {id_avechat,...data});
+        setCache("data_" + i, { id_avechat, ...data });
         let user = await onGetUser(id_avechat);
         // setCache("user_" + i, user);
         if (!user) {
@@ -273,20 +276,37 @@ const onWebhookSendMessage =
           const value = data[key];
 
           // if (value != undefined && value != user?.data?.[key]) {
-            aveChatLineaEstandar.saveCustomField({
-              user_id: id_avechat,
-              key,
-              value,
-            });
-          // }
+          aveChatLineaEstandar.saveCustomField({
+            user_id: id_avechat,
+            key,
+            value,
+            callBack: (result) => {
+              
+              logCustom("/result/webhook/send-message/" + body?.guia, {
+                result,
+                user_id: id_avechat,
+                key,
+                value,
+              });
+            },
+          });
         }
+        // }
         // console.log("sendTemplate", sendTemplate);
 
         aveChatLineaEstandar.saveCustomField({
           user_id: id_avechat,
           key: "sendTemplate",
           value: sendTemplate,
-          _await:true
+          _await: true,
+          callBack: (result) => {
+            logCustom("/result/webhook/send-message/" + body?.guia, {
+              result,
+              user_id: id_avechat,
+              key: "sendTemplate",
+              value: sendTemplate,
+            });
+          },
         });
         await onUpdateUser(id_avechat, data);
       }
