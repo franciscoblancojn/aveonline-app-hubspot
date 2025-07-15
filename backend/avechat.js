@@ -57,9 +57,9 @@ class AveChat {
             url,
           });
         }
-        if (_await) {
-          await new Promise((r) => setTimeout(r, timeAwait));
-        }
+        // if (_await) {
+        //   await new Promise((r) => setTimeout(r, timeAwait));
+        // }
         return result;
       } catch (error) {
         console.error(error);
