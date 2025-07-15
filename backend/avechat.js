@@ -21,9 +21,19 @@ class AveChat {
     this.sendTemplate = sendTemplate;
     this.cola = cola;
   }
-  async onRequest({ swcola = true, body = undefined, method = "GET", url }) {
+  async onRequest({
+    _await = false,
+    swcola = true,
+    body = undefined,
+    method = "GET",
+    url,
+  }) {
     const f = async () => {
       try {
+        const timeAwait = 2000;
+        if (_await) {
+          await new Promise((r) => setTimeout(r, timeAwait));
+        }
         const respond = await fetch(`${this.urlApi}${url}`, {
           headers: {
             accept: "application/json",
@@ -33,6 +43,23 @@ class AveChat {
           method,
         });
         const result = await respond.json();
+        if (
+          this.cola &&
+          swcola &&
+          result?.error?.message ==
+            "Your account exceeded the limit of 100 requests per 60 seconds"
+        ) {
+          return this.onRequest({
+            _await,
+            swcola,
+            body,
+            method,
+            url,
+          });
+        }
+        if (_await) {
+          await new Promise((r) => setTimeout(r, timeAwait));
+        }
         return result;
       } catch (error) {
         console.error(error);
@@ -56,18 +83,19 @@ class AveChat {
     const id = (
       this.campana
         ? AveChatFiedsCampana
-        : (this?.sendTemplate
+        : this?.sendTemplate
         ? AveChatFiedsSendTemplate
-        : AveChatFields)
+        : AveChatFields
     ).find((e) => e.name == key).id;
 
     return id;
   }
-  async setCustomField({ key, value, user_id }) {
+  async setCustomField({ key, value, user_id, _await = false }) {
     const id = await this.getIdCustomField(key);
     // console.log("setCustomField",{ id, key, value ,user_id});
 
     const result = await this.onRequest({
+      _await,
       url: `/users/${user_id}/custom_fields/${id}`,
       method: "POST",
       body: new URLSearchParams({
@@ -87,11 +115,12 @@ class AveChat {
   //     })
   //   );
   // }
-  async saveCustomField({ user_id, key, value }) {
+  async saveCustomField({ user_id, key, value, _await = false }) {
     const result = await this.setCustomField({
       user_id,
       key,
       value,
+      _await,
     });
     // console.log({result,key,value,user_id});
 
@@ -138,7 +167,7 @@ class AveChat {
   }
   async createUser({ phone, first_name, last_name, gender, cola }) {
     const result = await this.onRequest({
-      swcola:cola,
+      swcola: cola,
       url: `/users`,
       method: "POST",
       body: JSON.stringify({

@@ -286,6 +286,7 @@ const onWebhookSendMessage =
           user_id: id_avechat,
           key: "sendTemplate",
           value: sendTemplate,
+          _await:true
         });
         await onUpdateUser(id_avechat, data);
       }
