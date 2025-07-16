@@ -185,7 +185,7 @@ const onWebhookSendMessage =
       if (estado_id != "-1" && estado_id !== "16") {
         // dataStandartLine.noveltyResponsible = 1; // companyPhoneNumber
       }
-      if (estado_id == "16") {
+      if (estado_id == "16" || estado_id == "10006" || estado_id == "10007") {
         type = "novedades";
         estado_id = body?.tiponovedad ?? "-1";
       }
