@@ -44,21 +44,14 @@ class AveChat {
           method,
         });
         const result = await respond.json();
-        console.log({
-          result,
-          cola: this.cola,
-          swcola,
-        });
         if (
-          this.cola &&
-          swcola &&
           result?.error?.message ==
             "Your account exceeded the limit of 100 requests per 60 seconds"
         ) {
           await new Promise((r) => setTimeout(r,40000 ));
-          return this.onRequest({
+          return await this.onRequest({
             _await,
-            swcola,
+            swcola:false,
             body,
             method,
             url,
