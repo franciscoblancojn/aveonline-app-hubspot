@@ -3,10 +3,11 @@ const fs = require("fs");
 const path = require("path");
 
 function log(req, res, next) {
-  const guia = req?.body?.guia 
+  const date  = new Date()
+  const day = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   const logFile = path.join(
     __dirname + req.originalUrl ,
-    (guia ? `/${guia}` : ""),
+    day,
     "logs.log"
   );
   fs.mkdirSync(path.dirname(logFile), { recursive: true });
