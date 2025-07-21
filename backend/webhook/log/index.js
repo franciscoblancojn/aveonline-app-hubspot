@@ -1,15 +1,28 @@
+const {db} = require("../../db");
 
 const onWebhookGetLog =
-  ({
-    getCache,
-  }) =>
+  ({}) =>
   async (req, res) => {
-    const data = getCache(req?.query?.cache ?? "cache")
     try {
+      const guia = req?.query?.guia;
+      if (!guia) {
+        throw new Error("Guia is required");
+      }
+      let items = await db.onGetRows("ave_guia_send_message", {
+        guia,
+      });
+      items = items.map((item) => {
+        try {
+          item.body = JSON.parse(item.body);
+        } catch (error) {
+          item.body = {};
+        }
+        return item;
+      });
       const respond = {
         success: true,
         message: "✅ Log",
-        data
+        items,
       };
       return res.status(200).json(respond);
     } catch (error) {

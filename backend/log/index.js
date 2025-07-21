@@ -1,51 +1,41 @@
 // logger.js
 const fs = require("fs");
 const path = require("path");
+const { db } = require("../db");
 
 function log(req, res, next) {
-  const date  = new Date()
-  const day = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-  const logFile = path.join(
-    __dirname + req.originalUrl ,
-    day,
-    "logs.log"
-  );
-  fs.mkdirSync(path.dirname(logFile), { recursive: true });
-
+  const guia = req?.body?.guia;
+  if (!guia) {
+    next();
+    return;
+  }
   const logData = {
     time: new Date().toISOString(),
-    ip: req.ip,
-    method: req.method,
-    path: req.originalUrl,
-    query: req.query,
-    body: req.body,
+    guia,
+    body: JSON.stringify(req.body),
   };
-  const line = JSON.stringify(logData) + "\n";
-
-  // Log en consola
-  //   console.log(`[${logData.time}] ${logData.method} ${logData.path}`);
-
-  // Log en archivo
-  fs.appendFile(logFile, line, (err) => {
-    if (err) console.error("Error al escribir log:", err);
+  db.onCreateTable("ave_guia_send_message", {
+    id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+    time: "TEXT",
+    guia: "TEXT",
+    body: "TEXT",
+  }).then(() => {
+    db.onCreateRow("ave_guia_send_message", logData);
   });
 
   next();
 }
-function logCustom(url,data) {
-  const logFile = path.join(
-    __dirname + url,
-    "logs.log"
-  );
+function logCustom(url, data) {
+  const logFile = path.join(__dirname + url, "logs.log");
   fs.mkdirSync(path.dirname(logFile), { recursive: true });
 
   const logData = {
     time: new Date().toISOString(),
-    data
+    data,
   };
   const line = JSON.stringify(logData) + "\n";
-  console.log(line);
-  
+  // console.log(line);
+
   // Log en consola
   //   console.log(`[${logData.time}] ${logData.method} ${logData.path}`);
 
@@ -53,7 +43,6 @@ function logCustom(url,data) {
   fs.appendFile(logFile, line, (err) => {
     if (err) console.error("Error al escribir log:", err);
   });
-
 }
 
-module.exports = { log ,logCustom};
+module.exports = { log, logCustom };

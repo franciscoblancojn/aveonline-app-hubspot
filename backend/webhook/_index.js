@@ -37,9 +37,8 @@ class AppWebhook extends AppBase {
   }
   onLoadLog({ app }) {
     const path = "/api/webhook/log";
-    const getCache = this.getCache;
     app.get(path, onWebhookGetLog({ 
-        getCache
+        
     }));
   }
 

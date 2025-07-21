@@ -281,12 +281,12 @@ const onWebhookSendMessage =
               key,
               value,
               callBack: (result) => {
-                logCustom("/result/webhook/send-message/" + body?.guia, {
-                  result,
-                  user_id: id_avechat,
-                  key,
-                  value,
-                });
+                // logCustom("/result/webhook/send-message/" + body?.guia, {
+                //   result,
+                //   user_id: id_avechat,
+                //   key,
+                //   value,
+                // });
               },
             });
           }
@@ -299,12 +299,12 @@ const onWebhookSendMessage =
           value: sendTemplate,
           _await: true,
           callBack: (result) => {
-            logCustom("/result/webhook/send-message/" + body?.guia, {
-              result,
-              user_id: id_avechat,
-              key: "sendTemplate",
-              value: sendTemplate,
-            });
+            // logCustom("/result/webhook/send-message/" + body?.guia, {
+            //   result,
+            //   user_id: id_avechat,
+            //   key: "sendTemplate",
+            //   value: sendTemplate,
+            // });
           },
         });
         await onUpdateUser(id_avechat, data);
