@@ -85,6 +85,7 @@ const onWebhookSendMessage =
     //     "aveNoveltyName": "nombre_estado_novedad",
     //     "agentId": 456,
     //     "noveltyResponsible": "encargado_de_solucion"
+        // "countNotifications": 1,
     //   }
     // }
     //   "estado_id": 12, if != 16  noveltyResponsible => 1 else validate noveltyResponsible
@@ -172,6 +173,9 @@ const onWebhookSendMessage =
             id: 1745083529015,
             name: "pedido_en_novedad_operativa_sin_gestion",
           },
+          "segunda_notificacion_de_guias_con_novedad_con_gestion":{
+            name:"segunda_notificacion_de_guias_con_novedad_con_gestion"
+          }
         },
       };
       let estado_id = `${req?.body?.estado_id ?? "-1"}`;
@@ -188,8 +192,11 @@ const onWebhookSendMessage =
       if (estado_id == "16" || estado_id == "10006" || estado_id == "10007") {
         type = "novedades";
         estado_id = body?.tiponovedad ?? "-1";
+        if(dataStandartLine?.countNotifications === 2){
+          estado_id = "segunda_notificacion_de_guias_con_novedad_con_gestion";
+        }
       }
-
+      
       const sendTemplate = swFlow?.[type]?.[estado_id]?.name;
       if (!sendTemplate) {
         throw "estado_id invalid";
