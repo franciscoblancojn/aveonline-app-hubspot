@@ -16,6 +16,7 @@ class AppWebhook extends AppBase {
         ifExistAvechat: this.ifExistAvechat("linea_estandar"),
         onCreateUserAvechatIfNotExist: this.onCreateUserAvechatIfNotExist("linea_estandar"),
         createUser:this.aveChatLineaEstandar.createUser.bind(this.aveChatLineaEstandar),
+        contactSaveCustonField:this.aveChatLineaEstandar.contactSaveCustonField.bind(this.aveChatLineaEstandar),
         onGetUser: this.onGetUser("linea_estandar"),
         onCreateUser:this.onCreateUser("linea_estandar"),
         onUpdateUser:this.onUpdateUser("linea_estandar"),

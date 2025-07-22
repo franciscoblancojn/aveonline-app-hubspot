@@ -46,12 +46,12 @@ class AveChat {
         const result = await respond.json();
         if (
           result?.error?.message ==
-            "Your account exceeded the limit of 100 requests per 60 seconds"
+          "Your account exceeded the limit of 100 requests per 60 seconds"
         ) {
-          await new Promise((r) => setTimeout(r,40000 ));
+          await new Promise((r) => setTimeout(r, 40000));
           return await this.onRequest({
             _await,
-            swcola:false,
+            swcola: false,
             body,
             method,
             url,
@@ -76,6 +76,64 @@ class AveChat {
     return await f();
   }
 
+  async contactSaveCustonField({
+    user,
+    fileds,
+    flows = [],
+  }) {
+    // console.log({
+    //   user,
+    //   fileds,
+    //   flows,
+    // });
+    
+    const result = await this.onRequest({
+      url: "/contacts",
+      method:"POST",
+      body: JSON.stringify({
+        ...user,
+        // phone: "+1234567890",
+        // first_name: "John",
+        // last_name: "Smith",
+        actions: [
+          ...Object.keys(fileds).map((key) => {
+            return {
+              action: "set_field_value",
+              field_name: key,
+              value: fileds[key],
+            };
+          }),
+          ...flows.map((flow) => {
+            return {
+              action: "send_flow",
+              flow_id: flow,
+            };
+          }),
+          // {
+          //   action: "set_field_value",
+          //   field_name: "YOU_CUSTOM_FIELD_NAME",
+          //   value: "ANY_VALUE",
+          // },
+          // {
+          //   action: "send_flow",
+          //   flow_id: 11111,
+          // },
+        ],
+      }),
+    });
+    return result;
+  }
+  async getIdCustomField(key) {
+    const id = (
+      this.campana
+        ? AveChatFiedsCampana
+        : this?.sendTemplate
+        ? AveChatFiedsSendTemplate
+        : AveChatFields
+    ).find((e) => e.name == key).id;
+
+    return id;
+  }
   async getIdCustomFieldApi() {
     const result = await this.onRequest({
       url: "/accounts/custom_fields",
