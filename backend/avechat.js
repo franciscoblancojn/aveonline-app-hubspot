@@ -45,7 +45,7 @@ class AveChat {
         });
         
         const result = await respond.json();
-        console.log(result);
+        // console.log(result);
         if (
           result?.error?.message ==
           "Your account exceeded the limit of 100 requests per 60 seconds"
@@ -90,7 +90,7 @@ class AveChat {
     // });
     
     const result = await this.onRequest({
-      url: "/contacts",
+      url: "/users",
       method:"POST",
       body: JSON.stringify({
         ...user,

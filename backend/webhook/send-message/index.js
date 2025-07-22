@@ -95,7 +95,7 @@ const onWebhookSendMessage =
     //   data:body
     // })
     try {
-      throw "disabled";
+      // throw "disabled";
       const body = req.body;
       setCache("body", body);
       //tipo_pedido
