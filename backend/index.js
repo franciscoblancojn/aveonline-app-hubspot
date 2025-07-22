@@ -76,7 +76,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(log);
+app.use(log);
 //================================//
 //   Running the OAuth 2.0 Flow   //
 //================================//
