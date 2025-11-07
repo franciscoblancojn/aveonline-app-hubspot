@@ -854,6 +854,7 @@ app.post("/api/ave-chat/send-message", async (req, res) => {
       success: true,
       message: "✅ Mensaje enviado correctamente.",
       result,
+      urlApi : aveChat.urlApi
     });
   } catch (error) {
     return res.status(500).json({
