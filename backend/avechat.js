@@ -8,7 +8,7 @@ const {
 const { fetch } = require("./fetch.js");
 
 class AveChat {
-  urlApi = "https://chat.aveonline.co/api/";
+  urlApi = "https://panel.lucidbot.co/api/";
   token = "";
   campana = false;
   sendTemplate = false;
