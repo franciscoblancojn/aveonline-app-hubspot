@@ -28,7 +28,7 @@ const Extension = ({ actions,context }) => {
   return (
     <>
       <Box>
-        <LoadingButton type="submit"  href={"https://chat.aveonline.co/en/inbox?id="+contact?.phone?.replaceAll("+",'')} loading={loader}>
+        <LoadingButton type="submit"  href={"https://panel.lucidbot.co/en/inbox?id="+contact?.phone?.replaceAll("+",'')} loading={loader}>
           Abrir Chat
         </LoadingButton>
       </Box>

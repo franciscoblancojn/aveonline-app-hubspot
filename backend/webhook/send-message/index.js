@@ -95,6 +95,9 @@ const onWebhookSendMessage =
     //   data:body
     // })
     try {
+      return res.status(200).json({
+        test:1
+      });
       // throw "disabled";
       const body = req.body;
       setCache("body", body);

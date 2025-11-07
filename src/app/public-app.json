@@ -3,7 +3,7 @@
   "uid": "aveonline-app",
   "description": "",
   "allowedUrls": [
-    "https://chat.aveonline.co",
+    "https://panel.lucidbot.co",
     "https://avechat-hubspot.api.aveonline.co"
   ],
   "auth": {
